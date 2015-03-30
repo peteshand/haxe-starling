@@ -887,7 +887,7 @@ class Starling extends EventDispatcher
 	public function deleteProgram(name:String):Void
 	{
 		var program:Program3D = getProgram(name);            
-		if (program)
+		if (program != null)
 		{                
 			program.dispose();
 			programs.remove(name);

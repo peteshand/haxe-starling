@@ -14,6 +14,7 @@ import haxe.Constraints.Function;
 import openfl.display.BitmapData;
 import openfl.display.StageQuality;
 import openfl.display3D.Context3DTextureFormat;
+import openfl.errors.ArgumentError;
 import openfl.filters.BitmapFilter;
 import openfl.geom.Matrix;
 import openfl.geom.Point;

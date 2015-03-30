@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.ui.Mouse;
 import openfl.ui.MouseCursor;

@@ -16,6 +16,7 @@ package starling.filters;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DProgramType;
 import openfl.display3D.Program3D;
+import openfl.errors.ArgumentError;
 
 import starling.core.Starling;
 import starling.textures.Texture;

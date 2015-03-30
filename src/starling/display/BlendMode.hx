@@ -11,6 +11,7 @@
 package starling.display;
 
 import openfl.display3D.Context3DBlendFactor;
+import openfl.errors.ArgumentError;
 
 import starling.errors.AbstractClassError;
 
@@ -78,7 +79,10 @@ class BlendMode
 	{
 		var modes:Dynamic = sBlendFactors[cast(premultipliedAlpha, Int)];
 		if (mode in modes) return modes[mode];
-		else throw new ArgumentError("Invalid blend mode");
+		else {
+			throw new ArgumentError("Invalid blend mode");
+			return null;
+		}
 	}
 	
 	/** Registeres a blending mode under a certain name and for a certain premultiplied alpha

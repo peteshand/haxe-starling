@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import openfl.errors.ArgumentError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
@@ -58,6 +59,7 @@ class Quad extends DisplayObject
 	public function new(width:Float, height:Float, color:UInt=0xffffff,
 						 premultipliedAlpha:Bool=true)
 	{
+		super();
 		if (width == 0.0 || height == 0.0)
 			throw new ArgumentError("Invalid size: width and height must not be zero");
 
@@ -99,7 +101,7 @@ class Quad extends DisplayObject
 			if (scaleX < 0) { resultRect.width  *= -1; resultRect.x -= resultRect.width;  }
 			if (scaleY < 0) { resultRect.height *= -1; resultRect.y -= resultRect.height; }
 		}
-		else if (is3D && stage)
+		else if (is3D && stage != null)
 		{
 			stage.getCameraPosition(targetSpace, sHelperPoint3D);
 			getTransformationMatrix3D(targetSpace, sHelperMatrix3D);

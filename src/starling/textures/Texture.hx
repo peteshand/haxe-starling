@@ -16,6 +16,7 @@ import openfl.display.BitmapData;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.textures.TextureBase;
+import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.net.NetStream;
 import openfl.system.Capabilities;
@@ -130,7 +131,7 @@ class Texture
 	public function new()
 	{
 		if (Capabilities.isDebugger &&
-			getQualifiedClassName(this) == "starling.textures::Texture")
+			Type.getClassName(this) == "starling.textures::Texture")
 		{
 			throw new AbstractClassError();
 		}

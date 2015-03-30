@@ -64,7 +64,7 @@ class EventDispatcher
 		if (mEventListeners != null)
 		{
 			var listeners:Array<Function> = cast mEventListeners[type];
-			var numListeners:Int = listeners ? listeners.length : 0;
+			var numListeners:Int = listeners != null ? listeners.length : 0;
 
 			if (numListeners > 0)
 			{
@@ -89,7 +89,7 @@ class EventDispatcher
 	 *  Be careful when removing all event listeners: you never know who else was listening. */
 	public function removeEventListeners(type:String=null):Void
 	{
-		if (type && mEventListeners)
+		if (type != null && mEventListeners != null)
 			mEventListeners.remove(type);
 		else
 			mEventListeners = null;
@@ -115,7 +115,7 @@ class EventDispatcher
 		if (bubbles && Std.is(this, DisplayObject)) bubbleEvent(event);
 		else                                  invokeEvent(event);
 		
-		if (previousTarget) event.setTarget(previousTarget);
+		if (previousTarget != null) event.setTarget(previousTarget);
 	}
 	
 	/** @private
@@ -124,7 +124,7 @@ class EventDispatcher
 	 *  method uses this method internally. */
 	/*internal*/ private function invokeEvent(event:Event):Bool
 	{
-		var listeners:Array<Function> = mEventListeners ?
+		var listeners:Array<Function> = mEventListeners != null ?
 			cast (mEventListeners[event.type], Array<Function>) : null;
 		var numListeners:Int = listeners == null ? 0 : listeners.length;
 		
@@ -202,7 +202,7 @@ class EventDispatcher
 	/** Returns if there are listeners registered for a certain event type. */
 	public function hasEventListener(type:String):Bool
 	{
-		var listeners:Array<Function> = mEventListeners ? mEventListeners[type] : null;
-		return listeners ? listeners.length != 0 : false;
+		var listeners:Array<Function> = mEventListeners != null ? mEventListeners[type] : null;
+		return listeners != null ? listeners.length != 0 : false;
 	}
 }

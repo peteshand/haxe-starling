@@ -12,6 +12,7 @@ package starling.animation;
 
 import haxe.Constraints.Function;
 import haxe.ds.Vector;
+import openfl.errors.ArgumentError;
 import starling.events.Event;
 import starling.events.EventDispatcher;
 

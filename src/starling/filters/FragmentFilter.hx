@@ -16,6 +16,7 @@ import openfl.display3D.Context3DVertexBufferFormat;
 import openfl.display3D.IndexBuffer3D;
 import openfl.display3D.Program3D;
 import openfl.display3D.VertexBuffer3D;
+import openfl.errors.ArgumentError;
 import openfl.errors.IllegalOperationError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;

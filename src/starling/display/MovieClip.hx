@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import openfl.errors.ArgumentError;
 import openfl.errors.IllegalOperationError;
 import openfl.media.Sound;
 import openfl.media.SoundTransform;

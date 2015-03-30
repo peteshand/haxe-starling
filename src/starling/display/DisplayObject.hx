@@ -12,6 +12,7 @@ package starling.display;
 
 import haxe.Constraints.Function;
 import lime.ui.MouseCursor;
+import openfl.errors.ArgumentError;
 import openfl.errors.IllegalOperationError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;

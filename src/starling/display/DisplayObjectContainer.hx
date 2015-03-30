@@ -11,6 +11,7 @@
 package starling.display;
 
 import haxe.Constraints.Function;
+import openfl.errors.ArgumentError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
@@ -340,7 +341,7 @@ class DisplayObjectContainer extends DisplayObject
 			MatrixUtil.transformCoords(sHelperMatrix, localX, localY, sHelperPoint);
 			target = child.hitTest(sHelperPoint, forTouch);
 
-			if (target) return forTouch && mTouchGroup ? this : target;
+			if (target != null) return forTouch && mTouchGroup ? this : target;
 		}
 
 		return null;
@@ -366,12 +367,12 @@ class DisplayObjectContainer extends DisplayObject
 				support.transformMatrix(child);
 				support.blendMode = child.blendMode;
 
-				if (mask) support.pushMask(mask);
+				if (mask != null) support.pushMask(mask);
 
-				if (filter) filter.render(child, support, alpha);
+				if (filter != null) filter.render(child, support, alpha);
 				else        child.render(support, alpha);
 
-				if (mask) support.popMask();
+				if (mask != null) support.popMask();
 				
 				support.blendMode = blendMode;
 				support.popMatrix();

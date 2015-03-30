@@ -3,6 +3,7 @@ package starling.utils;
 import openfl.display.Bitmap;
 import openfl.display.Loader;
 import openfl.display.LoaderInfo;
+import openfl.errors.ArgumentError;
 import openfl.events.HTTPStatusEvent;
 import openfl.events.IOErrorEvent;
 import openfl.events.ProgressEvent;

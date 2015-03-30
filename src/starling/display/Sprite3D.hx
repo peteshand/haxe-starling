@@ -140,25 +140,25 @@ class Sprite3D extends DisplayObjectContainer
 
 	private function onAddedChild(event:Event):Void
 	{
-		recursivelySetIs3D(event.target as DisplayObject, true);
+		recursivelySetIs3D(cast event.target, true);
 	}
 
 	private function onRemovedChild(event:Event):Void
 	{
-		recursivelySetIs3D(event.target as DisplayObject, false);
+		recursivelySetIs3D(cast event.target, false);
 	}
 
 	private function recursivelySetIs3D(object:DisplayObject, value:Bool):Void
 	{
-		if (object is Sprite3D)
+		if (Std.is(object, Sprite3D))
 			return;
 
-		if (object is DisplayObjectContainer)
+		if (Std.is(object, DisplayObjectContainer))
 		{
-			var container:DisplayObjectContainer = object as DisplayObjectContainer;
+			var container:DisplayObjectContainer = cast object;
 			var numChildren:Int = container.numChildren;
 
-			for (var i:Int=0; i<numChildren; ++i)
+			for (i in 0...numChildren)
 				recursivelySetIs3D(container.getChildAt(i), value);
 		}
 

@@ -10,6 +10,7 @@
 
 package starling.geom;
 
+import openfl.errors.ArgumentError;
 import openfl.errors.Error;
 import openfl.geom.Point;
 

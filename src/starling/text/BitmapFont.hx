@@ -10,6 +10,7 @@
 
 package starling.text;
 
+import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.utils.Dictionary;
 import starling.utils.StarlingUtils;

@@ -11,6 +11,7 @@
 
 package starling.animation;
 
+import openfl.errors.ArgumentError;
 import starling.events.Event;
 import starling.events.EventDispatcher;
 

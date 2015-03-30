@@ -12,11 +12,12 @@ package starling.textures;
 
 import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.textures.TextureBase;
-import openfl.utils.getQualifiedClassName;
+import openfl.errors.ArgumentError;
 
 /** A concrete texture that may only be used for a 'VideoTexture' base.
  *  For internal use only. */
-internal class ConcreteVideoTexture extends ConcreteTexture
+/*internal*/
+class ConcreteVideoTexture extends ConcreteTexture
 {
 	/** Creates a new VideoTexture. 'base' must be of type 'VideoTexture'. */
 	public function ConcreteVideoTexture(base:TextureBase, scale:Float = 1)
@@ -30,30 +31,30 @@ internal class ConcreteVideoTexture extends ConcreteTexture
 
 		super(base, format, width, height, false, false, false, scale, false);
 
-		if (getQualifiedClassName(base) != "flash.display3D.textures::VideoTexture")
+		if (Type.getClassName(base) != "flash.display3D.textures::VideoTexture")
 			throw new ArgumentError("'base' must be VideoTexture");
 	}
 
 	/** The actual width of the video in pixels. */
-	override public function get nativeWidth():Float
+	override public function get_nativeWidth():Float
 	{
 		return base["videoWidth"];
 	}
 
 	/** The actual height of the video in pixels. */
-	override public function get nativeHeight():Float
+	override public function get_nativeHeight():Float
 	{
 		return base["videoHeight"];
 	}
 
 	/** inheritDoc */
-	override public function get width():Float
+	override public function get_width():Float
 	{
 		return nativeWidth / scale;
 	}
 
 	/** inheritDoc */
-	override public function get height():Float
+	override public function get_height():Float
 	{
 		return nativeHeight / scale;
 	}

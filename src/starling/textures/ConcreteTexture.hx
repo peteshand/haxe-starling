@@ -78,7 +78,7 @@ class ConcreteTexture extends Texture
 	/** Disposes the TextureBase object. */
 	public override function dispose():Void
 	{
-		if (mBase)
+		if (mBase != null)
 		{
 			mBase.removeEventListener(TEXTURE_READY, onTextureReady);
 			mBase.dispose();
