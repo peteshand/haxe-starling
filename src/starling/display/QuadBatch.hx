@@ -169,7 +169,7 @@ class QuadBatch extends DisplayObject
 
 		var numVertices:Int = mVertexData.numVertices;
 		var numIndices:Int = mIndexData.length;
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 
 		if (numVertices == 0) return;
 		if (context == null)  throw new MissingContextError();
@@ -224,7 +224,7 @@ class QuadBatch extends DisplayObject
 		if (mSyncRequired) syncBuffers();
 		
 		var pma:Bool = mVertexData.premultipliedAlpha;
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		var tinted:Bool = mTinted || (parentAlpha != 1.0);
 		
 		sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = pma ? parentAlpha : 1.0;

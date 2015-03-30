@@ -10,13 +10,13 @@
 
 package starling.display;
 
+import haxe.Constraints.Function;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.geom.Vector3D;
 import openfl.system.Capabilities;
-import openfl.utils.getQualifiedClassName;
 
 import starling.core.RenderSupport;
 import starling.errors.AbstractClassError;
@@ -442,7 +442,7 @@ class DisplayObjectContainer extends DisplayObject
 			mergeSort(input, compareFunc, startIndex + halfLength, length - halfLength, buffer);
 			
 			// merge the vectors, using the buffer vector for temporary storage
-			for (i = 0; i < length; i++)
+			for (i in 0...length)
 			{
 				// Check to see if any elements remain in the left vector; 
 				// if so, we check if there are any elements left in the right vector;
@@ -462,16 +462,17 @@ class DisplayObjectContainer extends DisplayObject
 			}
 			
 			// copy the sorted subvector back to the input
-			for(i = startIndex; i < endIndex; i++)
+			for(i in startIndex...endIndex)
 				input[i] = buffer[Int(i - startIndex)];
 		}
 	}
 	
 	/** @private */
-	internal function getChildEventListeners(object:DisplayObject, eventType:String, 
+	/*internal*/
+	function getChildEventListeners(object:DisplayObject, eventType:String, 
 											 listeners:Array<DisplayObject>):Void
 	{
-		var container:DisplayObjectContainer = object as DisplayObjectContainer;
+		var container:DisplayObjectContainer = cast object;
 		
 		if (object.hasEventListener(eventType))
 			listeners[listeners.length] = object; // avoiding 'push'                
@@ -481,7 +482,7 @@ class DisplayObjectContainer extends DisplayObject
 			var children:Array<DisplayObject> = container.mChildren;
 			var numChildren:Int = children.length;
 			
-			for (var i:Int=0; i<numChildren; ++i)
+			for (i in 0...numChildren)
 				getChildEventListeners(children[i], eventType, listeners);
 		}
 	}

@@ -221,7 +221,7 @@ class RenderTexture extends SubTexture
 								   matrix:Matrix=null, alpha:Float=1.0,
 								   antiAliasing:Int=0):Void
 	{
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
 		if (!Starling.current.contextValid) return;
 		
@@ -283,7 +283,7 @@ class RenderTexture extends SubTexture
 	private function get supportsNonPotDimensions():Bool
 	{
 		var target:Starling = Starling.current;
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		var support:Dynamic = target.contextData[CONTEXT_POT_SUPPORT_KEY];
 
 		if (support == null)

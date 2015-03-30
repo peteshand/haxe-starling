@@ -108,7 +108,7 @@ class Stage extends DisplayObjectContainer
 
 	/** Returns the object that is found topmost beneath a point in stage coordinates, or  
 	 *  the stage itself if nothing else is found. */
-	public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
+	public override function hitTest(localPoint:Point, forTouch:Bool=false):DisplayObject
 	{
 		if (forTouch && (!visible || !touchable))
 			return null;
@@ -138,7 +138,7 @@ class Stage extends DisplayObjectContainer
 	 *                      will be filled with the stage color.
 	 */
 	public function drawToBitmapData(destination:BitmapData=null,
-									 transparent:Boolean=true):BitmapData
+									 transparent:Bool=true):BitmapData
 	{
 		var support:RenderSupport = new RenderSupport();
 		var star:Starling = Starling.current;

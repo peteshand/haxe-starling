@@ -231,7 +231,7 @@ class FragmentFilter
 	{
 		var passTexture:Texture;
 		var cacheTexture:Texture = null;
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		var targetSpace:DisplayObject = object.stage;
 		var stage:Stage  = Starling.current.stage;
 		var scale:Float = Starling.current.contentScaleFactor;
@@ -508,7 +508,7 @@ class FragmentFilter
 	 *  
 	 *  @param pass    the current render pass, starting with '0'. Multipass filters can
 	 *                 provide different logic for each pass.
-	 *  @param context the current context3D (the same as in Starling.context, passed
+	 *  @param context the current context3D (the same as in Starling.Context, passed
 	 *                 just for convenience)
 	 *  @param texture the input texture, which is already bound to sampler 0.
 	 *  */

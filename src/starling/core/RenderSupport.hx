@@ -79,7 +79,7 @@ class RenderSupport
 	private static var sScissorRect:Rectangle = new Rectangle();
 	private static var sAssembler = new AGALMiniAssembler();
 	private static var sMatrix3D:Matrix3D = new Matrix3D();
-	private static var sMatrixData(get, set); 
+	private static var sMatrixData:Array<Float> = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	
 	public var mvpMatrix(get, null):Matrix;
 	public var modelViewMatrix(get, null):Matrix;
@@ -377,10 +377,10 @@ class RenderSupport
 		applyClipRect();
 
 		if (target)
-			Starling.context.setRenderToTexture(target.base,
+			Starling.Context.setRenderToTexture(target.base,
 					SystemUtil.supportsDepthAndStencil, antiAliasing);
 		else
-			Starling.context.setRenderToBackBuffer();
+			Starling.Context.setRenderToBackBuffer();
 	}
 	
 	// clipping
@@ -427,7 +427,7 @@ class RenderSupport
 	{
 		finishQuadBatch();
 		
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) return;
 		
 		if (mClipRectStackSize > 0)
@@ -478,7 +478,7 @@ class RenderSupport
 	{
 		mMasks[mMasks.length] = mask;
 
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) return;
 
 		finishQuadBatch();
@@ -497,7 +497,7 @@ class RenderSupport
 	{
 		var mask:DisplayObject = mMasks.pop();
 
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) return;
 
 		finishQuadBatch();
@@ -628,13 +628,13 @@ class RenderSupport
 	public static function setBlendFactors(premultipliedAlpha:Bool, blendMode:String="normal"):Void
 	{
 		var blendFactors:Array = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
-		Starling.context.setBlendFactors(blendFactors[0], blendFactors[1]);
+		Starling.Context.setBlendFactors(blendFactors[0], blendFactors[1]);
 	}
 	
 	/** Clears the render context with a certain color and alpha value. */
-	public static function clear(rgb:UInt=0, alpha:Float=0.0):Void
+	public static function Clear(rgb:UInt=0, alpha:Float=0.0):Void
 	{
-		Starling.context.clear(
+		Starling.Context.clear(
 			Color.getRed(rgb)   / 255.0, 
 			Color.getGreen(rgb) / 255.0, 
 			Color.getBlue(rgb)  / 255.0,
@@ -644,7 +644,7 @@ class RenderSupport
 	/** Clears the render context with a certain color and alpha value. */
 	public function clear(rgb:UInt=0, alpha:Float=0.0):Void
 	{
-		RenderSupport.clear(rgb, alpha);
+		RenderSupport.Clear(rgb, alpha);
 	}
 	
 	/** Assembles fragment- and vertex-shaders, passed as Strings, to a Program3D. If you
@@ -655,7 +655,7 @@ class RenderSupport
 	{
 		if (resultProgram == null) 
 		{
-			var context:Context3D = Starling.context;
+			var context:Context3D = Starling.Context;
 			if (context == null) throw new MissingContextError();
 			resultProgram = context.createProgram();
 		}
@@ -698,33 +698,4 @@ class RenderSupport
 	
 	/** Indicates the number of stage3D draw calls. */
 	public function get_drawCount():Int { return mDrawCount; }
-	
-	private static function get_sMatrixData():Array<Float>
-	{
-		if (sMatrixData == null) {
-			sMatrixData = new Array<Float>();
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-		}
-		return sMatrixData;
-	}
-	
-	private static function set_sMatrixData(value:Array<Float>):Array<Float>
-	{
-		return sMatrixData = value;
-	}
 }

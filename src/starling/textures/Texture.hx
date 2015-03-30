@@ -297,7 +297,7 @@ class Texture
 	public static function fromAtfData(data:ByteArray, scale:Float=1, useMipMaps:Bool=true,
 									   async:Function=null, repeat:Bool=false):Texture
 	{
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
 
 		var atfData:AtfData = new AtfData(data);
@@ -387,7 +387,7 @@ class Texture
 		if (!SystemUtil.supportsVideoTexture)
 			throw new NotSupportedError("Video Textures are not supported on this platform");
 
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
 
 		var base:TextureBase = context["createVideoTexture"]();
@@ -457,7 +457,7 @@ class Texture
 
 		var actualWidth:Int, actualHeight:Int;
 		var nativeTexture:TextureBase;
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 
 		if (context == null) throw new MissingContextError();
 

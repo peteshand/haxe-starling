@@ -131,7 +131,7 @@ class SubTexture extends Texture
 		while (texture)
 		{
 			sMatrix.concat(texture.mTransformationMatrix);
-			texture = texture.parent as SubTexture;
+			texture = cast texture.parent;
 		}
 		
 		for (var i:Int=startIndex; i<endIndex; i += 2 + stride)

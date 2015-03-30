@@ -30,7 +30,7 @@ import starling.events.EventDispatcher;
  *  tween.animate("x", object.x + 50);
  *  tween.animate("rotation", deg2rad(45));
  *  tween.fadeTo(0);    // equivalent to 'animate("alpha", 0)'
- *  Starling.juggler.add(tween);</listing> 
+ *  Starling.Juggler.add(tween);</listing> 
  *  
  *  <p>Note that the object is added to a juggler at the end of this sample. That's because a 
  *  tween will only be executed if its "advanceTime" method is executed regularly - the 

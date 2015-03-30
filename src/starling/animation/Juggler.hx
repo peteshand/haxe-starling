@@ -10,6 +10,7 @@
 
 package starling.animation;
 
+import haxe.Constraints.Function;
 import haxe.ds.Vector;
 import starling.events.Event;
 import starling.events.EventDispatcher;
@@ -23,7 +24,7 @@ import starling.events.EventDispatcher;
  *  <p>There is a default juggler available at the Starling class:</p>
  *  
  *  <pre>
- *  var juggler:Juggler = Starling.juggler;
+ *  var juggler:Juggler = Starling.Juggler;
  *  </pre>
  *  
  *  <p>You can create juggler objects yourself, just as well. That way, you can group 

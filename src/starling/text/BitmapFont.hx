@@ -78,7 +78,7 @@ class BitmapFont
 	private var mHelperImage:Image;
 
 	/** Helper objects. */
-	private static var sLines:Array = [];
+	private static var sLines:Array<Dynamic> = [];
 	
 	public var name(get, null):String;
 	public var size(get, null):Float;

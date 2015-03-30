@@ -107,7 +107,7 @@ class TextField extends DisplayObjectContainer
 	private var mAutoScale:Bool;
 	private var mAutoSize:String;
 	private var mKerning:Bool;
-	private var mNativeFilters:Array;
+	private var mNativeFilters:Array<Dynamic>;
 	private var mRequiresRedraw:Bool;
 	private var mIsRenderedText:Bool;
 	private var mIsHtmlText:Bool;
@@ -144,7 +144,7 @@ class TextField extends DisplayObjectContainer
 	public var autoScale(get, set):Bool;
 	public var autoSize(get, set):String;
 	public var batchable(get, set):Bool;
-	public var nativeFilters(get, set):Array;
+	public var nativeFilters(get, set):Array<Dynamic>;
 	public var isHtmlText(get, set):Bool;
 	public static var defaultTextureFormat(get, set):String;
 	private static var bitmapFonts(get, null):Map<String, BitmapData>;
@@ -764,8 +764,8 @@ class TextField extends DisplayObjectContainer
 	/** The native Flash BitmapFilters to apply to this TextField.
 	 *
 	 *  <p>BEWARE: this property is ignored when using bitmap fonts!</p> */
-	public function get_nativeFilters():Array { return mNativeFilters; }
-	public function set_nativeFilters(value:Array) : Void
+	public function get_nativeFilters():Array<Dynamic> { return mNativeFilters; }
+	public function set_nativeFilters(value:Array<Dynamic>) : Void
 	{
 		mNativeFilters = value.concat();
 		mRequiresRedraw = true;

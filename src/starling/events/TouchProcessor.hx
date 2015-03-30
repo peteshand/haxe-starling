@@ -61,7 +61,7 @@ class TouchProcessor
 	
 	/** A vector of arrays with the arguments that were passed to the "enqueue"
 	 *  method (the oldest being at the end of the vector). */
-	private var mQueue:Array<Array>;
+	private var mQueue:Array<Array<Touch>>;
 	
 	/** The list of all currently active touches. */
 	private var mCurrentTouches:Array<Touch>;

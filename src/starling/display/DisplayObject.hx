@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import haxe.Constraints.Function;
 import lime.ui.MouseCursor;
 import openfl.errors.IllegalOperationError;
 import openfl.geom.Matrix;

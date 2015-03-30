@@ -49,7 +49,6 @@ class Quad extends DisplayObject
 	private static var sHelperMatrix3D:Matrix3D = new Matrix3D();
 	
 	public var color(get, set):UInt;
-	public var alpha(null, set):Float;
 	public var tinted(get, null):Bool;
 	public var premultipliedAlpha(get, null):Bool;
 	

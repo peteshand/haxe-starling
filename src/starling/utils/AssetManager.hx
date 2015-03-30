@@ -584,7 +584,7 @@ class AssetManager extends EventDispatcher
 
 		mStarling = Starling.current;
 		
-		if (mStarling == null || mStarling.context == null)
+		if (mStarling == null || mStarling.Context == null)
 			throw new Error("The Starling instance needs to be ready before assets can be loaded.");
 
 		var PROGRESS_PART_ASSETS:Float = 0.9;
@@ -792,7 +792,7 @@ class AssetManager extends EventDispatcher
 				
 				onComplete();
 			}
-			else if (Starling.handleLostContext && mStarling.context.driverInfo == "Disposed")
+			else if (Starling.handleLostContext && mStarling.Context.driverInfo == "Disposed")
 			{
 				log("Context lost while processing assets, retrying ...");
 				setTimeout(process, 1, asset);

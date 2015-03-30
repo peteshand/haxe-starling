@@ -226,7 +226,7 @@ class Starling extends EventDispatcher
 	public var isStarted(get, null):Bool;
 	public var juggler(get, null):Juggler;
 	public var context(get, null):Context3D;
-	public var contextData(get, null):Dictionary;
+	public var contextData(get, null):Map<String, Dynamic>;
 	public var backBufferWidth(get, null):Int;
 	public var backBufferHeight(get, null):Int;
 	public var backBufferPixelsPerPoint(get, null):Int;
@@ -241,7 +241,7 @@ class Starling extends EventDispatcher
 	public var stage3D(get, null):Stage3D;
 	public var nativeStage(get, null):flash.display.Stage;
 	public var root(get, null):DisplayObject;
-	public var rootClass(get, set):Class;
+	public var rootClass(get, set):Class<Dynamic>;
 	public var shareContext(get, set) : Bool;
 	public var profile(get, null):String;
 	public var supportHighResolutions(get, set):Bool;
@@ -249,9 +249,9 @@ class Starling extends EventDispatcher
 	public var contextValid(get, null):Bool;
 	public static var current(get, null):Starling;
 	public static var all(get, null):Array<Starling>;
-	public static var context(get, null):Context3D;
-	public static var juggler(get, null):Juggler;
-	public static var contentScaleFactor(get, null):Float ;
+	public static var Context(get, null):Context3D;
+	public static var Juggler(get, null):Juggler;
+	public static var ContentScaleFactor(get, null):Float ;
 	public static var multitouchEnabled(get, set):Bool ;
 	public static var handleLostContext(get, set):Bool;
 	
@@ -281,7 +281,7 @@ class Starling extends EventDispatcher
 	 *                        profile automatically.</li>
 	 *                    </ul>
 	 */
-	public function new(rootClass:Class, stage:flash.display.Stage, 
+	public function new(rootClass:Class<Dynamic>, stage:flash.display.Stage, 
 							 viewPort:Rectangle=null, stage3D:Stage3D=null,
 							 renderMode:String="auto", profile:Dynamic="baselineConstrained")
 	{
@@ -471,7 +471,7 @@ class Starling extends EventDispatcher
 	{
 		mContext = mStage3D.context3D;
 		mContext.enableErrorChecking = mEnableErrorChecking;
-		contextData[PROGRAM_DATA_NAME] = new Dictionary();
+		contextData[PROGRAM_DATA_NAME] = new Map<String, Dynamic>();
 		
 		trace("[Starling] Initialization complete.");
 		trace("[Starling] Display Driver:", mContext.driverInfo);
@@ -919,10 +919,10 @@ class Starling extends EventDispatcher
 	/** The render context of this instance. */
 	public function get_context():Context3D { return mContext; }
 	
-	/** A dictionary that can be used to save custom data related to the current context. 
+	/** A Map that can be used to save custom data related to the current context. 
 	 *  If you need to share data that is bound to a specific stage3D instance
-	 *  (e.g. textures), use this dictionary instead of creating a static class variable.
-	 *  The Dictionary is actually bound to the stage3D instance, thus it survives a 
+	 *  (e.g. textures), use this Map instead of creating a static class variable.
+	 *  The Map is actually bound to the stage3D instance, thus it survives a 
 	 *  context loss. */
 	public function get_contextData():Map<String, Dynamic>
 	{
@@ -1075,8 +1075,8 @@ class Starling extends EventDispatcher
 	 *  <p>Beware: you cannot change the root class once the root object has been
 	 *  instantiated.</p>
 	 */
-	public function get_rootClass():Class { return mRootClass; }
-	public function set_rootClass(value:Class):Void
+	public function get_rootClass():Class<Dynamic> { return mRootClass; }
+	public function set_rootClass(value:Class<Dynamic>):Void
 	{
 		if (mRootClass != null && mRoot != null)
 			throw new Error("Root class may not change after root has been instantiated");
@@ -1141,13 +1141,13 @@ class Starling extends EventDispatcher
 	public static function get_all():Array<Starling> { return sAll; }
 	
 	/** The render context of the currently active Starling instance. */
-	public static function get_context():Context3D { return sCurrent ? sCurrent.context : null; }
+	public static function get_Context():Context3D { return sCurrent ? sCurrent.context : null; }
 	
 	/** The default juggler of the currently active Starling instance. */
-	public static function get_juggler():Juggler { return sCurrent ? sCurrent.juggler : null; }
+	public static function get_Juggler():Juggler { return sCurrent ? sCurrent.juggler : null; }
 	
 	/** The contentScaleFactor of the currently active Starling instance. */
-	public static function get_contentScaleFactor():Float 
+	public static function get_ContentScaleFactor():Float 
 	{
 		return sCurrent ? sCurrent.contentScaleFactor : 1.0;
 	}

@@ -10,6 +10,7 @@
 
 package starling.textures;
 
+import haxe.Constraints.Function;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display3D.Context3D;
@@ -17,10 +18,8 @@ import openfl.display3D.textures.TextureBase;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
-import openfl.media.Camera;
 import openfl.net.NetStream;
 import openfl.utils.ByteArray;
-import openfl.utils.getQualifiedClassName;
 import starling.utils.StarlingUtils;
 
 import starling.core.RenderSupport;
@@ -51,6 +50,9 @@ class ConcreteTexture extends Texture
 	/** helper object */
 	private static var sOrigin:Point = new Point();
 	
+	public var optimizedForRenderTexture(get, null):Bool;
+	public var onRestore(get, set):Function;
+	
 	/** Creates a ConcreteTexture object from a TextureBase, storing information about size,
 	 *  mip-mapping, and if the channels contain premultiplied alpha values. */
 	public function new(base:TextureBase, format:String, width:Int, height:Int, 
@@ -58,6 +60,7 @@ class ConcreteTexture extends Texture
 									optimizedForRenderTexture:Bool=false,
 									scale:Float=1, repeat:Bool=false)
 	{
+		super();
 		mScale = scale <= 0 ? 1.0 : scale;
 		mBase = base;
 		mFormat = format;
@@ -109,10 +112,9 @@ class ConcreteTexture extends Texture
 			data = potData;
 		}
 		
-		if (mBase is flash.display3D.textures.Texture)
+		if (Std.is(mBase, flash.display3D.textures.Texture))
 		{
-			var potTexture:flash.display3D.textures.Texture = 
-				mBase as flash.display3D.textures.Texture;
+			var potTexture:flash.display3D.textures.Texture = cast mBase;
 			
 			potTexture.uploadFromBitmapData(data);
 			
@@ -158,18 +160,17 @@ class ConcreteTexture extends Texture
 	 *  upload is complete, at which time the callback function will be executed. This is the
 	 *  expected function definition: <code>function(texture:Texture):Void;</code></p>
 	 */
-	public function uploadAtfData(data:ByteArray, offset:Int=0, async:*=null):Void
+	public function uploadAtfData(data:ByteArray, offset:Int=0, async:Dynamic=null):Void
 	{
-		var isAsync:Bool = async is Function || async === true;
-		var potTexture:flash.display3D.textures.Texture = 
-			  mBase as flash.display3D.textures.Texture;
+		var isAsync:Bool = Std.is(async, Function) || async == true;
+		var potTexture:flash.display3D.textures.Texture = cast mBase;
 		
 		if (potTexture == null)
 			throw new Error("This texture type does not support ATF data");
 		
-		if (async is Function)
+		if (Std.is(async, Function))
 		{
-			mTextureReadyCallback = async as Function;
+			mTextureReadyCallback = cast async;
 			mBase.addEventListener(TEXTURE_READY, onTextureReady);
 		}
 		
@@ -182,14 +183,16 @@ class ConcreteTexture extends Texture
 		attachVideo("NetStream", netStream, onComplete);
 	}
 
-	public function attachCamera(camera:Camera, onComplete:Function=null):Void
+	/*public function attachCamera(camera:Camera, onComplete:Function=null):Void
 	{
 		attachVideo("Camera", camera, onComplete);
-	}
+	}*/
 
-	internal function attachVideo(type:String, attachment:Dynamic, onComplete:Function=null):Void
+	/*internal*/
+	function attachVideo(type:String, attachment:Dynamic, onComplete:Function=null):Void
 	{
-		var className:String = getQualifiedClassName(mBase);
+		trace("CHECK");
+		var className:String = Type.getClassName(mBase);
 
 		if (className == "flash.display3D.textures::VideoTexture")
 		{
@@ -227,8 +230,9 @@ class ConcreteTexture extends Texture
 	//starling_internal
 	private function createBase():Void
 	{
-		var context:Context3D = Starling.context;
-		var className:String = getQualifiedClassName(mBase);
+		trace("CHECK");
+		var context:Context3D = Starling.Context;
+		var className:String = Type.getClassName(mBase);
 		
 		if (className == "flash.display3D.textures::Texture")
 			mBase = context.createTexture(mWidth, mHeight, mFormat, 
@@ -249,7 +253,7 @@ class ConcreteTexture extends Texture
 	 *  don't call it from within a render method. */ 
 	public function clear(color:UInt=0x0, alpha:Float=0.0):Void
 	{
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
 		
 		if (mPremultipliedAlpha && alpha < 1.0)
@@ -273,14 +277,14 @@ class ConcreteTexture extends Texture
 	// properties
 	
 	/** Indicates if the base texture was optimized for being used in a render texture. */
-	public function get optimizedForRenderTexture():Bool { return mOptimizedForRenderTexture; }
+	public function get_optimizedForRenderTexture():Bool { return mOptimizedForRenderTexture; }
 	
 	/** If Starling's "handleLostContext" setting is enabled, the function that you provide
 	 *  here will be called after a context loss. On execution, a new base texture will
 	 *  already have been created; however, it will be empty. Call one of the "upload..."
 	 *  methods from within the callbacks to restore the actual texture data. */
-	public function get onRestore():Function { return mOnRestore; }
-	public function set onRestore(value:Function):Void
+	public function get_onRestore():Function { return mOnRestore; }
+	public function set_onRestore(value:Function):Void
 	{
 		Starling.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		
@@ -293,35 +297,35 @@ class ConcreteTexture extends Texture
 	}
 	
 	/** @inheritDoc */
-	public override function get base():TextureBase { return mBase; }
+	public override function get_base():TextureBase { return mBase; }
 	
 	/** @inheritDoc */
-	public override function get root():ConcreteTexture { return this; }
+	public override function get_root():ConcreteTexture { return this; }
 	
 	/** @inheritDoc */
-	public override function get format():String { return mFormat; }
+	public override function get_format():String { return mFormat; }
 	
 	/** @inheritDoc */
-	public override function get width():Float  { return mWidth / mScale;  }
+	public override function get_width():Float  { return mWidth / mScale;  }
 	
 	/** @inheritDoc */
-	public override function get height():Float { return mHeight / mScale; }
+	public override function get_height():Float { return mHeight / mScale; }
 	
 	/** @inheritDoc */
-	public override function get nativeWidth():Float { return mWidth; }
+	public override function get_nativeWidth():Float { return mWidth; }
 	
 	/** @inheritDoc */
-	public override function get nativeHeight():Float { return mHeight; }
+	public override function get_nativeHeight():Float { return mHeight; }
 	
 	/** The scale factor, which influences width and height properties. */
-	public override function get scale():Float { return mScale; }
+	public override function get_scale():Float { return mScale; }
 	
 	/** @inheritDoc */
-	public override function get mipMapping():Bool { return mMipMapping; }
+	public override function get_mipMapping():Bool { return mMipMapping; }
 	
 	/** @inheritDoc */
-	public override function get premultipliedAlpha():Bool { return mPremultipliedAlpha; }
+	public override function get_premultipliedAlpha():Bool { return mPremultipliedAlpha; }
 	
 	/** @inheritDoc */
-	public override function get repeat():Bool { return mRepeat; }
+	public override function get_repeat():Bool { return mRepeat; }
 }
