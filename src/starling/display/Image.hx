@@ -11,6 +11,7 @@
 package starling.display;
 
 import openfl.display.Bitmap;
+import openfl.errors.ArgumentError;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
@@ -53,11 +54,11 @@ class Image extends Quad
 	/** Creates a quad with a texture mapped onto it. */
 	public function new(texture:Texture)
 	{
-		if (texture)
+		if (texture != null)
 		{
 			var frame:Rectangle = texture.frame;
-			var width:Float  = frame ? frame.width  : texture.width;
-			var height:Float = frame ? frame.height : texture.height;
+			var width:Float  = (frame != null) ? frame.width  : texture.width;
+			var height:Float = (frame != null) ? frame.height : texture.height;
 			var pma:Bool = texture.premultipliedAlpha;
 			
 			super(width, height, 0xffffff, pma);
@@ -96,8 +97,8 @@ class Image extends Quad
 	public function readjustSize():Void
 	{
 		var frame:Rectangle = texture.frame;
-		var width:Float  = frame ? frame.width  : texture.width;
-		var height:Float = frame ? frame.height : texture.height;
+		var width:Float  = frame != null ? frame.width  : texture.width;
+		var height:Float = frame != null ? frame.height : texture.height;
 		
 		mVertexData.setPosition(0, 0.0, 0.0);
 		mVertexData.setPosition(1, width, 0.0);
@@ -157,7 +158,7 @@ class Image extends Quad
 	
 	/** The texture that is displayed on the quad. */
 	public function get_texture():Texture { return mTexture; }
-	public function set_texture(value:Texture):Void 
+	public function set_texture(value:Texture):Texture 
 	{ 
 		if (value == null)
 		{
@@ -170,18 +171,20 @@ class Image extends Quad
 			mVertexDataCache.setPremultipliedAlpha(mTexture.premultipliedAlpha, false);
 			onVertexDataChanged();
 		}
+		return value;
 	}
 	
 	/** The smoothing filter that is used for the texture. 
 	*   @default bilinear
 	*   @see starling.textures.TextureSmoothing */ 
 	public function get_smoothing():String { return mSmoothing; }
-	public function set_smoothing(value:String):Void 
+	public function set_smoothing(value:String):String 
 	{
 		if (TextureSmoothing.isValid(value))
 			mSmoothing = value;
 		else
 			throw new ArgumentError("Invalid smoothing mode: " + value);
+		return value;
 	}
 	
 	/** @inheritDoc */

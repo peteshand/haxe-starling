@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.ui.Mouse;
 import openfl.ui.MouseCursor;
@@ -68,6 +69,7 @@ class Button extends DisplayObjectContainer
 	public function new(upState:Texture, text:String="", downState:Texture=null,
 						   overState:Texture=null, disabledState:Texture=null)
 	{
+		super();
 		if (upState == null) throw new ArgumentError("Texture 'upState' cannot be null");
 		
 		mUpState = upState;

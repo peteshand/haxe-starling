@@ -46,6 +46,7 @@ class StatsDisplay extends Sprite
 	/** Creates a new Statistics Box. */
 	public function new()
 	{
+		super();
 		mBackground = new Quad(50, 25, 0x0);
 		mTextField = new TextField(48, 25, "", BitmapFont.MINI, BitmapFont.NATIVE_SIZE, 0xffffff);
 		mTextField.x = 2;
@@ -81,7 +82,7 @@ class StatsDisplay extends Sprite
 		if (mTotalTime > UPDATE_INTERVAL)
 		{
 			update();
-			mFrameCount = mTotalTime = 0;
+			mFrameCount = cast mTotalTime = cast 0;
 		}
 	}
 	
@@ -91,8 +92,8 @@ class StatsDisplay extends Sprite
 		mFps = mTotalTime > 0 ? mFrameCount / mTotalTime : 0;
 		mMemory = System.totalMemory * 0.000000954; // 1.0 / (1024*1024) to convert to MB
 		
-		mTextField.text = "FPS: " + mFps.toFixed(mFps < 100 ? 1 : 0) + 
-						"\nMEM: " + mMemory.toFixed(mMemory < 100 ? 1 : 0) +
+		mTextField.text = "FPS: " + Math.floor(mFps) + 
+						"\nMEM: " + Math.floor(mMemory) +
 						"\nDRW: " + (mTotalTime > 0 ? mDrawCount-2 : mDrawCount); // ignore self 
 	}
 	
@@ -108,13 +109,25 @@ class StatsDisplay extends Sprite
 	
 	/** The number of Stage3D draw calls per second. */
 	public function get_drawCount():Int { return mDrawCount; }
-	public function set_drawCount(value:Int):Void { mDrawCount = value; }
+	public function set_drawCount(value:Int):Int
+	{
+		mDrawCount = value;
+		return value;
+	}
 	
 	/** The current frames per second (updated twice per second). */
 	public function get_fps():Float { return mFps; }
-	public function set_fps(value:Float):Void { mFps = value; }
+	public function set_fps(value:Float):Float
+	{
+		mFps = value;
+		return value;
+	}
 	
 	/** The currently required system memory in MB. */
 	public function get_memory():Float { return mMemory; }
-	public function set_memory(value:Float):Void { mMemory = value; }
+	public function set_memory(value:Float):Float
+	{
+		mMemory = value;
+		return value;
+	}
 }

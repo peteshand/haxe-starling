@@ -13,14 +13,15 @@ package starling.textures;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display3D.Context3D;
+import openfl.display3D.Context3DTextureFormat;
+import openfl.display3D.textures.RectangleTexture;
 import openfl.display3D.textures.TextureBase;
+import openfl.errors.Error;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
-import openfl.media.Camera;
 import openfl.net.NetStream;
 import openfl.utils.ByteArray;
-import openfl.utils.getQualifiedClassName;
 import starling.utils.StarlingUtils;
 
 import starling.core.RenderSupport;
@@ -36,7 +37,7 @@ class ConcreteTexture extends Texture
 	private static var TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
 	
 	private var mBase:TextureBase;
-	private var mFormat:String;
+	private var mFormat:Context3DTextureFormat;
 	private var mWidth:Int;
 	private var mHeight:Int;
 	private var mMipMapping:Bool;
@@ -44,20 +45,24 @@ class ConcreteTexture extends Texture
 	private var mOptimizedForRenderTexture:Bool;
 	private var mScale:Float;
 	private var mRepeat:Bool;
-	private var mOnRestore:Function;
+	private var mOnRestore:ConcreteTextureFunction;
 	private var mDataUploaded:Bool;
-	private var mTextureReadyCallback:Function;
+	private var mTextureReadyCallback:ConcreteTextureFunction;
 	
 	/** helper object */
 	private static var sOrigin:Point = new Point();
 	
+	public var optimizedForRenderTexture(get, null):Bool;
+	public var onRestore(get, set):ConcreteTextureFunction;
+	
 	/** Creates a ConcreteTexture object from a TextureBase, storing information about size,
 	 *  mip-mapping, and if the channels contain premultiplied alpha values. */
-	public function new(base:TextureBase, format:String, width:Int, height:Int, 
+	public function new(base:TextureBase, format:Context3DTextureFormat, width:Int, height:Int, 
 									mipMapping:Bool, premultipliedAlpha:Bool,
 									optimizedForRenderTexture:Bool=false,
 									scale:Float=1, repeat:Bool=false)
 	{
+		super();
 		mScale = scale <= 0 ? 1.0 : scale;
 		mBase = base;
 		mFormat = format;
@@ -75,7 +80,7 @@ class ConcreteTexture extends Texture
 	/** Disposes the TextureBase object. */
 	public override function dispose():Void
 	{
-		if (mBase)
+		if (mBase != null)
 		{
 			mBase.removeEventListener(TEXTURE_READY, onTextureReady);
 			mBase.dispose();
@@ -100,7 +105,7 @@ class ConcreteTexture extends Texture
 	 *  cropped or filled up with transparent pixels */
 	public function uploadBitmapData(data:BitmapData):Void
 	{
-		var potData:BitmapData;
+		var potData:BitmapData = null;
 		
 		if (data.width != mWidth || data.height != mHeight)
 		{
@@ -109,10 +114,9 @@ class ConcreteTexture extends Texture
 			data = potData;
 		}
 		
-		if (mBase is flash.display3D.textures.Texture)
+		if (Std.is(mBase, flash.display3D.textures.Texture))
 		{
-			var potTexture:flash.display3D.textures.Texture = 
-				mBase as flash.display3D.textures.Texture;
+			var potTexture:flash.display3D.textures.Texture = cast mBase;
 			
 			potTexture.uploadFromBitmapData(data);
 			
@@ -139,12 +143,26 @@ class ConcreteTexture extends Texture
 				canvas.dispose();
 			}
 		}
-		else // if (mBase is RectangleTexture)
+		else if (Std.is(mBase, RectangleTexture))
 		{
-			mBase["uploadFromBitmapData"](data);
+			trace("CHECK");
+			var rectangleTexture:RectangleTexture = cast mBase;
+			if (rectangleTexture != null) rectangleTexture.uploadFromBitmapData(data);
+			
+			/*var hasUploadBmd:Bool = Reflect.hasField(mBase, "uploadFromBitmapData");
+			if (hasUploadBmd) {
+				var func = Reflect.getProperty(mBase, "uploadFromBitmapData");
+				if (Reflect.isFunction(func)){
+					Reflect.callMethod(mBase, "uploadFromBitmapData", [data]);
+				}
+			}*/
+			//mBase["uploadFromBitmapData"](data);
+		}
+		else {
+			trace("FIX");
 		}
 		
-		if (potData) potData.dispose();
+		if (potData != null) potData.dispose();
 		mDataUploaded = true;
 	}
 	
@@ -158,18 +176,17 @@ class ConcreteTexture extends Texture
 	 *  upload is complete, at which time the callback function will be executed. This is the
 	 *  expected function definition: <code>function(texture:Texture):Void;</code></p>
 	 */
-	public function uploadAtfData(data:ByteArray, offset:Int=0, async:*=null):Void
+	public function uploadAtfData(data:ByteArray, offset:Int=0, async:Dynamic=null):Void
 	{
-		var isAsync:Bool = async is Function || async === true;
-		var potTexture:flash.display3D.textures.Texture = 
-			  mBase as flash.display3D.textures.Texture;
+		var isAsync:Bool = Reflect.isFunction(async) || async == true;
+		var potTexture:flash.display3D.textures.Texture = cast mBase;
 		
 		if (potTexture == null)
 			throw new Error("This texture type does not support ATF data");
 		
-		if (async is Function)
+		if (Reflect.isFunction(async))
 		{
-			mTextureReadyCallback = async as Function;
+			mTextureReadyCallback = cast async;
 			mBase.addEventListener(TEXTURE_READY, onTextureReady);
 		}
 		
@@ -177,25 +194,33 @@ class ConcreteTexture extends Texture
 		mDataUploaded = true;
 	}
 
-	public function attachNetStream(netStream:NetStream, onComplete:Function=null):Void
+	public function attachNetStream(netStream:NetStream, onComplete:ConcreteTextureFunction=null):Void
 	{
 		attachVideo("NetStream", netStream, onComplete);
 	}
 
-	public function attachCamera(camera:Camera, onComplete:Function=null):Void
+	/*public function attachCamera(camera:Camera, onComplete:ConcreteTextureFunction=null):Void
 	{
 		attachVideo("Camera", camera, onComplete);
-	}
+	}*/
 
-	internal function attachVideo(type:String, attachment:Dynamic, onComplete:Function=null):Void
+	/*internal*/
+	/*@:allow(Texture)*/
+	public function attachVideo(type:String, attachment:Dynamic, onComplete:ConcreteTextureFunction=null):Void
 	{
-		var className:String = getQualifiedClassName(mBase);
-
-		if (className == "flash.display3D.textures::VideoTexture")
+		var name:String = Type.getClassName(Type.getClass(mBase));
+		trace("CHECK name = " + name);
+		if (name == "flash.display3D.textures.VideoTexture")
 		{
 			mDataUploaded = true;
 			mTextureReadyCallback = onComplete;
-			mBase["attach" + type](attachment);
+			
+			trace("CHECK");
+			if (Reflect.hasField(mBase, "attach" + type)) {
+				Reflect.callMethod(mBase, "attach" + type, [attachment]);
+			}
+			//mBase["attach" + type](attachment);
+			
 			mBase.addEventListener(TEXTURE_READY, onTextureReady);
 		}
 		else throw new Error("This texture type does not support " + type + " data");
@@ -204,7 +229,7 @@ class ConcreteTexture extends Texture
 	private function onTextureReady(event:Dynamic):Void
 	{
 		mBase.removeEventListener(TEXTURE_READY, onTextureReady);
-		StarlingUtils.execute(mTextureReadyCallback, this);
+		StarlingUtils.execute(mTextureReadyCallback, [this]);
 		mTextureReadyCallback = null;
 	}
 	
@@ -227,19 +252,19 @@ class ConcreteTexture extends Texture
 	//starling_internal
 	private function createBase():Void
 	{
-		var context:Context3D = Starling.context;
-		var className:String = getQualifiedClassName(mBase);
-		
-		if (className == "flash.display3D.textures::Texture")
+		var context:Context3D = Starling.Context;
+		var name:String = Type.getClassName(Type.getClass(mBase));
+		trace("CHECK name = " + name);
+		if (name == "flash.display3D.textures.Texture")
 			mBase = context.createTexture(mWidth, mHeight, mFormat, 
 										  mOptimizedForRenderTexture);
-		else if (className == "flash.display3D.textures::RectangleTexture")
-			mBase = context["createRectangleTexture"](mWidth, mHeight, mFormat,
+		else if (name == "flash.display3D.textures.RectangleTexture")
+			mBase = context.createRectangleTexture(mWidth, mHeight, mFormat,
 													  mOptimizedForRenderTexture);
-		else if (className == "flash.display3D.textures::VideoTexture")
-			mBase = context["createVideoTexture"]();
+		/*else if (name == "flash.display3D.textures.VideoTexture")
+			mBase = context.createVideoTexture();*/
 		else
-			throw new NotSupportedError("Texture type not supported: " + className);
+			throw new NotSupportedError("Texture type not supported: " + name);
 
 		mDataUploaded = false;
 	}
@@ -249,13 +274,12 @@ class ConcreteTexture extends Texture
 	 *  don't call it from within a render method. */ 
 	public function clear(color:UInt=0x0, alpha:Float=0.0):Void
 	{
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
 		
-		if (mPremultipliedAlpha && alpha < 1.0)
-			color = Color.rgb(Color.getRed(color)   * alpha,
-							  Color.getGreen(color) * alpha,
-							  Color.getBlue(color)  * alpha);
+		if (mPremultipliedAlpha && alpha < 1.0) {
+			color = Color.rgb(cast (Color.getRed(color) * alpha), cast (Color.getGreen(color) * alpha), cast (Color.getBlue(color) * alpha));
+		}
 		
 		context.setRenderToTexture(mBase);
 		
@@ -263,7 +287,7 @@ class ConcreteTexture extends Texture
 		// FP 11.8 plugin/projector: calling clear on a compressed texture doesn't work there
 		// (while it *does* work on iOS + Android).
 		
-		try { RenderSupport.clear(color, alpha); }
+		try { RenderSupport.Clear(color, alpha); }
 		catch (e:Error) {}
 		
 		context.setRenderToBackBuffer();
@@ -273,14 +297,14 @@ class ConcreteTexture extends Texture
 	// properties
 	
 	/** Indicates if the base texture was optimized for being used in a render texture. */
-	public function get optimizedForRenderTexture():Bool { return mOptimizedForRenderTexture; }
+	public function get_optimizedForRenderTexture():Bool { return mOptimizedForRenderTexture; }
 	
 	/** If Starling's "handleLostContext" setting is enabled, the function that you provide
 	 *  here will be called after a context loss. On execution, a new base texture will
 	 *  already have been created; however, it will be empty. Call one of the "upload..."
 	 *  methods from within the callbacks to restore the actual texture data. */
-	public function get onRestore():Function { return mOnRestore; }
-	public function set onRestore(value:Function):Void
+	public function get_onRestore():ConcreteTextureFunction { return mOnRestore; }
+	public function set_onRestore(value:ConcreteTextureFunction):ConcreteTextureFunction
 	{
 		Starling.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		
@@ -290,38 +314,41 @@ class ConcreteTexture extends Texture
 			Starling.current.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		}
 		else mOnRestore = null;
+		return value;
 	}
 	
 	/** @inheritDoc */
-	public override function get base():TextureBase { return mBase; }
+	public override function get_base():TextureBase { return mBase; }
 	
 	/** @inheritDoc */
-	public override function get root():ConcreteTexture { return this; }
+	public override function get_root():ConcreteTexture { return this; }
 	
 	/** @inheritDoc */
-	public override function get format():String { return mFormat; }
+	public override function get_format():Context3DTextureFormat { return mFormat; }
 	
 	/** @inheritDoc */
-	public override function get width():Float  { return mWidth / mScale;  }
+	public override function get_width():Float  { return mWidth / mScale;  }
 	
 	/** @inheritDoc */
-	public override function get height():Float { return mHeight / mScale; }
+	public override function get_height():Float { return mHeight / mScale; }
 	
 	/** @inheritDoc */
-	public override function get nativeWidth():Float { return mWidth; }
+	public override function get_nativeWidth():Float { return mWidth; }
 	
 	/** @inheritDoc */
-	public override function get nativeHeight():Float { return mHeight; }
+	public override function get_nativeHeight():Float { return mHeight; }
 	
 	/** The scale factor, which influences width and height properties. */
-	public override function get scale():Float { return mScale; }
+	public override function get_scale():Float { return mScale; }
 	
 	/** @inheritDoc */
-	public override function get mipMapping():Bool { return mMipMapping; }
+	public override function get_mipMapping():Bool { return mMipMapping; }
 	
 	/** @inheritDoc */
-	public override function get premultipliedAlpha():Bool { return mPremultipliedAlpha; }
+	public override function get_premultipliedAlpha():Bool { return mPremultipliedAlpha; }
 	
 	/** @inheritDoc */
-	public override function get repeat():Bool { return mRepeat; }
+	public override function get_repeat():Bool { return mRepeat; }
 }
+
+typedef ConcreteTextureFunction = Dynamic;

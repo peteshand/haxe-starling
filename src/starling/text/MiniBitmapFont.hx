@@ -23,11 +23,12 @@ import starling.textures.Texture;
  *  <p>The font is based on "uni05_53.ttf" from Craig Kroeger (http://www.miniml.com) and was
  *  converted to a Bitmap Font with "GlyphDesigner" from 71squared (http://www.71squared.com).
  *  </p> */
-internal class MiniBitmapFont
+/*internal*/
+class MiniBitmapFont
 {
 	private static var BITMAP_WIDTH:Int = 128;
 	private static var BITMAP_HEIGHT:Int = 64;
-	private static var BITMAP_DATA:Array = [ 
+	private static var BITMAP_DATA:Array<Float> = [ 
 		2027613533, 3413039936,  202148514, 2266925598, 4206886452, 4286853117,    2034947, 
 		3202703399,  352977282, 2957757964, 3113652880, 2158068882, 1468709156, 2268063717, 
 		2779310143, 2101025806, 3416509055, 4215794539, 3602168838, 1038056207, 1932393374, 
@@ -75,7 +76,7 @@ internal class MiniBitmapFont
 		1174119799,  787274608
 	];
 	
-	private static var XML_DATA:Xml = <font>
+	private static var XML_DATA:Xml = null;/*<font>
 	  <info face="mini" size="8" bold="0" italic="0" smooth="0"/>
 	  <common lineHeight="8" base="7" scaleW="128" scaleH="64" pages="1" packed="0"/>
 	  <chars count="191">
@@ -271,9 +272,12 @@ internal class MiniBitmapFont
 		<char id="183" x="99" y="51" width="1" height="1" xoffset="0" yoffset="4" xadvance="2"/>
 		<char id="32" x="6" y="56" width="0" height="0" xoffset="0" yoffset="127" xadvance="3"/>
 	  </chars>
-	</font>;
+	</font>;*/
 	
-	public static function get texture():Texture
+	public static var texture(get, null):Texture;
+	public static var xml(get, null):Xml;
+	
+	public static function get_texture():Texture
 	{
 		var bitmapData:BitmapData = getBitmapData();
 		var texture:Texture = Texture.fromBitmapData(bitmapData, false);
@@ -295,10 +299,10 @@ internal class MiniBitmapFont
 	{
 		var bmpData:BitmapData = new BitmapData(BITMAP_WIDTH, BITMAP_HEIGHT);
 		var bmpBytes:ByteArray = new ByteArray();
-		var numBytes:Int = BITMAP_DATA.length;
+		var numBytes:Int = MiniBitmapFont.BITMAP_DATA.length;
 		
-		for (var i:Int=0; i<numBytes; ++i)
-			bmpBytes.writeUnsignedInt(BITMAP_DATA[i]);
+		for (i in 0...numBytes)
+			bmpBytes.writeUnsignedInt(cast MiniBitmapFont.BITMAP_DATA[i]);
 		
 		bmpBytes.uncompress();
 		bmpData.setPixels(new Rectangle(0, 0, BITMAP_WIDTH, BITMAP_HEIGHT), bmpBytes);
@@ -307,5 +311,5 @@ internal class MiniBitmapFont
 		return bmpData;
 	}
 	
-	public static function get xml():Xml { return XML_DATA; }
+	public static function get_xml():Xml { return MiniBitmapFont.XML_DATA; }
 }

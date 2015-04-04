@@ -39,8 +39,8 @@ class ResizeEvent extends Event
 	}
 	
 	/** The updated width of the player. */
-	public function get_width():Int { return (cast(data, Point)).x; }
+	public function get_width():Int { return cast (cast(data, Point)).x; }
 	
 	/** The updated height of the player. */
-	public function get_height():Int { return (cast(data, Point)).y; }
+	public function get_height():Int { return cast (cast(data, Point)).y; }
 }

@@ -26,7 +26,7 @@ class BitmapChar
 	private var mXOffset:Float;
 	private var mYOffset:Float;
 	private var mXAdvance:Float;
-	private var mKernings:Dictionary;
+	private var mKernings:Map<Int, Float>;
 	
 	public var charID(get, null):Int;
 	public var xOffset(get, null):Float;
@@ -52,7 +52,7 @@ class BitmapChar
 	public function addKerning(charID:Int, amount:Float):Void
 	{
 		if (mKernings == null)
-			mKernings = new Dictionary();
+			mKernings = new Map<Int, Float>();
 		
 		mKernings[charID] = amount;
 	}
@@ -60,7 +60,7 @@ class BitmapChar
 	/** Retrieve kerning information relative to the given character ID. */
 	public function getKerning(charID:Int):Float
 	{
-		if (mKernings == null || mKernings[charID] == undefined) return 0.0;
+		if (mKernings == null || mKernings[charID] == null) return 0.0;
 		else return mKernings[charID];
 	}
 	

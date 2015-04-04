@@ -20,17 +20,28 @@ import starling.display.Sprite;
 import starling.textures.Texture;
 
 /** The TouchMarker is used internally to mark touches created through "simulateMultitouch". */
-internal class TouchMarker extends Sprite
+/*internal*/
+class TouchMarker extends Sprite
 {
 	private var mCenter:Point;
 	private var mTexture:Texture;
 	
+	private var realMarker(get, null):Image;
+	private var mockMarker(get, null):Image;
+	
+	public var realX(get, null):Float;
+	public var realY(get, null):Float;
+	public var mockX(get, null):Float;
+	public var mockY(get, null):Float;
+	
 	public function new()
 	{
+		super();
+		
 		mCenter = new Point();
 		mTexture = createTexture();
 		
-		for (var i:Int=0; i<2; ++i)
+		for (i in 0...2)
 		{
 			var marker:Image = new Image(mTexture);
 			marker.pivotX = mTexture.width / 2;
@@ -69,10 +80,10 @@ internal class TouchMarker extends Sprite
 	
 	private function createTexture():Texture
 	{
-		var scale:Float = Starling.contentScaleFactor;
+		var scale:Float = Starling.ContentScaleFactor;
 		var radius:Float = 12 * scale;
-		var width:Int = 32 * scale;
-		var height:Int = 32 * scale;
+		var width:Int = cast (32 * scale);
+		var height:Int = cast (32 * scale);
 		var thickness:Float = 1.5 * scale;
 		var shape:Shape = new Shape();
 		
@@ -92,12 +103,12 @@ internal class TouchMarker extends Sprite
 		return Texture.fromBitmapData(bmpData, false, false, scale);
 	}
 	
-	private function get realMarker():Image { return getChildAt(0) as Image; }
-	private function get mockMarker():Image { return getChildAt(1) as Image; }
+	private function get_realMarker():Image { return cast getChildAt(0); }
+	private function get_mockMarker():Image { return cast getChildAt(1); }
 	
-	public function get realX():Float { return realMarker.x; }
-	public function get realY():Float { return realMarker.y; }
+	public function get_realX():Float { return realMarker.x; }
+	public function get_realY():Float { return realMarker.y; }
 	
-	public function get mockX():Float { return mockMarker.x; }
-	public function get mockY():Float { return mockMarker.y; }
+	public function get_mockX():Float { return mockMarker.x; }
+	public function get_mockY():Float { return mockMarker.y; }
 }
