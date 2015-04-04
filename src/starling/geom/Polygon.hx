@@ -532,7 +532,7 @@ class Ellipse extends ImmutablePolygon
 		if (numSides < 0) numSides = Math.PI * (mRadiusX + mRadiusY) / 4.0;
 		if (numSides < 6) numSides = 6;
 
-		var vertices:Array<Float> = [];
+		var vertices = new Array<Float>();
 		var angleDelta:Float = 2 * Math.PI / numSides;
 		var angle:Float = 0;
 

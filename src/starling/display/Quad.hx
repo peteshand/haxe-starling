@@ -155,22 +155,24 @@ class Quad extends DisplayObject
 	}
 	
 	/** Sets the colors of all vertices to a certain value. */
-	public function set_color(value:UInt):Void 
+	public function set_color(value:UInt):UInt 
 	{
 		mVertexData.setUniformColor(value);
 		onVertexDataChanged();
 		
 		if (value != 0xffffff || alpha != 1.0) mTinted = true;
 		else mTinted = mVertexData.tinted;
+		return value;
 	}
 	
 	/** @inheritDoc **/
-	public override function set_alpha(value:Float):Void
+	public override function set_alpha(value:Float):Float
 	{
 		super.alpha = value;
 		
 		if (value < 1.0) mTinted = true;
 		else mTinted = mVertexData.tinted;
+		return value;
 	}
 	
 	/** Copies the raw vertex data to a VertexData instance. */

@@ -50,20 +50,20 @@ class Transitions
 	public static var EASE_IN_OUT_BOUNCE:String = "easeInOutBounce";
 	public static var EASE_OUT_IN_BOUNCE:String = "easeOutInBounce";
 	
-	private static var sTransitions:Dictionary;
+	private static var sTransitions:Map<String,TFunction>;
 	
 	/** @private */
 	public function new() { throw new AbstractClassError(); }
 	
 	/** Returns the transition function that was registered under a certain name. */ 
-	public static function getTransition(name:String):Function
+	public static function getTransition(name:String):TFunction
 	{
 		if (sTransitions == null) registerDefaults();
 		return sTransitions[name];
 	}
 	
 	/** Registers a new transition function under a certain name. */
-	public static function register(name:String, func:Function):Void
+	public static function register(name:String, func:TFunction):Void
 	{
 		if (sTransitions == null) registerDefaults();
 		sTransitions[name] = func;
@@ -71,7 +71,7 @@ class Transitions
 	
 	private static function registerDefaults():Void
 	{
-		sTransitions = new Dictionary();
+		sTransitions = new Map<String,TFunction>();
 		
 		register(LINEAR, linear);
 		register(EASE_IN, easeIn);
@@ -224,9 +224,14 @@ class Transitions
 		return easeCombined(easeOutBounce, easeInBounce, ratio);
 	}
 	
-	private static function easeCombined(startFunc:Function, endFunc:Function, ratio:Float):Float
+	private static function easeCombined(startFunc:TFunction, endFunc:TFunction, ratio:Float):Float
 	{
-		if (ratio < 0.5) return 0.5 * startFunc(ratio*2.0);
-		else             return 0.5 * endFunc((ratio-0.5)*2.0) + 0.5;
+		var dStartFunc:Dynamic = cast startFunc;
+		var dEndFunc:Dynamic = cast endFunc;
+		
+		if (ratio < 0.5) return 0.5 * dStartFunc(ratio*2.0);
+		return 0.5 * dEndFunc((ratio-0.5)*2.0) + 0.5;
 	}
 }
+
+typedef TFunction = Dynamic -> Void;

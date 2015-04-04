@@ -11,6 +11,7 @@
 package starling.utils;
 
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
@@ -74,7 +75,7 @@ class VertexData
 	/** Create a new VertexData object with a specified number of vertices. */
 	public function new(numVertices:Int, premultipliedAlpha:Bool=false)
 	{
-		mRawData = [];
+		mRawData = new Vector<Float>();
 		mPremultipliedAlpha = premultipliedAlpha;
 		this.numVertices = numVertices;
 	}
@@ -447,6 +448,8 @@ class VertexData
 		var position:Point = new Point();
 		var texCoords:Point = new Point();
 		
+		cast (null, Int);
+		
 		for (i in 0...numVertices)
 		{
 			getPosition(i, position);
@@ -460,7 +463,7 @@ class VertexData
 				"u="   + texCoords.x.toFixed(4)   + ", " +
 				"v="   + texCoords.y.toFixed(4)   + "]"  +
 				(i == numVertices - 1 ? "\n" : ",\n");*/
-				
+			
 			result += "  [Vertex " + i + ": " +
 				"x="   + Math.floor(position.x)    + ", " +
 				"y="   + Math.floor(position.y)    + ", " +

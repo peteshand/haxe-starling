@@ -9,6 +9,7 @@
 // =================================================================================================
 
 package starling.events;
+import openfl.ui.KeyLocation;
 
 /** A KeyboardEvent is dispatched in response to user input through a keyboard.
  * 
@@ -44,9 +45,7 @@ class KeyboardEvent extends Event
 	public var shiftKey(get, null):Bool;
 	
 	/** Creates a new KeyboardEvent. */
-	public function new(type:String, charCode:UInt=0, keyCode:UInt=0, 
-								  keyLocation:UInt=0, ctrlKey:Bool=false, 
-								  altKey:Bool=false, shiftKey:Bool=false)
+	public function new(type:String, charCode:UInt=0, keyCode:UInt=0, keyLocation:UInt=0, ctrlKey:Bool=false, altKey:Bool=false, shiftKey:Bool=false)
 	{
 		super(type, false, keyCode);
 		mCharCode = charCode;

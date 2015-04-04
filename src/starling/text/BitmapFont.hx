@@ -13,6 +13,7 @@ package starling.text;
 import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.utils.Dictionary;
+import openfl.Vector;
 import starling.utils.StarlingUtils;
 
 import starling.text.BitmapChar;
@@ -69,7 +70,7 @@ class BitmapFont
 	private static var CHAR_CARRIAGE_RETURN:Int = 13;
 	
 	private var mTexture:Texture;
-	private var mChars:Dictionary;
+	private var mChars:Map<Int, BitmapChar>;
 	private var mName:String;
 	private var mSize:Float;
 	private var mLineHeight:Float;
@@ -79,7 +80,7 @@ class BitmapFont
 	private var mHelperImage:Image;
 
 	/** Helper objects. */
-	private static var sLines:Array<Dynamic> = [];
+	private static var sLines = new Vector<Dynamic>();
 	
 	public var name(get, null):String;
 	public var size(get, null):Float;
@@ -109,7 +110,7 @@ class BitmapFont
 		mLineHeight = mSize = mBaseline = 14;
 		mOffsetX = mOffsetY = 0.0;
 		mTexture = texture;
-		mChars = new Dictionary();
+		mChars = new Map<Int, BitmapChar>();
 		mHelperImage = new Image(texture);
 		
 		parseFontXml(fontXml);
@@ -118,7 +119,7 @@ class BitmapFont
 	/** Disposes the texture of the bitmap font! */
 	public function dispose():Void
 	{
-		if (mTexture)
+		if (mTexture != null)
 			mTexture.dispose();
 	}
 	
@@ -186,10 +187,10 @@ class BitmapFont
 	/** Returns a vector containing all the character IDs that are contained in this font. */
 	public function getCharIDs(result:Array<Int>=null):Array<Int>
 	{
-		if (result == null) result = [];
+		if (result == null) result = new Array<Int>();
 
 		for(key in mChars)
-			result[result.length] = Int(key);
+			result[result.length] = cast(key);
 
 		return result;
 	}
@@ -219,10 +220,13 @@ class BitmapFont
 	/** Creates a sprite that contains a certain text, made up by one image per char. */
 	public function createSprite(width:Float, height:Float, text:String,
 								 fontSize:Float=-1, color:UInt=0xffffff, 
-								 hAlign:String="center", vAlign:String="center",      
+								 hAlign:HAlign=null, vAlign:VAlign=null,      
 								 autoScale:Bool=true, 
 								 kerning:Bool=true):Sprite
 	{
+		if (hAlign == null) hAlign = HAlign.CENTER;
+		if (vAlign == null) vAlign = VAlign.CENTER;
+		
 		var charLocations:Array<CharLocation> = arrangeChars(width, height, text, fontSize, 
 															   hAlign, vAlign, autoScale, kerning);
 		var numChars:Int = charLocations.length;
@@ -246,10 +250,13 @@ class BitmapFont
 	/** Draws text into a QuadBatch. */
 	public function fillQuadBatch(quadBatch:QuadBatch, width:Float, height:Float, text:String,
 								  fontSize:Float=-1, color:UInt=0xffffff, 
-								  hAlign:String="center", vAlign:String="center",      
+								  hAlign:HAlign=null, vAlign:VAlign=null,      
 								  autoScale:Bool=true, 
 								  kerning:Bool=true):Void
 	{
+		if (hAlign == null) hAlign = HAlign.CENTER;
+		if (vAlign == null) vAlign = VAlign.CENTER;
+		
 		var charLocations:Array<CharLocation> = arrangeChars(width, height, text, fontSize, 
 															   hAlign, vAlign, autoScale, kerning);
 		var numChars:Int = charLocations.length;
@@ -272,18 +279,24 @@ class BitmapFont
 	/** Arranges the characters of a text inside a rectangle, adhering to the given settings. 
 	 *  Returns a Vector of CharLocations. */
 	private function arrangeChars(width:Float, height:Float, text:String, fontSize:Float=-1,
-								  hAlign:String="center", vAlign:String="center",
+								  hAlign:HAlign=null, vAlign:VAlign=null,
 								  autoScale:Bool=true, kerning:Bool=true):Array<CharLocation>
 	{
+		if (hAlign == null) hAlign = HAlign.CENTER;
+		if (vAlign == null) vAlign = VAlign.CENTER;
+		
 		if (text == null || text.length == 0) return CharLocation.vectorFromPool();
 		if (fontSize < 0) fontSize *= -mSize;
 		
 		var finished:Bool = false;
 		var charLocation:CharLocation;
 		var numChars:Int;
-		var containerWidth:Float;
-		var containerHeight:Float;
-		var scale:Float;
+		var containerWidth:Float = 0;
+		var containerHeight:Float = 0;
+		var scale:Float = 1;
+		
+		var currentX:Float = 0;
+		var currentY:Float = 0;
 		
 		while (!finished)
 		{
@@ -296,13 +309,17 @@ class BitmapFont
 			{
 				var lastWhiteSpace:Int = -1;
 				var lastCharID:Int = -1;
-				var currentX:Float = 0;
-				var currentY:Float = 0;
+				currentX = 0;
+				currentY = 0;
 				var currentLine:Array<CharLocation> = CharLocation.vectorFromPool();
 				
 				numChars = text.length;
-				for (i in 0...numChars)
+				
+				//for (i in 0...numChars)
+				for (k in 0...numChars) 
 				{
+					var i = numChars - 1 - k;
+					
 					var lineFull:Bool = false;
 					var charID:Int = text.charCodeAt(i);
 					var char:BitmapChar = getChar(charID);
@@ -346,7 +363,7 @@ class BitmapFont
 							if (currentLine.length == 0)
 								break;
 							
-							i -= numCharsToRemove;
+							//i -= numCharsToRemove;
 							lineFull = true;
 						}
 					}
@@ -390,8 +407,8 @@ class BitmapFont
 		var bottom:Float = currentY + mLineHeight;
 		var yOffset:Int = 0;
 		
-		if (vAlign == VAlign.BOTTOM)      yOffset =  containerHeight - bottom;
-		else if (vAlign == VAlign.CENTER) yOffset = (containerHeight - bottom) / 2;
+		if (vAlign == VAlign.BOTTOM)      yOffset =  cast (containerHeight - bottom);
+		else if (vAlign == VAlign.CENTER) yOffset = cast ((containerHeight - bottom) / 2);
 		
 		for (lineID in 0...numLines)
 		{
@@ -405,8 +422,8 @@ class BitmapFont
 			var right:Float = lastLocation.x - lastLocation.char.xOffset 
 											  + lastLocation.char.xAdvance;
 			
-			if (hAlign == HAlign.RIGHT)       xOffset =  containerWidth - right;
-			else if (hAlign == HAlign.CENTER) xOffset = (containerWidth - right) / 2;
+			if (hAlign == HAlign.RIGHT)       xOffset = cast (containerWidth - right);
+			else if (hAlign == HAlign.CENTER) xOffset = cast ((containerWidth - right) / 2);
 			
 			for (c in 0...numChars)
 			{
@@ -431,26 +448,46 @@ class BitmapFont
 	
 	/** The height of one line in points. */
 	public function get_lineHeight():Float { return mLineHeight; }
-	public function set_lineHeight(value:Float):Void { mLineHeight = value; }
+	public function set_lineHeight(value:Float):Float
+	{
+		mLineHeight = value;
+		return value;
+	}
 	
 	/** The smoothing filter that is used for the texture. */ 
 	public function get_smoothing():String { return mHelperImage.smoothing; }
-	public function set_smoothing(value:String):Void { mHelperImage.smoothing = value; } 
+	public function set_smoothing(value:String):String
+	{
+		mHelperImage.smoothing = value;
+		return value; 
+	}
 	
 	/** The baseline of the font. This property does not affect text rendering;
 	 *  it's just an information that may be useful for exact text placement. */
 	public function get_baseline():Float { return mBaseline; }
-	public function set_baseline(value:Float):Void { mBaseline = value; }
+	public function set_baseline(value:Float):Float
+	{
+		mBaseline = value;
+		return value;
+	}
 	
 	/** An offset that moves any generated text along the x-axis (in points).
 	 *  Useful to make up for incorrect font data. @default 0. */ 
 	public function get_offsetX():Float { return mOffsetX; }
-	public function set_offsetX(value:Float):Void { mOffsetX = value; }
+	public function set_offsetX(value:Float):Float
+	{
+		mOffsetX = value;
+		return value;
+	}
 	
 	/** An offset that moves any generated text along the y-axis (in points).
 	 *  Useful to make up for incorrect font data. @default 0. */
 	public function get_offsetY():Float { return mOffsetY; }
-	public function set_offsetY(value:Float):Void { mOffsetY = value; }
+	public function set_offsetY(value:Float):Float
+	{
+		mOffsetY = value;
+		return value;
+	}
 
 	/** The underlying texture that contains all the chars. */
 	public function get_texture():Texture { return mTexture; }
@@ -478,11 +515,11 @@ class CharLocation
 
 	// pooling
 
-	private static var sInstancePool:Array<CharLocation> = [];
-	private static var sVectorPool:Array<Dynamic> = [];
+	private static var sInstancePool = new Array<CharLocation>();
+	private static var sVectorPool = new Array<Dynamic>();
 
-	private static var sInstanceLoan:Array<CharLocation> = [];
-	private static var sVectorLoan:Array<Dynamic> = [];
+	private static var sInstanceLoan = new Array<CharLocation>();
+	private static var sVectorLoan = new Array<Dynamic>();
 
 	public static function instanceFromPool(char:BitmapChar):CharLocation
 	{
@@ -495,9 +532,9 @@ class CharLocation
 		return instance;
 	}
 
-	public static function vectorFromPool():Array<CharLocation>
+	public static function vectorFromPool():Vector<CharLocation>
 	{
-		var vector:Array<CharLocation> = sVectorPool.length > 0 ?
+		var vector:Vector<CharLocation> = sVectorPool.length > 0 ?
 			sVectorPool.pop() : [];
 
 		vector.length = 0;
@@ -509,7 +546,7 @@ class CharLocation
 	public static function rechargePool():Void
 	{
 		var instance:CharLocation;
-		var vector:Array<CharLocation>;
+		var vector:Vector<CharLocation>;
 
 		while (sInstanceLoan.length > 0)
 		{

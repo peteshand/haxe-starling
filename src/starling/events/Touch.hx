@@ -12,6 +12,7 @@ package starling.events;
 
 import openfl.geom.Matrix;
 import openfl.geom.Point;
+import openfl.Vector;
 import starling.utils.StarlingUtils;
 
 import starling.display.DisplayObject;
@@ -48,7 +49,7 @@ class Touch
 	private var mPressure:Float;
 	private var mWidth:Float;
 	private var mHeight:Float;
-	private var mBubbleChain:Array<EventDispatcher>;
+	private var mBubbleChain:Vector<EventDispatcher>;
 	
 	/** Helper object. */
 	private static var sHelperMatrix:Matrix = new Matrix();
@@ -67,8 +68,8 @@ class Touch
 	public var width(get, set):Float;
 	public var height(get, set):Float;
 	
-	@:allow(TouchProcessor)
-	private var bubbleChain(get, null):Array<EventDispatcher>;
+	/*internal*/
+	public var bubbleChain(get, null):Vector<EventDispatcher>;
 	
 	/** Creates a new Touch object. */
 	public function new(id:Int)
@@ -77,7 +78,7 @@ class Touch
 		mTapCount = 0;
 		mPhase = TouchPhase.HOVER;
 		mPressure = mWidth = mHeight = 1.0;
-		mBubbleChain = new Array<EventDispatcher>();
+		mBubbleChain = new Vector<EventDispatcher>();
 	}
 	
 	/** Converts the current location of a touch to the local coordinate system of a display 
@@ -121,8 +122,7 @@ class Touch
 	/** Returns a description of the object. */
 	public function toString():String
 	{
-		return StarlingUtils.formatString("Touch {0}: globalX={1}, globalY={2}, phase={3}",
-							mID, mGlobalX, mGlobalY, mPhase);
+		return StarlingUtils.formatString("Touch {0}: globalX={1}, globalY={2}, phase={3}", [mID, mGlobalX, mGlobalY, mPhase]);
 	}
 	
 	/** Creates a clone of the Touch object. */
@@ -147,7 +147,7 @@ class Touch
 	
 	private function updateBubbleChain():Void
 	{
-		if (mTarget)
+		if (mTarget != null)
 		{
 			var length:Int = 1;
 			var element:DisplayObject = mTarget;
@@ -156,7 +156,7 @@ class Touch
 			mBubbleChain[0] = element;
 			
 			while ((element = element.parent) != null)
-				mBubbleChain[Int(length++)] = element;
+				mBubbleChain[cast (length++)] = element;
 		}
 		else
 		{
@@ -265,15 +265,15 @@ class Touch
 	 *  Dispatches a touch event along the current bubble chain (which is updated each time
 	 *  a target is set). */
 	@:allow(TouchProcessor)
-	private function dispatchEvent(event:TouchEvent):Void
+	public function dispatchEvent(event:TouchEvent):Void
 	{
-		if (mTarget) event.dispatch(mBubbleChain);
+		if (mTarget != null) event.dispatch(mBubbleChain);
 	}
 	
 	/** @private */
 	@:allow(TouchProcessor)
-	private function get_bubbleChain():Array<EventDispatcher>
+	public function get_bubbleChain():Vector<EventDispatcher>
 	{
-		return mBubbleChain.concat();
+		return mBubbleChain.concat(new Vector<EventDispatcher>());
 	}
 }

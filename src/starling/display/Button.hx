@@ -69,6 +69,7 @@ class Button extends DisplayObjectContainer
 	public function new(upState:Texture, text:String="", downState:Texture=null,
 						   overState:Texture=null, disabledState:Texture=null)
 	{
+		super();
 		if (upState == null) throw new ArgumentError("Texture 'upState' cannot be null");
 		
 		mUpState = upState;

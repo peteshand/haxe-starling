@@ -17,11 +17,13 @@ import openfl.display3D.IndexBuffer3D;
 import openfl.display3D.Program3D;
 import openfl.display3D.VertexBuffer3D;
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
 import openfl.errors.IllegalOperationError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Rectangle;
 import openfl.system.Capabilities;
+import openfl.Vector;
 import starling.utils.StarlingUtils;
 
 import starling.core.RenderSupport;
@@ -100,7 +102,7 @@ class FragmentFilter
 	
 	private var mVertexData:VertexData;
 	private var mVertexBuffer:VertexBuffer3D;
-	private var mIndexData:Array<UInt>;
+	private var mIndexData:Vector<UInt>;
 	private var mIndexBuffer:IndexBuffer3D;
 	
 	private var mCacheRequested:Bool;
@@ -144,8 +146,9 @@ class FragmentFilter
 	 *  This constructor may only be called by the constructor of a subclass. */
 	public function new(numPasses:Int=1, resolution:Float=1.0)
 	{
-		if (Capabilities.isDebugger && 
-			Type.getClassName(this) == "starling.filters::FragmentFilter")
+		var name:String = Type.getClassName(Type.getClass(this));
+		trace("CHECK name = " + name);
+		if (Capabilities.isDebugger && name == "starling.filters.FragmentFilter")
 		{
 			throw new AbstractClassError();
 		}
@@ -165,7 +168,15 @@ class FragmentFilter
 		mVertexData.setTexCoords(2, 0, 1);
 		mVertexData.setTexCoords(3, 1, 1);
 		
-		mIndexData = [0, 1, 2, 1, 3, 2];
+		//mIndexData = [0, 1, 2, 1, 3, 2];
+		mIndexData = new Vector<UInt>();
+		mIndexData.push(0);
+		mIndexData.push(1);
+		mIndexData.push(2);
+		mIndexData.push(1);
+		mIndexData.push(3);
+		mIndexData.push(4);
+		
 		mIndexData.fixed = true;
 
 		if (Starling.current.contextValid)
@@ -181,8 +192,8 @@ class FragmentFilter
 	public function dispose():Void
 	{
 		Starling.current.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
-		if (mVertexBuffer) mVertexBuffer.dispose();
-		if (mIndexBuffer)  mIndexBuffer.dispose();
+		if (mVertexBuffer != null) mVertexBuffer.dispose();
+		if (mIndexBuffer != null)  mIndexBuffer.dispose();
 		disposePassTextures();
 		disposeCache();
 	}
@@ -194,7 +205,7 @@ class FragmentFilter
 
 		disposePassTextures();
 		createPrograms();
-		if (mCache) cache();
+		if (mCache != null) cache();
 	}
 	
 	/** Applies the filter on a certain display object, rendering the output into the current 
@@ -216,7 +227,7 @@ class FragmentFilter
 			disposePassTextures();
 		}
 		
-		if (mCache)
+		if (mCache != null)
 			mCache.render(support, parentAlpha);
 		else
 			renderPasses(object, support, parentAlpha, false);
@@ -266,7 +277,7 @@ class FragmentFilter
 		projMatrix3D.copyFrom(support.projectionMatrix3D);
 		var previousRenderTarget:Texture = support.renderTarget;
 		
-		if (previousRenderTarget && !SystemUtil.supportsRelaxedTargetClearRequirement)
+		if (previousRenderTarget != null && !SystemUtil.supportsRelaxedTargetClearRequirement)
 			throw new IllegalOperationError(
 				"To nest filters, you need at least Flash Player / AIR version 15.");
 		
@@ -457,7 +468,7 @@ class FragmentFilter
 			resultRect.inflate(marginX, marginY);
 			
 			// To fit into a POT-texture, we extend it towards the right and bottom.
-			var minSize:Int = MIN_TEXTURE_SIZE / scale;
+			var minSize:Int = cast (MIN_TEXTURE_SIZE / scale);
 			var minWidth:Float  = resultRect.width  > minSize ? resultRect.width  : minSize;
 			var minHeight:Float = resultRect.height > minSize ? resultRect.height : minSize;
 			resultPotRect.setTo(
@@ -472,14 +483,14 @@ class FragmentFilter
 		for (texture in mPassTextures)
 			texture.dispose();
 		
-		mPassTextures.length = 0;
+		mPassTextures = new Array<Texture>();
 	}
 	
 	private function disposeCache():Void
 	{
-		if (mCache)
+		if (mCache != null)
 		{
-			if (mCache.texture) mCache.texture.dispose();
+			if (mCache.texture != null) mCache.texture.dispose();
 			mCache.dispose();
 			mCache = null;
 		}
@@ -559,9 +570,9 @@ class FragmentFilter
 	
 	/** @private */
 	//starling_internal
-	private function compile(object:DisplayObject):QuadBatch
+	public function compile(object:DisplayObject):QuadBatch
 	{
-		if (mCache) return mCache;
+		if (mCache != null) return mCache;
 		else
 		{
 			var support:RenderSupport;
@@ -587,53 +598,95 @@ class FragmentFilter
 	 *  the GPU), but results in a lower output quality. Values greater than 1 are allowed;
 	 *  such values might make sense for a cached filter when it is scaled up. @default 1 */
 	public function get_resolution():Float { return mResolution; }
-	public function set_resolution(value:Float):Void 
+	public function set_resolution(value:Float):Float 
 	{
 		if (value <= 0) throw new ArgumentError("Resolution must be > 0");
-		else mResolution = value; 
+		else mResolution = value;
+		return value;
 	}
 	
 	/** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
 	 *  class. @default "replace" */
 	public function get_mode():String { return mMode; }
-	public function set_mode(value:String):Void { mMode = value; }
+	public function set_mode(value:String):String
+	{
+		mMode = value;
+		return value;
+	}
 	
 	/** Use the x-offset to move the filter output to the right or left. */
 	public function get_offsetX():Float { return mOffsetX; }
-	public function set_offsetX(value:Float):Void { mOffsetX = value; }
+	public function set_offsetX(value:Float):Float
+	{
+		mOffsetX = value;
+		return value;
+	}
 	
 	/** Use the y-offset to move the filter output to the top or bottom. */
 	public function get_offsetY():Float { return mOffsetY; }
-	public function set_offsetY(value:Float):Void { mOffsetY = value; }
+	public function set_offsetY(value:Float):Float
+	{
+		mOffsetY = value;
+		return value;
+	}
 	
 	/** The x-margin will extend the size of the filter texture along the x-axis.
 	 *  Useful when the filter will "grow" the rendered object. */
 	private function get_marginX():Float { return mMarginX; }
-	private function set_marginX(value:Float):Void { mMarginX = value; }
+	private function set_marginX(value:Float):Float
+	{
+		mMarginX = value;
+		return value;
+	}
 	
 	/** The y-margin will extend the size of the filter texture along the y-axis.
 	 *  Useful when the filter will "grow" the rendered object. */
 	private function get_marginY():Float { return mMarginY; }
-	private function set_marginY(value:Float):Void { mMarginY = value; }
+	private function set_marginY(value:Float):Float
+	{
+		mMarginY = value;
+		return value;
+	}
 	
 	/** The number of passes the filter is applied. The "activate" and "deactivate" methods
 	 *  will be called that often. */
-	private function set_numPasses(value:Int):Void { mNumPasses = value; }
+	private function set_numPasses(value:Int):Int
+	{
+		mNumPasses = value;
+		return value;
+	}
+	
 	private function get_numPasses():Int { return mNumPasses; }
 	
 	/** The ID of the vertex buffer attribute that stores the vertex position. */ 
 	private /*final*/ function get_vertexPosAtID():Int { return mVertexPosAtID; }
-	private /*final*/ function set_vertexPosAtID(value:Int):Void { mVertexPosAtID = value; }
+	private /*final*/ function set_vertexPosAtID(value:Int):Int
+	{
+		mVertexPosAtID = value;
+		return value;
+	}
 	
 	/** The ID of the vertex buffer attribute that stores the texture coordinates. */
 	private /*final*/ function get_texCoordsAtID():Int { return mTexCoordsAtID; }
-	private /*final*/ function set_texCoordsAtID(value:Int):Void { mTexCoordsAtID = value; }
+	private /*final*/ function set_texCoordsAtID(value:Int):Int
+	{
+		mTexCoordsAtID = value;
+		return value;
+	}
 
 	/** The ID (sampler) of the input texture (containing the output of the previous pass). */
 	private /*final*/ function get_baseTextureID():Int { return mBaseTextureID; }
-	private /*final*/ function set_baseTextureID(value:Int):Void { mBaseTextureID = value; }
+	private /*final*/ function set_baseTextureID(value:Int):Int
+	{
+		mBaseTextureID = value;
+		return value;
+	}
 	
 	/** The ID of the first register of the modelview-projection constant (a 4x4 matrix). */
 	private /*final*/ function get_mvpConstantID():Int { return mMvpConstantID; }
-	private /*final*/ function set_mvpConstantID(value:Int):Void { mMvpConstantID = value; }
+	private /*final*/ function set_mvpConstantID(value:Int):Int
+	{
+		mMvpConstantID = value;
+		return value;
+	}
 }

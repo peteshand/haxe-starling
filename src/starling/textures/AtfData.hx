@@ -70,8 +70,10 @@ class AtfData
 		
 		if (d5 != 0 && d6 == 255)
 		{
-			var emptyMipmaps:Bool = (data[5] & 0x01) == 1;
-			var numTextures:Int  = data[5] >> 1 & 0x7f;
+			data.position = 5;
+			var d5 = data.readByte();
+			var emptyMipmaps:Bool = (d5 & 0x01) == 1;
+			var numTextures:Int  = d5 >> 1 & 0x7f;
 			mNumTextures = emptyMipmaps ? 1 : numTextures;
 		}
 	}

@@ -10,6 +10,7 @@
 
 package starling.events;
 
+import openfl.Vector;
 import starling.display.DisplayObject;
 
 /** A TouchEvent is triggered either by touch or mouse input.  
@@ -61,7 +62,7 @@ class TouchEvent extends Event
 	private var mVisitedObjects:Array<EventDispatcher>;
 	
 	/** Helper object. */
-	private static var sTouches:Array<Touch> = [];
+	private static var sTouches = new Vector<Touch>();
 	
 	public var timestamp(get, null):Float;
 	public var touches(get, null):Array<Touch>;
@@ -77,7 +78,7 @@ class TouchEvent extends Event
 		mShiftKey = shiftKey;
 		mCtrlKey = ctrlKey;
 		mTimestamp = -1.0;
-		mVisitedObjects = [];
+		mVisitedObjects = new Array<EventDispatcher>();
 		
 		var numTouches:Int=touches.length;
 		for (i in 0...numTouches)
@@ -91,7 +92,7 @@ class TouchEvent extends Event
 	public function getTouches(target:DisplayObject, phase:String=null,
 							   result:Array<Touch>=null):Array<Touch>
 	{
-		if (result == null) result = [];
+		if (result == null) result = new Array<Touch>();
 		var allTouches:Array<Touch> = cast data;
 		var numTouches:Int = allTouches.length;
 		
@@ -161,13 +162,17 @@ class TouchEvent extends Event
 	/** @private
 	 *  Dispatches the event along a custom bubble chain. During the lifetime of the event,
 	 *  each object is visited only once. */
-	/*internal*/ function dispatch(chain:Array<EventDispatcher>):Void
+	/*internal*/ 
+	public function dispatch(chain:Vector<EventDispatcher>):Void
 	{
-		if (chain && chain.length)
+		trace("CHECK");
+		if (chain != null && cast chain.length)
 		{
 			var chainLength:Int = bubbles ? chain.length : 1;
 			var previousTarget:EventDispatcher = target;
-			setTarget(cast chain[0]);
+			var eventDispatcher:EventDispatcher = cast chain[0];
+			
+			setTarget(eventDispatcher);
 			
 			for (i in 0...chainLength)
 			{

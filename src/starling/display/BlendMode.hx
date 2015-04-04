@@ -38,7 +38,6 @@ import starling.errors.AbstractClassError;
 class BlendMode
 {
 	private static var sBlendFactors(get, null):Array<Dynamic>;
-	private static var _sBlendFactors;
 	
 	// predifined modes
 	
@@ -71,18 +70,53 @@ class BlendMode
 	public static var BELOW:String = "below";
 	
 
+	static function get_sBlendFactors():Array<Dynamic>
+	{
+		var vec = new Array<Dynamic>();
+		vec.push({ 
+			"none"     : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ],
+			"normal"   : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
+			"add"      : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ],
+			"multiply" : [ Context3DBlendFactor.DESTINATION_COLOR, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
+			"screen"   : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE ],
+			"erase"    : [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
+			"below"    : [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]
+		});
+		// premultiplied alpha
+		vec.push({ 
+			"none"     : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ],
+			"normal"   : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
+			"add"      : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE ],
+			"multiply" : [ Context3DBlendFactor.DESTINATION_COLOR, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
+			"screen"   : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR ],
+			"erase"    : [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
+			"below"    : [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]
+		});
+		return vec;
+	}
+	
 	// accessing modes
 	
 	/** Returns the blend factors that correspond with a certain mode and premultiplied alpha
 	 *  value. Throws an ArgumentError if the mode does not exist. */
 	public static function getBlendFactors(mode:String, premultipliedAlpha:Bool=true):Array<Dynamic>
 	{
-		var modes:Dynamic = sBlendFactors[cast(premultipliedAlpha, Int)];
-		if (mode in modes) return modes[mode];
+		//trace("CHECK");
+		
+		var vec:Array<Dynamic> = BlendMode.sBlendFactors;
+		var modeIndex:Int = 0;//
+		if (premultipliedAlpha == true) modeIndex = 1;//cast(premultipliedAlpha, Int);
+		var modes:Dynamic = vec[modeIndex];
+		
+		var returnVal:Array<Dynamic> = Reflect.getProperty(modes, mode);
+		if (returnVal == null) throw new ArgumentError("Invalid blend mode");
+		return returnVal;
+		
+		/*if (mode in modes) return modes[mode];
 		else {
 			throw new ArgumentError("Invalid blend mode");
-			return null;
 		}
+		return null;*/
 	}
 	
 	/** Registeres a blending mode under a certain name and for a certain premultiplied alpha
@@ -91,37 +125,20 @@ class BlendMode
 	public static function register(name:String, sourceFactor:String, destFactor:String,
 									premultipliedAlpha:Bool=true):Void
 	{
-		var modes:Dynamic = sBlendFactors[Int(premultipliedAlpha)];
-		modes[name] = [sourceFactor, destFactor];
+		var vec:Array<Dynamic> = BlendMode.sBlendFactors;
+		var modeIndex:Int = cast(premultipliedAlpha);
+		var modes:Dynamic = vec[modeIndex];
+		//modes[name] = [sourceFactor, destFactor];
+		Reflect.setProperty(modes, name, [sourceFactor, destFactor]);
 		
-		var otherModes:Dynamic = sBlendFactors[Int(!premultipliedAlpha)];
-		if (!(name in otherModes)) otherModes[name] = [sourceFactor, destFactor];
-	}
-	
-	static function get_sBlendFactors():Array<Dynamic>
-	{
-		if (_sBlendFactors == null) {
-			_sBlendFactors = new Array<Dynamic>();
-			_sBlendFactors.push({ 
-				"none"     : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ],
-				"normal"   : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
-				"add"      : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ],
-				"multiply" : [ Context3DBlendFactor.DESTINATION_COLOR, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
-				"screen"   : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE ],
-				"erase"    : [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
-				"below"    : [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]
-			});
-			// premultiplied alpha
-			_sBlendFactors.push({ 
-				"none"     : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ],
-				"normal"   : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
-				"add"      : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE ],
-				"multiply" : [ Context3DBlendFactor.DESTINATION_COLOR, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
-				"screen"   : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR ],
-				"erase"    : [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
-				"below"    : [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]
-			});
+		
+		trace("CHECK");
+		//var otherModes:Dynamic = vec[cast(!premultipliedAlpha, Int)];
+		//if (!(name in otherModes)) otherModes[name] = [sourceFactor, destFactor];
+		var otherModes:Dynamic = vec[cast(!premultipliedAlpha, Int)];
+		var returnVal:Array<Dynamic> = Reflect.getProperty(otherModes, name);
+		if (returnVal == null) {
+			Reflect.setProperty(otherModes, name, [sourceFactor, destFactor]);
 		}
-		return _sBlendFactors;
 	}
 }

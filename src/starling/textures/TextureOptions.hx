@@ -10,7 +10,7 @@
 
 package starling.textures;
 
-import haxe.Constraints.Function;
+import openfl.display3D.Context3DTextureFormat;
 import starling.core.Starling;
 
 /** The TextureOptions class specifies options for loading textures with the 'Texture.fromData'
@@ -18,22 +18,23 @@ import starling.core.Starling;
 class TextureOptions
 {
 	private var mScale:Float;
-	private var mFormat:String;
+	private var mFormat:Context3DTextureFormat;
 	private var mMipMapping:Bool;
 	private var mOptimizeForRenderToTexture:Bool = false;
 	private var mOnReady:Function = null;
 	private var mRepeat:Bool = false;
 	
 	public var scale(get, set):Float;
-	public var format(get, set):String;
+	public var format(get, set):Context3DTextureFormat;
 	public var mipMapping(get, set):Bool;
 	public var optimizeForRenderToTexture(get, set):Bool;
 	public var repeat(get, set):Bool;
 	public var onReady(get, set):Function;
 	
 	public function new(scale:Float=1.0, mipMapping:Bool=false, 
-								   format:String="bgra", repeat:Bool=false)
+								   format:Context3DTextureFormat=null, repeat:Bool=false)
 	{
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		mScale = scale;
 		mFormat = format;
 		mMipMapping = mipMapping;
@@ -52,30 +53,47 @@ class TextureOptions
 	/** The scale factor, which influences width and height properties. If you pass '-1',
 	 *  the current global content scale factor will be used. */
 	public function get_scale():Float { return mScale; }
-	public function set_scale(value:Float):Void
+	public function set_scale(value:Float):Float
 	{
 		mScale = value > 0 ? value : Starling.ContentScaleFactor;
+		return value;
 	}
 	
 	/** The <code>Context3DTextureFormat</code> of the underlying texture data. Only used
 	 *  for textures that are created from Bitmaps; the format of ATF files is set when they
 	 *  are created. */
-	public function get_format():String { return mFormat; }
-	public function set_format(value:String):Void { mFormat = value; }
+	public function get_format():Context3DTextureFormat { return mFormat; }
+	public function set_format(value:Context3DTextureFormat):Context3DTextureFormat
+	{
+		mFormat = value;
+		return value;
+	}
 	
 	/** Indicates if the texture contains mip maps. */ 
 	public function get_mipMapping():Bool { return mMipMapping; }
-	public function set_mipMapping(value:Bool):Void { mMipMapping = value; }
+	public function set_mipMapping(value:Bool):Bool
+	{
+		mMipMapping = value;
+		return value;
+	}
 	
 	/** Indicates if the texture will be used as render target. */
 	public function get_optimizeForRenderToTexture():Bool { return mOptimizeForRenderToTexture; }
-	public function set_optimizeForRenderToTexture(value:Bool):Void { mOptimizeForRenderToTexture = value; }
+	public function set_optimizeForRenderToTexture(value:Bool):Bool
+	{
+		mOptimizeForRenderToTexture = value;
+		return value;
+	}
  
 	/** Indicates if the texture should repeat like a wallpaper or stretch the outermost pixels.
 	 *  Note: this only works in textures with sidelengths that are powers of two and 
 	 *  that are not loaded from a texture atlas (i.e. no subtextures). @default false */
 	public function get_repeat():Bool { return mRepeat; }
-	public function set_repeat(value:Bool):Void { mRepeat = value; }
+	public function set_repeat(value:Bool):Bool
+	{
+		mRepeat = value;
+		return value;
+	}
 
 	/** A callback that is used only for ATF textures; if it is set, the ATF data will be
 	 *  decoded asynchronously. The texture can only be used when the callback has been
@@ -86,5 +104,11 @@ class TextureOptions
 	 *  <code>function(texture:Texture):Void;</code></p> 
 	 */
 	public function get_onReady():Function { return mOnReady; }
-	public function set_onReady(value:Function):Void { mOnReady = value; }
+	public function set_onReady(value:Function):Function
+	{
+		mOnReady = value;
+		return value;
+	}
 }
+
+typedef Function = Dynamic -> Void;

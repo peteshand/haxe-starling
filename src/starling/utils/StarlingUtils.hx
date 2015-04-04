@@ -34,17 +34,28 @@ class StarlingUtils
      *  the function, the argument list is cropped / filled up with <code>null</code> values. */
     public static function execute(func:Dynamic, args:Array<Dynamic>):Void
     {
-        if (func != null)
+		if (func != null)
         {
-            var i:Int;
-            var maxNumArgs:Int = func.length;
-
-            for (i in args.length...maxNumArgs)
+			var i:Int;
+			var length:Int = Reflect.getProperty(func, "length");
+			
+			#if flash
+				var maxNumArgs:Int = func.length;
+			#else 
+				var maxNumArgs:Int = args.length; //var maxNumArgs:Int = func.length;
+			#end
+			
+			for (i in args.length...maxNumArgs)
                 args[i] = null;
-
+			
             // In theory, the 'default' case would always work,
             // but we want to avoid the 'slice' allocations.
-
+			
+			/*var fields = Reflect.fields(func);
+			for (propertyName in fields) {
+				trace(Reflect.getProperty(func, propertyName));
+			}*/
+			
             switch (maxNumArgs)
             {
                 case 0:  func();
@@ -55,7 +66,7 @@ class StarlingUtils
                 case 5:  func(args[0], args[1], args[2], args[3], args[4]);
                 case 6:  func(args[0], args[1], args[2], args[3], args[4], args[5]);
                 case 7:  func(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-                default: func.apply(null, args.slice(0, maxNumArgs));
+                //default: func.apply(null, args.slice(0, maxNumArgs));
             }
         }
     }
@@ -66,8 +77,13 @@ class StarlingUtils
      *  number formatting options yet. */
     public static function formatString(format:String, args:Array<Dynamic>):String
     {
-        for (i in 0...args.length)
-            format = format.replace(new RegExp("\\{"+i+"\\}", "g"), args[i]);
+		trace("CHECK");
+        for (i in 0...args.length) {
+			
+			var r = new EReg("\\{" + i + "\\}", "g");
+			format = r.replace(format, args[i]);
+            //format = format.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
+		}
         
         return format;
     }
@@ -75,7 +91,11 @@ class StarlingUtils
 	/** Returns the next power of two that is equal to or bigger than the specified number. */
     public static function getNextPowerOfTwo(number:Float):Int
     {
-        if (Std.is(number, Int) && number > 0 && (number & (number - 1)) == 0) // see: http://goo.gl/D9kPj
+		var c1 = Std.is(number, Int);
+		var c2 = number > 0;
+		var c3 = ((cast number) & (cast number - 1)) == 0;
+		
+        if (c1 && c2 && c3) // see: http://goo.gl/D9kPj
             return cast number;
         else
         {

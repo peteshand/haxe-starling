@@ -158,7 +158,7 @@ class Image extends Quad
 	
 	/** The texture that is displayed on the quad. */
 	public function get_texture():Texture { return mTexture; }
-	public function set_texture(value:Texture):Void 
+	public function set_texture(value:Texture):Texture 
 	{ 
 		if (value == null)
 		{
@@ -171,18 +171,20 @@ class Image extends Quad
 			mVertexDataCache.setPremultipliedAlpha(mTexture.premultipliedAlpha, false);
 			onVertexDataChanged();
 		}
+		return value;
 	}
 	
 	/** The smoothing filter that is used for the texture. 
 	*   @default bilinear
 	*   @see starling.textures.TextureSmoothing */ 
 	public function get_smoothing():String { return mSmoothing; }
-	public function set_smoothing(value:String):Void 
+	public function set_smoothing(value:String):String 
 	{
 		if (TextureSmoothing.isValid(value))
 			mSmoothing = value;
 		else
 			throw new ArgumentError("Invalid smoothing mode: " + value);
+		return value;
 	}
 	
 	/** @inheritDoc */

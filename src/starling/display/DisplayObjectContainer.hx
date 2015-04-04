@@ -10,14 +10,15 @@
 
 package starling.display;
 
-import haxe.Constraints.Function;
 import openfl.errors.ArgumentError;
+import openfl.errors.RangeError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.geom.Vector3D;
 import openfl.system.Capabilities;
+import openfl.Vector;
 
 import starling.core.RenderSupport;
 import starling.errors.AbstractClassError;
@@ -72,25 +73,29 @@ class DisplayObjectContainer extends DisplayObject
 	/** Helper objects. */
 	private static var sHelperMatrix:Matrix = new Matrix();
 	private static var sHelperPoint:Point = new Point();
-	private static var sBroadcastListeners:Array<DisplayObject> = [];
-	private static var sSortBuffer:Array<DisplayObject> = [];
+	private static var sBroadcastListeners = new Vector<DisplayObject>();
+	private static var sSortBuffer = new Vector<DisplayObject>();
 	
 	public var numChildren(get, null):Int;
 	public var touchGroup(get, set):Bool;
 	
+	private var random:Int;
 	// construction
 	
 	/** @private */
 	public function new()
 	{
-		trace("CHECK");
-		if (Capabilities.isDebugger && 
-			Type.getClassName(this) == "starling.display::DisplayObjectContainer")
+		super();
+		var name:String = Type.getClassName(Type.getClass(this));
+		trace("CHECK name = " + name);
+		if (Capabilities.isDebugger && name == "starling.display.DisplayObjectContainer")
 		{
 			throw new AbstractClassError();
 		}
 		
-		mChildren = [];
+		random = cast Math.random() * 1000000;
+		mChildren = new Array<DisplayObject>();
+		
 	}
 	
 	/** Disposes the resources of all children. */
@@ -129,15 +134,15 @@ class DisplayObjectContainer extends DisplayObject
 				
 				// 'splice' creates a temporary object, so we avoid it if it's not necessary
 				if (index == numChildren) mChildren[numChildren] = child;
-				else                      mChildren.splice(index, 0, child);
+				else                      mChildren.insert(index, child);// mChildren.splice(index, 0, child);
 				
 				child.setParent(this);
 				child.dispatchEventWith(Event.ADDED, true);
 				
-				if (stage)
+				if (stage != null)
 				{
 					var container:DisplayObjectContainer = cast child;
-					if (container) container.broadcastEventWith(Event.ADDED_TO_STAGE);
+					if (container != null) container.broadcastEventWith(Event.ADDED_TO_STAGE);
 					else           child.dispatchEventWith(Event.ADDED_TO_STAGE);
 				}
 			}
@@ -168,7 +173,7 @@ class DisplayObjectContainer extends DisplayObject
 			var child:DisplayObject = mChildren[index];
 			child.dispatchEventWith(Event.REMOVED, true);
 			
-			if (stage)
+			if (stage != null)
 			{
 				var container:DisplayObjectContainer = cast child;
 				if (container != null) container.broadcastEventWith(Event.REMOVED_FROM_STAGE);
@@ -210,8 +215,10 @@ class DisplayObjectContainer extends DisplayObject
 
 		if (index >= 0 && index < numChildren)
 			return mChildren[index];
-		else
+		else {
 			throw new RangeError("Invalid child index");
+			return null;
+		}
 	}
 	
 	/** Returns a child object with a certain name (non-recursively). */
@@ -237,7 +244,8 @@ class DisplayObjectContainer extends DisplayObject
 		if (oldIndex == index) return;
 		if (oldIndex == -1) throw new ArgumentError("Not a child of this container");
 		mChildren.splice(oldIndex, 1);
-		mChildren.splice(index, 0, child);
+		mChildren.insert(index, child); // mChildren.splice(index, 0, child);
+		
 	}
 	
 	/** Swaps the indexes of two children. */
@@ -260,7 +268,7 @@ class DisplayObjectContainer extends DisplayObject
 	
 	/** Sorts the children according to a given function (that works just like the sort function
 	 *  of the Vector class). */
-	public function sortChildren(compareFunction:Function):Void
+	public function sortChildren(compareFunction:DocFunction):Void
 	{
 		sSortBuffer.length = mChildren.length;
 		mergeSort(mChildren, compareFunction, 0, mChildren.length, sSortBuffer);
@@ -270,7 +278,7 @@ class DisplayObjectContainer extends DisplayObject
 	/** Determines if a certain object is a child of the container (recursively). */
 	public function contains(child:DisplayObject):Bool
 	{
-		while (child)
+		while (child != null)
 		{
 			if (child == this) return true;
 			else child = child.parent;
@@ -299,8 +307,10 @@ class DisplayObjectContainer extends DisplayObject
 		}
 		else
 		{
-			var minX:Float = Float.MAX_VALUE, maxX:Float = -Float.MAX_VALUE;
-			var minY:Float = Float.MAX_VALUE, maxY:Float = -Float.MAX_VALUE;
+			var minX:Float = Math.POSITIVE_INFINITY;// Float.MAX_VALUE, 
+			var maxX:Float = Math.NEGATIVE_INFINITY;// -Float.MAX_VALUE;
+			var minY:Float = Math.POSITIVE_INFINITY;// Float.MAX_VALUE, 
+			var maxY:Float = Math.NEGATIVE_INFINITY;// -Float.MAX_VALUE;
 			
 			for (i in 0...numChildren)
 			{
@@ -418,11 +428,15 @@ class DisplayObjectContainer extends DisplayObject
 	 *  (Similar to 'mouseChildren' in the classic display list, but with inverted logic.)
 	 *  @default false */
 	public function get_touchGroup():Bool { return mTouchGroup; }
-	public function set_touchGroup(value:Bool):Void { mTouchGroup = value; }
+	public function set_touchGroup(value:Bool):Bool
+	{
+		mTouchGroup = value;
+		return value;
+	}
 
 	// helpers
 	
-	private static function mergeSort(input:Array<DisplayObject>, compareFunc:Function, 
+	private static function mergeSort(input:Array<DisplayObject>, compareFunc:DocFunction, 
 									  startIndex:Int, length:Int, 
 									  buffer:Array<DisplayObject>):Void
 	{
@@ -434,7 +448,7 @@ class DisplayObjectContainer extends DisplayObject
 		{
 			var i:Int = 0;
 			var endIndex:Int = startIndex + length;
-			var halfLength:Int = length / 2;
+			var halfLength:Int = cast length / 2;
 			var l:Int = startIndex;              // current position in the left subvector
 			var r:Int = startIndex + halfLength; // current position in the right subvector
 			
@@ -449,8 +463,9 @@ class DisplayObjectContainer extends DisplayObject
 				// if so, we check if there are any elements left in the right vector;
 				// if so, we compare them. Otherwise, we know that the merge must
 				// take the element from the left vector. */
+				var func:Dynamic = compareFunc;
 				if (l < startIndex + halfLength && 
-					(r == endIndex || compareFunc(input[l], input[r]) <= 0))
+					(r == endIndex || func(input[l], input[r]) <= 0))
 				{
 					buffer[i] = input[l];
 					l++;
@@ -464,7 +479,7 @@ class DisplayObjectContainer extends DisplayObject
 			
 			// copy the sorted subvector back to the input
 			for(i in startIndex...endIndex)
-				input[i] = buffer[Int(i - startIndex)];
+				input[i] = buffer[cast(i - startIndex)];
 		}
 	}
 	
@@ -478,7 +493,7 @@ class DisplayObjectContainer extends DisplayObject
 		if (object.hasEventListener(eventType))
 			listeners[listeners.length] = object; // avoiding 'push'                
 		
-		if (container)
+		if (container != null)
 		{
 			var children:Array<DisplayObject> = container.mChildren;
 			var numChildren:Int = children.length;
@@ -488,3 +503,5 @@ class DisplayObjectContainer extends DisplayObject
 		}
 	}
 }
+
+typedef DocFunction = Dynamic -> Void;

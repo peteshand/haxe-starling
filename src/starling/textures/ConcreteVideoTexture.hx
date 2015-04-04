@@ -20,31 +20,38 @@ import openfl.errors.ArgumentError;
 class ConcreteVideoTexture extends ConcreteTexture
 {
 	/** Creates a new VideoTexture. 'base' must be of type 'VideoTexture'. */
-	public function ConcreteVideoTexture(base:TextureBase, scale:Float = 1)
+	public function new(base:TextureBase, scale:Float = 1)
 	{
 		// we must not reference the "VideoTexture" class directly
 		// because it's only available in AIR.
 
-		var format:String = Context3DTextureFormat.BGRA;
-		var width:Float  = "videoWidth"  in base ? base["videoWidth"]  : 0;
-		var height:Float = "videoHeight" in base ? base["videoHeight"] : 0;
-
-		super(base, format, width, height, false, false, false, scale, false);
-
-		if (Type.getClassName(base) != "flash.display3D.textures::VideoTexture")
+		var format = Context3DTextureFormat.BGRA;
+		
+		trace("CHECK");
+		var width:Float  = 0; // var width:Float  = "videoWidth"  in base ? base["videoWidth"]  : 0;
+		var height:Float = 0; //var height:Float = "videoHeight" in base ? base["videoHeight"] : 0;
+		if (Reflect.hasField(base, "videoWidth")) width = Reflect.getProperty( base, "videoWidth");
+		if (Reflect.hasField(base, "videoHeight")) height = Reflect.getProperty( base, "videoHeight");
+		
+		super(base, format, cast width, cast height, false, false, false, scale, false);
+		
+		var name:String = Type.getClassName(Type.getClass(base));
+		trace("CHECK name = " + name);
+		if (name != "flash.display3D.textures.VideoTexture") {
 			throw new ArgumentError("'base' must be VideoTexture");
+		}
 	}
 
 	/** The actual width of the video in pixels. */
 	override public function get_nativeWidth():Float
 	{
-		return base["videoWidth"];
+		return Reflect.getProperty(base, "videoWidth");
 	}
 
 	/** The actual height of the video in pixels. */
 	override public function get_nativeHeight():Float
 	{
-		return base["videoHeight"];
+		return Reflect.getProperty(base, "videoHeight");
 	}
 
 	/** inheritDoc */

@@ -64,6 +64,7 @@ class DisplacementMapFilter extends FragmentFilter
 										  scaleX:Float=0.0, scaleY:Float=0.0,
 										  repeat:Bool=false)
 	{
+		super();
 		mMapTexture = mapTexture;
 		mMapPoint = new Point();
 		mComponentX = componentX;
@@ -72,8 +73,6 @@ class DisplacementMapFilter extends FragmentFilter
 		mScaleY = scaleY;
 		mRepeat = repeat;
 		this.mapPoint = mapPoint;
-		
-		super();
 	}
 	
 	/** @inheritDoc */

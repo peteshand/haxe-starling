@@ -10,9 +10,9 @@
 
 package starling.animation;
 
-import haxe.Constraints.Function;
 import haxe.ds.Vector;
 import openfl.errors.ArgumentError;
+import starling.animation.IAnimatable;
 import starling.events.Event;
 import starling.events.EventDispatcher;
 
@@ -58,13 +58,13 @@ class Juggler implements IAnimatable
 	public function new()
 	{
 		mElapsedTime = 0;
-		mObjects = new Array<IAnimatable>();
+		mObjects = cast [];
 	}
 
 	/** Adds an object to the juggler. */
 	public function add(object:IAnimatable):Void
 	{
-		if (object && mObjects.indexOf(object) == -1) 
+		if (object != null && indexOf(mObjects, object) == -1) 
 		{
 			mObjects[mObjects.length] = object;
 		
@@ -73,10 +73,19 @@ class Juggler implements IAnimatable
 		}
 	}
 	
+	function indexOf(vec:Array<IAnimatable>, obj:IAnimatable) 
+	{
+		for (i in 0...vec.length) 
+		{
+			if (vec[i] == obj) return i;
+		}
+		return -1;
+	}
+	
 	/** Determines if an object has been added to the juggler. */
 	public function contains(object:IAnimatable):Bool
 	{
-		return mObjects.indexOf(object) != -1;
+		return indexOf(mObjects, object) != -1;
 	}
 	
 	/** Removes an object from the juggler. */
@@ -87,7 +96,7 @@ class Juggler implements IAnimatable
 		var dispatcher:EventDispatcher = cast object;
 		if (dispatcher != null) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 
-		var index:Int = mObjects.indexOf(object);
+		var index:Int = indexOf(mObjects, object);
 		if (index != -1) mObjects[index] = null;
 	}
 	
@@ -100,7 +109,7 @@ class Juggler implements IAnimatable
 		{
 			var i = j - (mObjects.length + 1);
 			var tween:Tween = cast mObjects[i];
-			if (tween && tween.target == target)
+			if (tween != null && tween.target == target)
 			{
 				tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 				mObjects[i] = null;
@@ -117,7 +126,7 @@ class Juggler implements IAnimatable
 		{
 			var i = j - (mObjects.length + 1);
 			var tween:Tween = cast mObjects[i];
-			if (tween && tween.target == target) return true;
+			if (tween != null && tween.target == target) return true;
 		}
 		
 		return false;
@@ -135,7 +144,7 @@ class Juggler implements IAnimatable
 		{
 			var i = j - (mObjects.length + 1);
 			var dispatcher:EventDispatcher = cast mObjects[i];
-			if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+			if (dispatcher != null) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 			mObjects[i] = null;
 		}
 	}
@@ -147,7 +156,7 @@ class Juggler implements IAnimatable
 	 *  <p>To cancel the call, pass the returned 'IAnimatable' instance to 'Juggler.remove()'.
 	 *  Do not use the returned IAnimatable otherwise; it is taken from a pool and will be
 	 *  reused.</p> */
-	public function delayCall(call:Function, delay:Float, args:Array<Dynamic>=null):IAnimatable
+	public function delayCall(call:EDFunction, delay:Float, args:Array<Dynamic>=null):IAnimatable
 	{
 		if (call == null) return null;
 		
@@ -164,7 +173,7 @@ class Juggler implements IAnimatable
 	 *  <p>To cancel the call, pass the returned 'IAnimatable' instance to 'Juggler.remove()'.
 	 *  Do not use the returned IAnimatable otherwise; it is taken from a pool and will be
 	 *  reused.</p> */
-	public function repeatCall(call:Function, interval:Float, repeatCount:Int=0, args:Array<Dynamic>):IAnimatable
+	public function repeatCall(call:EDFunction, interval:Float, repeatCount:Int=0, args:Array<Dynamic>):IAnimatable
 	{
 		if (call == null) return null;
 		
@@ -219,12 +228,14 @@ class Juggler implements IAnimatable
 
 		var tween:Tween = Tween.fromPool(target, time);
 		
-		for (property in properties)
+		var fields = Reflect.fields (properties);
+		for (property in fields)
 		{
-			var value:Dynamic = properties[property];
+			var value:Dynamic = Reflect.getProperty(properties, property);
 			
-			if (tween.hasOwnProperty(property))
-				tween[property] = value;
+			trace("CHECK");
+			if (Reflect.hasField(tween, property)) // if (tween.hasOwnProperty(property))
+				Reflect.setProperty(tween, property, value);// tween[property] = value;
 			else if (target.hasOwnProperty(Tween.getPropertyName(property)))
 				tween.animate(property, cast value);
 			else
@@ -247,7 +258,7 @@ class Juggler implements IAnimatable
 	{   
 		var numObjects:Int = mObjects.length;
 		var currentIndex:Int = 0;
-		var i:Int;
+		var i:Int = 0;
 		
 		mElapsedTime += time;
 		if (numObjects == 0) return;
@@ -259,7 +270,7 @@ class Juggler implements IAnimatable
 		for (i in 0...numObjects)
 		{
 			var object:IAnimatable = mObjects[i];
-			if (object)
+			if (object != null)
 			{
 				// shift objects into empty slots along the way
 				if (currentIndex != i) 
@@ -278,9 +289,10 @@ class Juggler implements IAnimatable
 			numObjects = mObjects.length; // count might have changed!
 			
 			while (i < numObjects)
-				mObjects[Int(currentIndex++)] = mObjects[Int(i++)];
+				mObjects[cast(currentIndex++)] = mObjects[cast (i++)];
 			
-			mObjects.length = currentIndex;
+			trace("CHECK");
+			mObjects.splice(currentIndex, mObjects.length - currentIndex); // mObjects.length = currentIndex;
 		}
 	}
 	
@@ -299,3 +311,5 @@ class Juggler implements IAnimatable
 	/** The actual vector that contains all objects that are currently being animated. */
 	private function get_objects():Array<IAnimatable> { return mObjects; }
 }
+
+//typedef Function = Dynamic -> Void;

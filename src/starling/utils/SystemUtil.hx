@@ -23,7 +23,7 @@ class SystemUtil
 {
 	private static var sInitialized:Bool = false;
 	private static var sApplicationActive:Bool = true;
-	private static var sWaitingCalls:Array<Array<Dynamic>> = [];
+	private static var sWaitingCalls = new Array<Array<Dynamic>>();
 	private static var sPlatform:String;
 	private static var sVersion:String;
 	private static var sAIR:Bool;
@@ -80,7 +80,7 @@ class SystemUtil
 		for (call in sWaitingCalls)
 			call[0].apply(null, call[1]);
 		
-		sWaitingCalls = [];
+		sWaitingCalls = new Array<Array<Dynamic>>();
 	}
 	
 	private static function onDeactivate(event:Dynamic):Void

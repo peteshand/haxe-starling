@@ -10,6 +10,7 @@
 
 package starling.textures;
 
+import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.textures.TextureBase;
 import openfl.errors.ArgumentError;
 import openfl.geom.Matrix;
@@ -64,6 +65,7 @@ class SubTexture extends Texture
 							   ownsParent:Bool=false, frame:Rectangle=null,
 							   rotated:Bool=false)
 	{
+		super();
 		// TODO: in a future version, the order of arguments of this constructor should
 		//       be fixed ('ownsParent' at the very end).
 		
@@ -82,7 +84,7 @@ class SubTexture extends Texture
 			mTransformationMatrix.rotate(Math.PI / 2.0);
 		}
 
-		if (mFrame && (mFrame.x > 0 || mFrame.y > 0 ||
+		if (mFrame != null && (mFrame.x > 0 || mFrame.y > 0 ||
 			mFrame.right < mRegion.width || mFrame.bottom < mRegion.height))
 		{
 			trace("[Starling] Warning: frames inside the texture's region are unsupported.");
@@ -92,6 +94,7 @@ class SubTexture extends Texture
 									mRegion.height / mParent.height);
 		mTransformationMatrix.translate(mRegion.x  / mParent.width,
 										mRegion.y  / mParent.height);
+		
 	}
 	
 	/** Disposes the parent texture if this texture owns it. */
@@ -128,8 +131,9 @@ class SubTexture extends Texture
 	public override function adjustTexCoords(texCoords:Array<Float>,
 											 startIndex:Int=0, stride:Int=0, count:Int=-1):Void
 	{
-		if (count < 0)
-			count = (texCoords.length - startIndex - 2) / (stride + 2) + 1;
+		if (count < 0) {
+			count = cast ((texCoords.length - startIndex - 2) / (stride + 2) + 1);
+		}
 
 		var endIndex:Int = startIndex + count * (2 + stride);
 		var texture:SubTexture = this;
@@ -137,7 +141,7 @@ class SubTexture extends Texture
 		
 		sMatrix.identity();
 		
-		while (texture)
+		while (texture != null)
 		{
 			sMatrix.concat(texture.mTransformationMatrix);
 			texture = cast texture.parent;
@@ -148,12 +152,12 @@ class SubTexture extends Texture
 		//for (i:Int=startIndex; i<endIndex; i += 2 + stride)
 		{
 			u = texCoords[    i   ];
-			v = texCoords[Int(i+1)];
+			v = texCoords[cast(i+1, Int)];
 			
 			MatrixUtil.transformCoords(sMatrix, u, v, sTexCoords);
 			
 			texCoords[    i   ] = sTexCoords.x;
-			texCoords[Int(i + 1)] = sTexCoords.y;
+			texCoords[cast(i + 1, Int)] = sTexCoords.y;
 			
 			i += (2 + stride);
 		}
@@ -203,7 +207,7 @@ class SubTexture extends Texture
 	public override function get_root():ConcreteTexture { return mParent.root; }
 	
 	/** @inheritDoc */
-	public override function get_format():String { return mParent.format; }
+	public override function get_format():Context3DTextureFormat { return mParent.format; }
 	
 	/** @inheritDoc */
 	public override function get_width():Float { return mWidth; }
