@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import openfl.errors.ArgumentError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
@@ -49,7 +50,6 @@ class Quad extends DisplayObject
 	private static var sHelperMatrix3D:Matrix3D = new Matrix3D();
 	
 	public var color(get, set):UInt;
-	public var alpha(null, set):Float;
 	public var tinted(get, null):Bool;
 	public var premultipliedAlpha(get, null):Bool;
 	
@@ -59,6 +59,7 @@ class Quad extends DisplayObject
 	public function new(width:Float, height:Float, color:UInt=0xffffff,
 						 premultipliedAlpha:Bool=true)
 	{
+		super();
 		if (width == 0.0 || height == 0.0)
 			throw new ArgumentError("Invalid size: width and height must not be zero");
 
@@ -100,7 +101,7 @@ class Quad extends DisplayObject
 			if (scaleX < 0) { resultRect.width  *= -1; resultRect.x -= resultRect.width;  }
 			if (scaleY < 0) { resultRect.height *= -1; resultRect.y -= resultRect.height; }
 		}
-		else if (is3D && stage)
+		else if (is3D && stage != null)
 		{
 			stage.getCameraPosition(targetSpace, sHelperPoint3D);
 			getTransformationMatrix3D(targetSpace, sHelperMatrix3D);
@@ -154,22 +155,24 @@ class Quad extends DisplayObject
 	}
 	
 	/** Sets the colors of all vertices to a certain value. */
-	public function set_color(value:UInt):Void 
+	public function set_color(value:UInt):UInt 
 	{
 		mVertexData.setUniformColor(value);
 		onVertexDataChanged();
 		
 		if (value != 0xffffff || alpha != 1.0) mTinted = true;
 		else mTinted = mVertexData.tinted;
+		return value;
 	}
 	
 	/** @inheritDoc **/
-	public override function set_alpha(value:Float):Void
+	public override function set_alpha(value:Float):Float
 	{
 		super.alpha = value;
 		
 		if (value < 1.0) mTinted = true;
 		else mTinted = mVertexData.tinted;
+		return value;
 	}
 	
 	/** Copies the raw vertex data to a VertexData instance. */

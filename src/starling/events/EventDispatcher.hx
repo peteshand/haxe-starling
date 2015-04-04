@@ -10,7 +10,7 @@
 
 package starling.events;
 
-import haxe.Constraints.Function;
+import openfl.Vector;
 import starling.display.DisplayObject;
 
 /** The EventDispatcher class is the base class for all classes that dispatch events. 
@@ -33,24 +33,25 @@ import starling.display.DisplayObject;
  */
 class EventDispatcher
 {
-	private var mEventListeners:Map<String, Array<Function>>;
+	private var mEventListeners:Map<String, Array<EDFunction>>;
 	
 	/** Helper object. */
-	private static var sBubbleChains:Array<Dynamic> = [];
+	private static var sBubbleChains = new Array<Dynamic>();
 	
 	/** Creates an EventDispatcher. */
 	public function new()
 	{  }
 	
 	/** Registers an event listener at a certain object. */
-	public function addEventListener(type:String, listener:Function):Void
+	public function addEventListener(type:String, listener:EDFunction):Void
 	{
-		if (mEventListeners == null)
-			mEventListeners = new Map<String, Array<Function>>();
+		if (mEventListeners == null){
+			mEventListeners = new Map<String, Array<EDFunction>>();
+		}
 		
-		var listeners:Array<Function> = cast mEventListeners[type];
+		var listeners:Array<EDFunction> = cast mEventListeners[type];
 		if (listeners == null) {
-			mEventListeners[type] = new Array<Function>();
+			mEventListeners[type] = new Array<EDFunction>();
 			mEventListeners[type].push(listener);
 		}
 		else if (listeners.indexOf(listener) == -1) {// check for duplicates
@@ -59,12 +60,12 @@ class EventDispatcher
 	}
 	
 	/** Removes an event listener from the object. */
-	public function removeEventListener(type:String, listener:Function):Void
+	public function removeEventListener(type:String, listener:EDFunction):Void
 	{
-		if (mEventListeners)
+		if (mEventListeners != null)
 		{
-			var listeners:Array<Function> = cast mEventListeners[type];
-			var numListeners:Int = listeners ? listeners.length : 0;
+			var listeners:Array<EDFunction> = cast mEventListeners[type];
+			var numListeners:Int = listeners != null ? listeners.length : 0;
 
 			if (numListeners > 0)
 			{
@@ -72,12 +73,12 @@ class EventDispatcher
 				// (see comment in 'invokeEvent')
 
 				var index:Int = 0;
-				var restListeners:Array<Function> = new Array<Function>(numListeners-1);
+				var restListeners = new Vector<EDFunction>(numListeners-1);
 
 				for (i in 0...numListeners)
 				{
-					var otherListener:Function = listeners[i];
-					if (otherListener != listener) restListeners[Int(index++)] = otherListener;
+					var otherListener:EDFunction = listeners[i];
+					if (otherListener != listener) restListeners[cast(index++, Int)] = otherListener;
 				}
 
 				mEventListeners[type] = restListeners;
@@ -89,7 +90,7 @@ class EventDispatcher
 	 *  Be careful when removing all event listeners: you never know who else was listening. */
 	public function removeEventListeners(type:String=null):Void
 	{
-		if (type && mEventListeners)
+		if (type != null && mEventListeners != null)
 			mEventListeners.remove(type);
 		else
 			mEventListeners = null;
@@ -103,7 +104,14 @@ class EventDispatcher
 	{
 		var bubbles:Bool = event.bubbles;
 		
-		if (!bubbles && (mEventListeners == null || !(event.type in mEventListeners)))
+		trace("CHECK"); // (event.type in mEventListeners) == Reflect.hasField(mEventListeners, event.type)
+		
+		if (mEventListeners == null) {
+			return;
+		}
+		var containsType:Bool = mEventListeners.exists(event.type);
+		
+		if (!bubbles && (mEventListeners == null || containsType == false))
 			return; // no need to do anything
 		
 		// we save the current target and restore it later;
@@ -115,20 +123,22 @@ class EventDispatcher
 		if (bubbles && Std.is(this, DisplayObject)) bubbleEvent(event);
 		else                                  invokeEvent(event);
 		
-		if (previousTarget) event.setTarget(previousTarget);
+		if (previousTarget != null) event.setTarget(previousTarget);
 	}
 	
 	/** @private
 	 *  Invokes an event on the current object. This method does not do any bubbling, nor
 	 *  does it back-up and restore the previous target on the event. The 'dispatchEvent' 
 	 *  method uses this method internally. */
-	/*internal*/ private function invokeEvent(event:Event):Bool
+	/*internal*/ public function invokeEvent(event:Event):Bool
 	{
-		var listeners:Array<Function> = mEventListeners ?
-			cast (mEventListeners[event.type], Array<Function>) : null;
+		var listeners:Array<EDFunction> = mEventListeners != null ?
+			cast (mEventListeners[event.type], Array<EDFunction>) : null;
+		
 		var numListeners:Int = listeners == null ? 0 : listeners.length;
 		
-		if (numListeners)
+		
+		if (cast numListeners)
 		{
 			event.setCurrentTarget(this);
 			
@@ -138,7 +148,7 @@ class EventDispatcher
 			
 			for (i in 0...numListeners)
 			{
-				var listener:Function = cast listeners[i];
+				var listener:EDFunction = cast listeners[i];
 				var numArgs:Int = listener.length;
 				
 				if (numArgs == 0) listener();
@@ -163,18 +173,18 @@ class EventDispatcher
 		// we determine the bubble chain before starting to invoke the listeners.
 		// that way, changes done by the listeners won't affect the bubble chain.
 		
-		var chain:Array<EventDispatcher>;
+		var chain:Vector<EventDispatcher>;
 		var element:DisplayObject = cast this;
 		var length:Int = 1;
 		
 		if (sBubbleChains.length > 0) { chain = sBubbleChains.pop(); chain[0] = element; }
 		else {
-			chain = new Array<EventDispatcher>();
+			chain = new Vector<EventDispatcher>();
 			chain.push(element);
 		}
 		
 		while ((element = element.parent) != null)
-			chain[Int(length++)] = element;
+			chain[cast(length++, Int)] = element;
 
 		for (i in 0...length)
 		{
@@ -202,7 +212,9 @@ class EventDispatcher
 	/** Returns if there are listeners registered for a certain event type. */
 	public function hasEventListener(type:String):Bool
 	{
-		var listeners:Array<Function> = mEventListeners ? mEventListeners[type] : null;
-		return listeners ? listeners.length != 0 : false;
+		var listeners:Array<EDFunction> = mEventListeners != null ? mEventListeners[type] : null;
+		return listeners != null ? listeners.length != 0 : false;
 	}
 }
+
+typedef EDFunction = Dynamic;

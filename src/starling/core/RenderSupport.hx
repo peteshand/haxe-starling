@@ -10,6 +10,7 @@
 
 package starling.core;
 
+import openfl.display3D._shaders.AGLSLShaderUtils;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DCompareMode;
 import openfl.display3D.Context3DProgramType;
@@ -23,6 +24,7 @@ import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.geom.Vector3D;
 import openfl.utils.AGALMiniAssembler;
+import openfl.Vector;
 
 import starling.display.BlendMode;
 import starling.display.DisplayObject;
@@ -77,9 +79,9 @@ class RenderSupport
 	private static var sClipRect:Rectangle = new Rectangle();
 	private static var sBufferRect:Rectangle = new Rectangle();
 	private static var sScissorRect:Rectangle = new Rectangle();
-	private static var sAssembler = new AGALMiniAssembler();
+	//private static var sAssembler = new AGALMiniAssembler();
 	private static var sMatrix3D:Matrix3D = new Matrix3D();
-	private static var sMatrixData(get, set); 
+	private static var sMatrixData:Array<Float> = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	
 	public var mvpMatrix(get, null):Matrix;
 	public var modelViewMatrix(get, null):Matrix;
@@ -88,6 +90,7 @@ class RenderSupport
 	public var projectionMatrix3D(get, set):Matrix3D;
 	public var blendMode(get, set):String;
 	public var renderTarget(get, set):Texture;
+	public var drawCount(get, null):Int;
 	
 	// construction
 	
@@ -103,7 +106,7 @@ class RenderSupport
 		mProjectionMatrix3D = new Matrix3D();
 		mModelViewMatrix3D = new Matrix3D();
 		mMvpMatrix3D = new Matrix3D();
-		mMatrixStack3D = new Array<Matrix>();
+		mMatrixStack3D = new Array<Matrix3D>();
 		mMatrixStack3DSize = 0;
 		
 		mDrawCount = 0;
@@ -241,13 +244,13 @@ class RenderSupport
 		if (mMatrixStack.length < mMatrixStackSize + 1)
 			mMatrixStack.push(new Matrix());
 	
-		mMatrixStack[Int(mMatrixStackSize++)].copyFrom(mModelViewMatrix);
+		mMatrixStack[cast(mMatrixStackSize++, Int)].copyFrom(mModelViewMatrix);
 	}
 	
 	/** Restores the modelview matrix that was last pushed to the stack. */
 	public function popMatrix():Void
 	{
-		mModelViewMatrix.copyFrom(mMatrixStack[Int(--mMatrixStackSize)]);
+		mModelViewMatrix.copyFrom(mMatrixStack[cast(--mMatrixStackSize, Int)]);
 	}
 	
 	/** Empties the matrix stack, resets the modelview matrix to the identity matrix. */
@@ -280,10 +283,11 @@ class RenderSupport
 	/** Returns the current projection matrix.
 	 *  CAUTION: Use with care! Each call returns the same instance. */
 	public function get_projectionMatrix():Matrix { return mProjectionMatrix; }
-	public function  set_projectionMatrix(value:Matrix):Void 
+	public function  set_projectionMatrix(value:Matrix):Matrix 
 	{
 		mProjectionMatrix.copyFrom(value);
 		applyClipRect();
+		return value;
 	}
 	
 	// 3d transformations
@@ -304,13 +308,13 @@ class RenderSupport
 		if (mMatrixStack3D.length < mMatrixStack3DSize + 1)
 			mMatrixStack3D.push(new Matrix3D());
 		
-		mMatrixStack3D[Int(mMatrixStack3DSize++)].copyFrom(mModelViewMatrix3D);
+		mMatrixStack3D[cast(mMatrixStack3DSize++, Int)].copyFrom(mModelViewMatrix3D);
 	}
 	
 	/** Restores the 3D modelview matrix that was last pushed to the stack. */
 	public function popMatrix3D():Void
 	{
-		mModelViewMatrix3D.copyFrom(mMatrixStack3D[Int(--mMatrixStack3DSize)]);
+		mModelViewMatrix3D.copyFrom(mMatrixStack3D[cast (--mMatrixStack3DSize, Int)]);
 	}
 	
 	/** Calculates the product of modelview and projection matrix and stores it in a 3D matrix.
@@ -335,9 +339,10 @@ class RenderSupport
 	/** Returns the current 3D projection matrix.
 	 *  CAUTION: Use with care! Each call returns the same instance. */
 	public function get_projectionMatrix3D():Matrix3D { return mProjectionMatrix3D; }
-	public function set_projectionMatrix3D(value:Matrix3D):Void
+	public function set_projectionMatrix3D(value:Matrix3D):Matrix3D
 	{
 		mProjectionMatrix3D.copyFrom(value);
+		return value;
 	}
 
 	// blending
@@ -351,9 +356,10 @@ class RenderSupport
 	/** The blend mode to be used on rendering. To apply the factor, you have to manually call
 	 *  'applyBlendMode' (because the actual blend factors depend on the PMA mode). */
 	public function get_blendMode():String { return mBlendMode; }
-	public function set_blendMode(value:String):Void
+	public function set_blendMode(value:String):String
 	{
 		if (value != BlendMode.AUTO) mBlendMode = value;
+		return value;
 	}
 	
 	// render targets
@@ -361,9 +367,10 @@ class RenderSupport
 	/** The texture that is currently being rendered into, or 'null' to render into the 
 	 *  back buffer. If you set a new target, it is immediately activated. */
 	public function get_renderTarget():Texture { return mRenderTarget; }
-	public function set_renderTarget(target:Texture):Void 
+	public function set_renderTarget(target:Texture):Texture 
 	{
 		setRenderTarget(target);
+		return target;
 	}
 
 	/** Changes the the current render target.
@@ -376,11 +383,11 @@ class RenderSupport
 		mRenderTarget = target;
 		applyClipRect();
 
-		if (target)
-			Starling.context.setRenderToTexture(target.base,
+		if (target != null)
+			Starling.Context.setRenderToTexture(target.base,
 					SystemUtil.supportsDepthAndStencil, antiAliasing);
 		else
-			Starling.context.setRenderToBackBuffer();
+			Starling.Context.setRenderToBackBuffer();
 	}
 	
 	// clipping
@@ -427,7 +434,7 @@ class RenderSupport
 	{
 		finishQuadBatch();
 		
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) return;
 		
 		if (mClipRectStackSize > 0)
@@ -435,10 +442,10 @@ class RenderSupport
 			var width:Int, height:Int;
 			var rect:Rectangle = mClipRectStack[mClipRectStackSize-1];
 			
-			if (mRenderTarget)
+			if (mRenderTarget != null)
 			{
-				width  = mRenderTarget.root.nativeWidth;
-				height = mRenderTarget.root.nativeHeight;
+				width  = cast mRenderTarget.root.nativeWidth;
+				height = cast mRenderTarget.root.nativeHeight;
 			}
 			else
 			{
@@ -472,44 +479,62 @@ class RenderSupport
 
 	// stencil masks
 
-	private var mMasks = new Array<DisplayObject>();
+	private var mMasks = new Vector<DisplayObject>();
 
 	public function pushMask(mask:DisplayObject):Void
 	{
 		mMasks[mMasks.length] = mask;
 
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) return;
 
 		finishQuadBatch();
-
-		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
-				Context3DCompareMode.EQUAL, Context3DStencilAction.INCREMENT_SATURATE);
+		trace("RenderSupport 3");
+		context.setStencilActions(
+			Context3DTriangleFace.FRONT_AND_BACK,
+			Context3DCompareMode.EQUAL, 
+			Context3DStencilAction.INCREMENT_SATURATE
+		);
 
 		drawMask(mask);
 
 		context.setStencilReferenceValue(mMasks.length);
-		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
-				Context3DCompareMode.EQUAL, Context3DStencilAction.KEEP);
+		trace("RenderSupport 4");
+		//triangleFace:String="frontAndBack", compareMode:String="always", actionOnBothPass:String="keep", actionOnDepthFail:String="keep", actionOnDepthPassStencilFail:String="keep"
+		
+		
+		context.setStencilActions(
+			Context3DTriangleFace.FRONT_AND_BACK,
+			Context3DCompareMode.EQUAL,
+			Context3DStencilAction.KEEP
+		);
 	}
 
 	public function popMask():Void
 	{
 		var mask:DisplayObject = mMasks.pop();
 
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) return;
 
 		finishQuadBatch();
 
-		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
-				Context3DCompareMode.EQUAL, Context3DStencilAction.DECREMENT_SATURATE);
+		trace("RenderSupport 1");
+		context.setStencilActions(
+			Context3DTriangleFace.FRONT_AND_BACK,
+			Context3DCompareMode.EQUAL,
+			Context3DStencilAction.DECREMENT_SATURATE
+		);
 
 		drawMask(mask);
 
 		context.setStencilReferenceValue(mMasks.length);
-		context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
-				Context3DCompareMode.EQUAL, Context3DStencilAction.KEEP);
+		trace("RenderSupport 2");
+		context.setStencilActions(
+			Context3DTriangleFace.FRONT_AND_BACK,
+			Context3DCompareMode.EQUAL,
+			Context3DStencilAction.KEEP
+		);
 	}
 
 	private function drawMask(mask:DisplayObject):Void
@@ -517,7 +542,7 @@ class RenderSupport
 		pushMatrix();
 
 		var stage:Stage = mask.stage;
-		if (stage) mask.getTransformationMatrix(stage, mModelViewMatrix);
+		if (stage != null) mask.getTransformationMatrix(stage, mModelViewMatrix);
 		else       transformMatrix(mask);
 
 		mask.render(this, 0.0);
@@ -627,14 +652,14 @@ class RenderSupport
 	/** Sets up the blending factors that correspond with a certain blend mode. */
 	public static function setBlendFactors(premultipliedAlpha:Bool, blendMode:String="normal"):Void
 	{
-		var blendFactors:Array = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
-		Starling.context.setBlendFactors(blendFactors[0], blendFactors[1]);
+		var blendFactors:Array<Dynamic> = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
+		Starling.Context.setBlendFactors(blendFactors[0], blendFactors[1]);
 	}
 	
 	/** Clears the render context with a certain color and alpha value. */
-	public static function clear(rgb:UInt=0, alpha:Float=0.0):Void
+	public static function Clear(rgb:UInt=0, alpha:Float=0.0):Void
 	{
-		Starling.context.clear(
+		Starling.Context.clear(
 			Color.getRed(rgb)   / 255.0, 
 			Color.getGreen(rgb) / 255.0, 
 			Color.getBlue(rgb)  / 255.0,
@@ -644,7 +669,7 @@ class RenderSupport
 	/** Clears the render context with a certain color and alpha value. */
 	public function clear(rgb:UInt=0, alpha:Float=0.0):Void
 	{
-		RenderSupport.clear(rgb, alpha);
+		RenderSupport.Clear(rgb, alpha);
 	}
 	
 	/** Assembles fragment- and vertex-shaders, passed as Strings, to a Program3D. If you
@@ -655,39 +680,52 @@ class RenderSupport
 	{
 		if (resultProgram == null) 
 		{
-			var context:Context3D = Starling.context;
+			var context:Context3D = Starling.Context;
 			if (context == null) throw new MissingContextError();
 			resultProgram = context.createProgram();
 		}
 		
-		resultProgram.upload(
-			sAssembler.assemble(Context3DProgramType.VERTEX, vertexShader),
-			sAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
+		/*var assembledVertex:Dynamic = sAssembler.assemble(vertexShader);
+		var assembledFragment:Dynamic = sAssembler.assemble(fragmentShader);
+		
+		resultProgram.upload(assembledVertex, assembledFragment);*/
+		
+		
+		var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
+        var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
+		
+        resultProgram.upload(vertexByteCode, fragmentByteCode);
 		
 		return resultProgram;
 	}
 	
 	/** Returns the flags that are required for AGAL texture lookup, 
 	 *  including the '&lt;' and '&gt;' delimiters. */
-	public static function getTextureLookupFlags(format:String, mipMapping:Bool,
+	public static function getTextureLookupFlags(format:Context3DTextureFormat, mipMapping:Bool,
 												 repeat:Bool=false,
 												 smoothing:String="bilinear"):String
 	{
-		var options:Array = ["2d", repeat ? "repeat" : "clamp"];
+		var options:Array<Dynamic> = ["2d", repeat ? "repeat" : "clamp"];
 		
 		if (format == Context3DTextureFormat.COMPRESSED)
 			options.push("dxt1");
-		else if (format == "compressedAlpha")
+		else if (format == Context3DTextureFormat.COMPRESSED_ALPHA)
 			options.push("dxt5");
 		
-		if (smoothing == TextureSmoothing.NONE)
-			options.push("nearest", mipMapping ? "mipnearest" : "mipnone");
-		else if (smoothing == TextureSmoothing.BILINEAR)
-			options.push("linear", mipMapping ? "mipnearest" : "mipnone");
-		else
-			options.push("linear", mipMapping ? "miplinear" : "mipnone");
+		if (smoothing == TextureSmoothing.NONE) {
+			options.push("nearest");
+			options.push(mipMapping ? "mipnearest" : "mipnone");
+		}
+		else if (smoothing == TextureSmoothing.BILINEAR) {
+			options.push("linear");
+			options.push(mipMapping ? "mipnearest" : "mipnone");
+		}
+		else {
+			options.push("linear");
+			options.push(mipMapping ? "miplinear" : "mipnone");
+		}
 		
-		return "<" + options.join() + ">";
+		return "<" + options.join("") + ">";
 	}
 	
 	// statistics
@@ -698,33 +736,4 @@ class RenderSupport
 	
 	/** Indicates the number of stage3D draw calls. */
 	public function get_drawCount():Int { return mDrawCount; }
-	
-	private static function get_sMatrixData():Array<Float>
-	{
-		if (sMatrixData == null) {
-			sMatrixData = new Array<Float>();
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-			sMatrixData.push(0);
-		}
-		return sMatrixData;
-	}
-	
-	private static function set_sMatrixData(value:Array<Float>):Array<Float>
-	{
-		return sMatrixData = value;
-	}
 }

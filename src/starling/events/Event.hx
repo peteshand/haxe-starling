@@ -100,8 +100,11 @@ class Event
 	public var type(get, null):String;
 	public var data(get, null):Dynamic;
 	
-	/*internal*/ private var stopsPropagation(get, null):Bool;
-	/*internal*/ private var stopsImmediatePropagation(get, null):Bool;
+	/*internal*/ 
+	public var stopsPropagation(get, null):Bool;
+	
+	/*internal*/
+	public var stopsImmediatePropagation(get, null):Bool;
 	
 	/** Creates an event object that can be passed to listeners. */
 	public function new(type:String, bubbles:Bool=false, data:Dynamic=null)
@@ -126,8 +129,11 @@ class Event
 	/** Returns a description of the event, containing type and bubble information. */
 	public function toString():String
 	{
+		var name:String = Type.getClassName(Type.getClass(this));
+		trace("CHECK name = " + name.split(".").pop());
+		
 		return StarlingUtils.formatString("[{0} type=\"{1}\" bubbles={2}]", 
-			Type.getClassName(this).split("::").pop(), mType, mBubbles);
+			[cast name.split(".").pop(), mType, mBubbles]);
 	}
 	
 	/** Indicates if event will bubble. */
@@ -148,33 +154,38 @@ class Event
 	// properties for internal use
 	
 	/** @private */
-	/*internal*/private function setTarget(value:EventDispatcher):Void { mTarget = value; }
+	/*internal*/
+	public function setTarget(value:EventDispatcher):Void { mTarget = value; }
 	
 	/** @private */
-	/*internal*/private function setCurrentTarget(value:EventDispatcher):Void { mCurrentTarget = value; } 
+	/*internal*/
+	public function setCurrentTarget(value:EventDispatcher):Void { mCurrentTarget = value; } 
 	
 	/** @private */
-	/*internal*/private function setData(value:Dynamic):Void { mData = value; }
+	/*internal*/
+	public function setData(value:Dynamic):Void { mData = value; }
 	
 	/** @private */
-	/*internal*/private function get_stopsPropagation():Bool { return mStopsPropagation; }
+	/*internal*/
+	public function get_stopsPropagation():Bool { return mStopsPropagation; }
 	
 	/** @private */
-	/*internal*/private function get_stopsImmediatePropagation():Bool { return mStopsImmediatePropagation; }
+	/*internal*/
+	public function get_stopsImmediatePropagation():Bool { return mStopsImmediatePropagation; }
 	
 	// event pooling
 	
 	/** @private */
 	//starling_internal
-	private static function fromPool(type:String, bubbles:Bool=false, data:Dynamic=null):Event
+	public static function fromPool(type:String, bubbles:Bool=false, data:Dynamic=null):Event
 	{
-		if (sEventPool.length) return sEventPool.pop().reset(type, bubbles, data);
+		if (sEventPool.length > 0) return sEventPool.pop().reset(type, bubbles, data);
 		else return new Event(type, bubbles, data);
 	}
 	
 	/** @private */
 	//starling_internal
-	private static function toPool(event:Event):Void
+	public static function toPool(event:Event):Void
 	{
 		event.mData = event.mTarget = event.mCurrentTarget = null;
 		sEventPool[sEventPool.length] = event; // avoiding 'push'
@@ -182,7 +193,7 @@ class Event
 	
 	/** @private */
 	//starling_internal
-	private function reset(type:String, bubbles:Bool=false, data:Dynamic=null):Event
+	public function reset(type:String, bubbles:Bool=false, data:Dynamic=null):Event
 	{
 		mType = type;
 		mBubbles = bubbles;

@@ -80,7 +80,7 @@ class Sprite extends DisplayObjectContainer
 	
 	private function disposeFlattenedContents():Void
 	{
-		if (mFlattenedContents)
+		if (mFlattenedContents != null)
 		{
 			for (i in 0...mFlattenedContents.length)
 				mFlattenedContents[i].dispose();
@@ -136,10 +136,11 @@ class Sprite extends DisplayObjectContainer
 	 *  <strong>Note:</strong> clipping rectangles are axis aligned with the screen, so they
 	 *  will not be rotated or skewed if the Sprite is. */
 	public function get_clipRect():Rectangle { return mClipRect; }
-	public function set_clipRect(value:Rectangle):Void 
+	public function set_clipRect(value:Rectangle):Rectangle 
 	{
-		if (mClipRect && value) mClipRect.copyFrom(value);
-		else mClipRect = (value ? value.clone() : null);
+		if (mClipRect != null && value != null) mClipRect.copyFrom(value);
+		else mClipRect = (value != null ? value.clone() : null);
+		return value;
 	}
 
 	/** Returns the bounds of the container's clipping rectangle in the given coordinate space,
@@ -149,11 +150,12 @@ class Sprite extends DisplayObjectContainer
 		if (mClipRect == null) return null;
 		if (resultRect == null) resultRect = new Rectangle();
 		
-		var x:Float, y:Float;
-		var minX:Float =  Float.MAX_VALUE;
-		var maxX:Float = -Float.MAX_VALUE;
-		var minY:Float =  Float.MAX_VALUE;
-		var maxY:Float = -Float.MAX_VALUE;
+		var x:Float = 0;
+		var y:Float = 0;
+		var minX:Float = Math.POSITIVE_INFINITY;// Float.MAX_VALUE;
+		var maxX:Float = Math.NEGATIVE_INFINITY;//-Float.MAX_VALUE;
+		var minY:Float = Math.POSITIVE_INFINITY;// Float.MAX_VALUE;
+		var maxY:Float = Math.NEGATIVE_INFINITY;//-Float.MAX_VALUE;
 		var transMatrix:Matrix = getTransformationMatrix(targetSpace, sHelperMatrix);
 		
 		for (i in 0...4)
@@ -183,7 +185,7 @@ class Sprite extends DisplayObjectContainer
 		var bounds:Rectangle = super.getBounds(targetSpace, resultRect);
 		
 		// if we have a scissor rect, intersect it with our bounds
-		if (mClipRect)
+		if (mClipRect != null)
 			RectangleUtil.intersect(bounds, getClipRect(targetSpace, sHelperRect), 
 									bounds);
 		
@@ -202,7 +204,7 @@ class Sprite extends DisplayObjectContainer
 	/** @inheritDoc */
 	public override function render(support:RenderSupport, parentAlpha:Float):Void
 	{
-		if (mClipRect)
+		if (mClipRect != null)
 		{
 			var clipRect:Rectangle = support.pushClipRect(getClipRect(stage, sHelperRect));
 			if (clipRect.isEmpty())
@@ -213,10 +215,10 @@ class Sprite extends DisplayObjectContainer
 			}
 		}
 		
-		if (mFlattenedContents || mFlattenRequested)
+		if (mFlattenedContents != null || mFlattenRequested)
 		{
 			if (mFlattenedContents == null)
-				mFlattenedContents = [];
+				mFlattenedContents = new Array<QuadBatch>();
 			
 			if (mFlattenRequested)
 			{
@@ -244,7 +246,7 @@ class Sprite extends DisplayObjectContainer
 		}
 		else super.render(support, parentAlpha);
 		
-		if (mClipRect)
+		if (mClipRect != null)
 			support.popClipRect();
 	}
 }

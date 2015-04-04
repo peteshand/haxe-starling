@@ -64,6 +64,7 @@ class DisplacementMapFilter extends FragmentFilter
 										  scaleX:Float=0.0, scaleY:Float=0.0,
 										  repeat:Bool=false)
 	{
+		super();
 		mMapTexture = mapTexture;
 		mMapPoint = new Point();
 		mComponentX = componentX;
@@ -72,8 +73,6 @@ class DisplacementMapFilter extends FragmentFilter
 		mScaleY = scaleY;
 		mRepeat = repeat;
 		this.mapPoint = mapPoint;
-		
-		super();
 	}
 	
 	/** @inheritDoc */
@@ -88,7 +87,7 @@ class DisplacementMapFilter extends FragmentFilter
 	{
 		// the texture coordinates for the map texture are uploaded via a separate buffer
 		if (mMapTexCoordBuffer) mMapTexCoordBuffer.dispose();
-		mMapTexCoordBuffer = Starling.context.createVertexBuffer(4, 2);
+		mMapTexCoordBuffer = Starling.Context.createVertexBuffer(4, 2);
 		
 		var target:Starling = Starling.current;
 		var mapFlags:String = RenderSupport.getTextureLookupFlags(

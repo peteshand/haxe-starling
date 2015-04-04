@@ -10,6 +10,7 @@
 
 package starling.filters;
 
+import openfl.display3D._shaders.AGLSLShaderUtils;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DProgramType;
 import openfl.display3D.Program3D;
@@ -168,7 +169,14 @@ class BlurFilter extends FragmentFilter
 		else fragmentShader +=
 			"add  oc, ft5, ft4                              \n";   // add to output color
 		
-		return target.registerProgramFromSource(programName, vertexShader, fragmentShader);
+		#if js {
+			var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
+			var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
+			return target.registerProgramFromSource(programName, vertexByteCode, fragmentByteCode);
+		}
+		#else 
+			return target.registerProgramFromSource(programName, vertexShader, fragmentShader);
+		#end
 	}
 	
 	/** @private */

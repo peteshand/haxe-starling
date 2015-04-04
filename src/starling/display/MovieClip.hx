@@ -10,6 +10,7 @@
 
 package starling.display;
 
+import openfl.errors.ArgumentError;
 import openfl.errors.IllegalOperationError;
 import openfl.media.Sound;
 import openfl.media.SoundTransform;
@@ -57,6 +58,17 @@ class MovieClip extends Image implements IAnimatable
 	private var mMuted:Bool;
 	private var mSoundTransform:SoundTransform = null;
 	
+	public var totalTime(get, null):Float;
+	public var currentTime(get, null):Float;
+	public var numFrames(get, null):Int;
+	public var loop(get, set):Bool;
+	public var muted(get, set):Bool;
+	public var soundTransform(get, set):SoundTransform;
+	public var currentFrame(get, set):Int;
+	public var fps(get, set):Float;
+	public var isPlaying(get, null):Bool;
+	public var isComplete(get, null):Bool;
+	
 	/** Creates a movie clip from the provided textures and with the specified default framerate.
 	 *  The movie will have the size of the first frame. */  
 	public function new(textures:Array<Texture>, fps:Float=12)
@@ -87,7 +99,7 @@ class MovieClip extends Image implements IAnimatable
 		mDurations = new Array<Float>(numFrames);
 		mStartTimes = new Array<Float>(numFrames);
 		
-		for (var i:Int=0; i<numFrames; ++i)
+		for (i in 0...numFrames)
 		{
 			mDurations[i] = mDefaultFrameDuration;
 			mStartTimes[i] = i * mDefaultFrameDuration;
@@ -207,7 +219,7 @@ class MovieClip extends Image implements IAnimatable
 		mStartTimes.length = 0;
 		mStartTimes[0] = 0;
 		
-		for (var i:Int=1; i<numFrames; ++i)
+		for (i in 1...numFrames)
 			mStartTimes[i] = mStartTimes[Int(i-1)] + mDurations[Int(i-1)];
 	}
 	
@@ -282,50 +294,63 @@ class MovieClip extends Image implements IAnimatable
 	// properties  
 	
 	/** The total duration of the clip in seconds. */
-	public function get totalTime():Float 
+	public function get_totalTime():Float 
 	{
 		var numFrames:Int = mTextures.length;
 		return mStartTimes[Int(numFrames-1)] + mDurations[Int(numFrames-1)];
 	}
 	
 	/** The time that has passed since the clip was started (each loop starts at zero). */
-	public function get currentTime():Float { return mCurrentTime; }
+	public function get_currentTime():Float { return mCurrentTime; }
 	
 	/** The total number of frames. */
-	public function get numFrames():Int { return mTextures.length; }
+	public function get_numFrames():Int { return mTextures.length; }
 	
 	/** Indicates if the clip should loop. */
-	public function get loop():Bool { return mLoop; }
-	public function set loop(value:Bool):Void { mLoop = value; }
+	public function get_loop():Bool { return mLoop; }
+	public function set_loop(value:Bool):Bool
+	{
+		mLoop = value;
+		return value;
+	}
 	
 	/** If enabled, no new sounds will be started during playback. Sounds that are already
 	 *  playing are not affected. */
-	public function get muted():Bool { return mMuted; }
-	public function set muted(value:Bool):Void { mMuted = value; }
+	public function get_muted():Bool { return mMuted; }
+	public function set_muted(value:Bool):Bool
+	{
+		mMuted = value;
+		return value;
+	}
 
 	/** The SoundTransform object used for playback of all frame sounds. @default null */
-	public function get soundTransform():SoundTransform { return mSoundTransform; }
-	public function set soundTransform(value:SoundTransform):Void { mSoundTransform = value; }
+	public function get_soundTransform():SoundTransform { return mSoundTransform; }
+	public function set_soundTransform(value:SoundTransform):SoundTransform
+	{
+		mSoundTransform = value; 
+		return value;
+	}
 
 	/** The index of the frame that is currently displayed. */
-	public function get currentFrame():Int { return mCurrentFrame; }
-	public function set currentFrame(value:Int):Void
+	public function get_currentFrame():Int { return mCurrentFrame; }
+	public function set_currentFrame(value:Int):Int
 	{
 		mCurrentFrame = value;
 		mCurrentTime = 0.0;
 		
-		for (var i:Int=0; i<value; ++i)
+		for (i in 0...value)
 			mCurrentTime += getFrameDuration(i);
 		
 		texture = mTextures[mCurrentFrame];
 		if (!mMuted && mSounds[mCurrentFrame]) mSounds[mCurrentFrame].play();
+		return value;
 	}
 	
 	/** The default number of frames per second. Individual frames can have different 
 	 *  durations. If you change the fps, the durations of all frames will be scaled 
 	 *  relatively to the previous value. */
-	public function get fps():Float { return 1.0 / mDefaultFrameDuration; }
-	public function set fps(value:Float):Void
+	public function get_fps():Float { return 1.0 / mDefaultFrameDuration; }
+	public function set_fps(value:Float):Float
 	{
 		if (value <= 0) throw new ArgumentError("Invalid fps: " + value);
 		
@@ -334,15 +359,16 @@ class MovieClip extends Image implements IAnimatable
 		mCurrentTime *= acceleration;
 		mDefaultFrameDuration = newFrameDuration;
 		
-		for (var i:Int=0; i<numFrames; ++i) 
+		for (i in 0...numFrames) 
 			mDurations[i] *= acceleration;
 
 		updateStartTimes();
+		return value;
 	}
 	
 	/** Indicates if the clip is still playing. Returns <code>false</code> when the end 
 	 *  is reached. */
-	public function get isPlaying():Bool 
+	public function get_isPlaying():Bool 
 	{
 		if (mPlaying)
 			return mLoop || mCurrentTime < totalTime;
@@ -351,7 +377,7 @@ class MovieClip extends Image implements IAnimatable
 	}
 
 	/** Indicates if a (non-looping) movie has come to its end. */
-	public function get isComplete():Bool
+	public function get_isComplete():Bool
 	{
 		return !mLoop && mCurrentTime >= totalTime;
 	}

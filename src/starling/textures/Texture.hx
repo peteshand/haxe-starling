@@ -10,12 +10,13 @@
 
 package starling.textures;
 
-import haxe.macro.Expr.Function;
+import flash.events.Event;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.textures.TextureBase;
+import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.net.NetStream;
 import openfl.system.Capabilities;
@@ -109,8 +110,11 @@ import starling.utils.VertexData;
  *  @see starling.utils.SystemUtil
  *  @see TextureAtlas
  */
+
 class Texture
 {
+	
+
 	public var frame(get, null):Rectangle;
 	public var repeat(get, null):Bool;
 	public var width(get, null):Float;
@@ -120,7 +124,7 @@ class Texture
 	public var scale(get, null):Float;
 	public var base(get, null):TextureBase;
 	public var root(get, null):ConcreteTexture;
-	public var format(get, null):String;
+	public var format(get, null):Context3DTextureFormat;
 	public var mipMapping(get, null):Bool;
 	public var premultipliedAlpha(get, null):Bool;
 	public static var maxSize(get, null):Int;
@@ -129,8 +133,8 @@ class Texture
 	/** @private */
 	public function new()
 	{
-		if (Capabilities.isDebugger &&
-			getQualifiedClassName(this) == "starling.textures::Texture")
+		var name:String = Type.getClassName(Type.getClass(this));
+		if (Capabilities.isDebugger && name == "starling.textures.Texture")
 		{
 			throw new AbstractClassError();
 		}
@@ -161,23 +165,18 @@ class Texture
 
 		if (Std.is(data, Class))
 		{
-			texture = fromEmbeddedAsset(cast data,
-				options.mipMapping, options.optimizeForRenderToTexture, options.scale,
-				options.format, options.repeat);
+			texture = fromEmbeddedAsset(cast data, options.mipMapping, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
 		}
 		else if (Std.is(data, BitmapData))
 		{
-			texture = fromBitmapData(cast data,
-				options.mipMapping, options.optimizeForRenderToTexture, options.scale,
-				options.format, options.repeat);
+			texture = fromBitmapData(cast data, options.mipMapping, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
 		}
 		else if (Std.is(data, ByteArray))
 		{
-			texture = fromAtfData(cast data,
-				options.scale, options.mipMapping, options.onReady, options.repeat);
+			texture = fromAtfData(cast data, options.scale, options.mipMapping, options.onReady, options.repeat);
 		}
 		else
-			throw new ArgumentError("Unsupported 'data' type: " + getQualifiedClassName(data));
+			throw new ArgumentError("Unsupported 'data' type: " + Type.getClassName(Type.getClass(data)));
 
 		return texture;
 	}
@@ -197,11 +196,12 @@ class Texture
 	 */
 	public static function fromEmbeddedAsset(assetClass:Class<Dynamic>, mipMapping:Bool=true,
 											 optimizeForRenderToTexture:Bool=false,
-											 scale:Float=1, format:String="bgra",
+											 scale:Float=1, format:Context3DTextureFormat=null,
 											 repeat:Bool=false):Texture
 	{
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		var texture:Texture;
-		var asset:Dynamic = Type.createInstance(assetClass);
+		var asset:Dynamic = Type.createInstance(assetClass, []);
 
 		if (Std.is(asset, Bitmap))
 		{
@@ -209,7 +209,7 @@ class Texture
 										 optimizeForRenderToTexture, scale, format, repeat);
 			texture.root.onRestore = function():Void
 			{
-				texture.root.uploadBitmap(Type.createInstance(assetClass));
+				texture.root.uploadBitmap(Type.createInstance(assetClass, []));
 			};
 		}
 		else if (Std.is(asset, ByteArray))
@@ -217,12 +217,12 @@ class Texture
 			texture = Texture.fromAtfData(cast asset, scale, mipMapping, null, repeat);
 			texture.root.onRestore = function():Void
 			{
-				texture.root.uploadAtfData(Type.createInstance(assetClass));
+				texture.root.uploadAtfData(Type.createInstance(assetClass, []));
 			};
 		}
 		else
 		{
-			throw new ArgumentError("Invalid asset type: " + getQualifiedClassName(asset));
+			throw new ArgumentError("Invalid asset type: " + Type.getClassName(Type.getClass(asset)));
 		}
 
 		asset = null; // avoid that object stays in memory (through 'onRestore' functions)
@@ -246,9 +246,10 @@ class Texture
 	 */
 	public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Bool=true,
 									  optimizeForRenderToTexture:Bool=false,
-									  scale:Float=1, format:String="bgra",
+									  scale:Float=1, format:Context3DTextureFormat=null,
 									  repeat:Bool=false):Texture
 	{
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		return fromBitmapData(bitmap.bitmapData, generateMipMaps, optimizeForRenderToTexture,
 							  scale, format, repeat);
 	}
@@ -270,9 +271,10 @@ class Texture
 	 */
 	public static function fromBitmapData(data:BitmapData, generateMipMaps:Bool=true,
 										  optimizeForRenderToTexture:Bool=false,
-										  scale:Float=1, format:String="bgra",
+										  scale:Float=1, format:Context3DTextureFormat=null,
 										  repeat:Bool=false):Texture
 	{
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true,
 											generateMipMaps, optimizeForRenderToTexture, scale,
 											format, repeat);
@@ -295,15 +297,15 @@ class Texture
 	 *  asynchronously. It can only be used when the callback has been executed. This is the
 	 *  expected function definition: <code>function(texture:Texture):Void;</code></p> */
 	public static function fromAtfData(data:ByteArray, scale:Float=1, useMipMaps:Bool=true,
-									   async:Function=null, repeat:Bool=false):Texture
+									   async:TextureFunction=null, repeat:Bool=false):Texture
 	{
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
 
 		var atfData:AtfData = new AtfData(data);
 		var nativeTexture:flash.display3D.textures.Texture = context.createTexture(
 			atfData.width, atfData.height, atfData.format, false);
-		var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, atfData.format,
+		var concreteTexture = new ConcreteTexture(nativeTexture, atfData.format,
 			atfData.width, atfData.height, useMipMaps && atfData.numTextures > 1,
 			false, false, scale, repeat);
 
@@ -344,10 +346,11 @@ class Texture
 	 *                 of type 'Texture'.
 	 */
 	public static function fromNetStream(stream:NetStream, scale:Float=1,
-										 onComplete:Function=null):Texture
+										 onComplete:TextureFunction=null):Texture
 	{
 		// workaround for bug in NetStream class:
-		if (stream.client == stream && !("onMetaData" in stream))
+		var metaData:Dynamic = Reflect.getProperty(stream, 'onMetaData');
+		if (stream.client == stream && !metaData)
 			stream.client = { onMetaData: function(md:Dynamic):Void {} };
 
 		return fromVideoAttachment("NetStream", stream, scale, onComplete);
@@ -374,38 +377,50 @@ class Texture
 	 */
 	// FIX
 	/*public static function fromCamera(camera:Camera, scale:Float=1,
-									  onComplete:Function=null):Texture
+									  onComplete:TextureFunction=null):Texture
 	{
 		return fromVideoAttachment("Camera", camera, scale, onComplete);
 	}*/
 
 	private static function fromVideoAttachment(type:String, attachment:Dynamic,
-												scale:Float, onComplete:Function):Texture
+												scale:Float, onComplete:TextureFunction):Texture
 	{
 		var TEXTURE_READY:String = "textureReady"; // for backwards compatibility
 
 		if (!SystemUtil.supportsVideoTexture)
 			throw new NotSupportedError("Video Textures are not supported on this platform");
 
-		var context:Context3D = Starling.context;
+		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
-
-		var base:TextureBase = context["createVideoTexture"]();
-		base["attach" + type](attachment);
-		base.addEventListener(TEXTURE_READY, function (event:Dynamic):Void
-		{
-			base.removeEventListener(TEXTURE_READY, arguments.callee);
-			StarlingUtils.execute(onComplete, texture);
-		});
-
+		
+		var func:Dynamic = Reflect.getProperty(context, "createVideoTexture");
+		var base:TextureBase = Reflect.callMethod(context, func, []); // var base:TextureBase = context["createVideoTexture"]();
+		var baseFunc:Dynamic = Reflect.getProperty(base, "attach" + type);
+		Reflect.callMethod(base, baseFunc, [attachment]); // base["attach" + type](attachment);
+		
+		
+		
 		var texture:ConcreteVideoTexture = new ConcreteVideoTexture(base, scale);
 		texture.onRestore = function():Void
 		{
 			texture.root.attachVideo(type, attachment);
 		};
-
+		
+		//base.addEventListener(TEXTURE_READY, OnTextureReady);
+		base.addEventListener(TEXTURE_READY, function(event:Dynamic):Void
+		{
+			//base.removeEventListener(TEXTURE_READY, OnTextureReady);
+			StarlingUtils.execute(onComplete, [texture]);
+		});
+		
 		return texture;
 	}
+	
+	/*private static function OnTextureReady(event:Dynamic):Void 
+	{
+		base.removeEventListener(TEXTURE_READY, OnTextureReady);
+		StarlingUtils.execute(onComplete, texture);
+	}*/
 
 	/** Creates a texture with a certain size and color.
 	 *
@@ -419,10 +434,12 @@ class Texture
 	 */
 	public static function fromColor(width:Float, height:Float, color:UInt=0xffffffff,
 									 optimizeForRenderToTexture:Bool=false,
-									 scale:Float=-1, format:String="bgra"):Texture
+									 scale:Float=-1, format:Context3DTextureFormat=null):Texture
 	{
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		var texture:Texture = Texture.empty(width, height, true, false,
 											optimizeForRenderToTexture, scale, format);
+		
 		texture.root.clear(color, Color.getAlpha(color) / 255.0);
 		texture.root.onRestore = function():Void
 		{
@@ -451,22 +468,27 @@ class Texture
 	 */
 	public static function empty(width:Float, height:Float, premultipliedAlpha:Bool=true,
 								 mipMapping:Bool=true, optimizeForRenderToTexture:Bool=false,
-								 scale:Float=-1, format:String="bgra", repeat:Bool=false):Texture
+								 scale:Float=-1, format:Context3DTextureFormat=null, repeat:Bool=false):Texture
 	{
-		if (scale <= 0) scale = Starling.contentScaleFactor;
-
+		if (format == null) format = Context3DTextureFormat.BGRA;
+		
+		if (scale <= 0) scale = Starling.ContentScaleFactor;
+		
 		var actualWidth:Int, actualHeight:Int;
 		var nativeTexture:TextureBase;
-		var context:Context3D = Starling.context;
-
+		var context:Context3D = Starling.Context;
+		
 		if (context == null) throw new MissingContextError();
-
+		
 		var origWidth:Float  = width  * scale;
 		var origHeight:Float = height * scale;
 		var useRectTexture:Bool = !mipMapping && !repeat &&
 			Starling.current.profile != "baselineConstrained" &&
-			"createRectangleTexture" in context && format.indexOf("compressed") == -1;
-
+			Reflect.hasField(context, "createRectangleTexture") && 
+			format != Context3DTextureFormat.COMPRESSED && 
+			format != Context3DTextureFormat.COMPRESSED_ALPHA;
+		
+		
 		if (useRectTexture)
 		{
 			actualWidth  = Math.ceil(origWidth  - 0.000000001); // avoid floating point errors
@@ -474,8 +496,8 @@ class Texture
 
 			// Rectangle Textures are supported beginning with AIR 3.8. By calling the new
 			// methods only through those lookups, we stay compatible with older SDKs.
-			nativeTexture = context["createRectangleTexture"](
-				actualWidth, actualHeight, format, optimizeForRenderToTexture);
+			
+			nativeTexture = context.createRectangleTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
 		}
 		else
 		{
@@ -485,17 +507,19 @@ class Texture
 			nativeTexture = context.createTexture(actualWidth, actualHeight, format,
 												  optimizeForRenderToTexture);
 		}
-
+		
 		var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, format,
 			actualWidth, actualHeight, mipMapping, premultipliedAlpha,
 			optimizeForRenderToTexture, scale, repeat);
-
+		
 		concreteTexture.onRestore = concreteTexture.clear;
 
-		if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
+		if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001){
 			return concreteTexture;
-		else
+		}
+		else {
 			return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
+		}
 	}
 
 	/** Creates a texture that contains a region (in pixels) of another texture. The new
@@ -579,7 +603,7 @@ class Texture
 	public function get_root():ConcreteTexture { return null; }
 
 	/** The <code>Context3DTextureFormat</code> of the underlying texture data. */
-	public function get_format():String { return Context3DTextureFormat.BGRA; }
+	public function get_format():Context3DTextureFormat { return Context3DTextureFormat.BGRA; }
 
 	/** Indicates if the texture contains mip maps. */
 	public function get_mipMapping():Bool { return false; }
@@ -592,7 +616,7 @@ class Texture
 	public static function get_maxSize():Int
 	{
 		var target:Starling = Starling.current;
-		var profile:String = target ? target.profile : "baseline";
+		var profile:String = (target != null) ? target.profile : "baseline";
 
 		if (profile == "baseline" || profile == "baselineConstrained")
 			return 2048;
@@ -600,3 +624,5 @@ class Texture
 			return 4096;
 	}
 }
+
+typedef TextureFunction = Dynamic -> Void;
