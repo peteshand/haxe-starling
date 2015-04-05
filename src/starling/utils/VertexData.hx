@@ -106,12 +106,11 @@ class VertexData
 	/** Transforms the vertex position of this instance by a certain matrix and copies the
 	 *  result to another VertexData instance. Limit the operation to a range of vertices
 	 *  via the 'vertexID' and 'numVertices' parameters. */
-	public function copyTransformedTo(targetData:VertexData, targetVertexID:Int=0,
-									  matrix:Matrix=null,
-									  vertexID:Int=0, numVertices:Int=-1):Void
+	public function copyTransformedTo(targetData:VertexData, targetVertexID:Int=0, matrix:Matrix=null, vertexID:Int=0, numVertices:Int=-1):Void
 	{
-		if (numVertices < 0 || vertexID + numVertices > mNumVertices)
+		if (numVertices < 0 || vertexID + numVertices > mNumVertices) {
 			numVertices = mNumVertices - vertexID;
+		}
 		
 		var x:Float, y:Float;
 		var targetRawData:Vector<Float> = targetData.mRawData;
@@ -239,16 +238,27 @@ class VertexData
 	public function setTexCoords(vertexID:Int, u:Float, v:Float):Void
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.TEXCOORD_OFFSET;
+		
 		mRawData[offset]        = u;
-		mRawData[cast(offset+1)] = v;
+		mRawData[cast(offset + 1)] = v;
 	}
 	
 	/** Returns the texture coordinates of a vertex in the range 0-1. */
 	public function getTexCoords(vertexID:Int, texCoords:Point):Void
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.TEXCOORD_OFFSET;
-		texCoords.x = mRawData[offset];
-		texCoords.y = mRawData[cast(offset+1)];
+		
+		texCoords.x = cast mRawData[offset];
+		texCoords.y = cast mRawData[cast(offset + 1)];
+		
+		#if js
+		untyped __js__('if ("undefined" === typeof texCoords.x) texCoords.x = 0;');
+		untyped __js__('if ("undefined" === typeof texCoords.y) texCoords.y = 0;');
+		#end
+		
+		//if (texCoords.x == undefined) texCoords.x = 0;
+		//if (texCoords.y == undefined) texCoords.y = 0;
+		
 	}
 	
 	// utility functions
@@ -448,11 +458,10 @@ class VertexData
 		var position:Point = new Point();
 		var texCoords:Point = new Point();
 		
-		cast (null, Int);
-		
 		for (i in 0...numVertices)
 		{
 			getPosition(i, position);
+			
 			getTexCoords(i, texCoords);
 			
 /*			result += "  [Vertex " + i + ": " +
@@ -474,7 +483,8 @@ class VertexData
 				(i == numVertices-1 ? "\n" : ",\n");
 		}
 		
-		return result + "]";
+		result += "]";
+		return result;
 	}
 	
 	// properties
@@ -539,7 +549,22 @@ class VertexData
 	public function set_numVertices(value:Int):Int
 	{
 		mRawData.fixed = false;
-		mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
+		
+		#if js
+			trace("OPTIMIZE");
+			// js hack to init values to 0
+			var currentLength:Int = 0;
+			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
+			if (mRawData.length > currentLength) {
+				for (j in 0...mRawData.length) 
+				{
+					untyped __js__('if ("undefined" === typeof this.mRawData.data[j]) this.mRawData.data[j] = 0;');
+				}
+			}
+		#else
+			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
+		#end
+		
 		
 		var startIndex:Int = mNumVertices * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET + 3;
 		var endIndex:Int = mRawData.length;

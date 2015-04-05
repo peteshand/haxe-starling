@@ -154,6 +154,7 @@ class Image extends Quad
 		}
 		
 		mVertexDataCache.copyTransformedTo(targetData, targetVertexID, matrix, 0, 4);
+		
 	}
 	
 	/** The texture that is displayed on the quad. */
@@ -171,6 +172,7 @@ class Image extends Quad
 			mVertexDataCache.setPremultipliedAlpha(mTexture.premultipliedAlpha, false);
 			onVertexDataChanged();
 		}
+		
 		return value;
 	}
 	

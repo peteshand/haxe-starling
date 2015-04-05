@@ -204,7 +204,6 @@ class DisplayObject extends EventDispatcher
 	{
 		super();
 		var name:String = Type.getClassName(Type.getClass(this));
-		trace("CHECK name = " + name);
 		if (Capabilities.isDebugger && name == "starling.display.DisplayObject")
 		{
 			throw new AbstractClassError();
