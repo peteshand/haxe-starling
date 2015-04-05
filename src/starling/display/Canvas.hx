@@ -38,22 +38,22 @@ class Canvas extends DisplayObject
 
 	private var mVertexData:VertexData;
 	private var mVertexBuffer:VertexBuffer3D;
-	private var mIndexData:Array<uint>;
+	private var mIndexData:Array<UInt>;
 	private var mIndexBuffer:IndexBuffer3D;
 
-	private var mFillColor:uint;
+	private var mFillColor:UInt;
 	private var mFillAlpha:Float;
 
 	// helper objects (to avoid temporary objects)
 	private static var sHelperMatrix:Matrix = new Matrix();
-	private static var sRenderAlpha:Array<Float> = new <Float>[1.0, 1.0, 1.0, 1.0];
+	private static var sRenderAlpha:Array<Float> = [1.0, 1.0, 1.0, 1.0];
 
 	/** Creates a new (empty) Canvas. Call one or more of the 'draw' methods to add content. */
 	public function Canvas()
 	{
-		mPolygons   = new <Polygon>[];
+		mPolygons   = new Array<Polygon>();
 		mVertexData = new VertexData(0);
-		mIndexData  = new <uint>[];
+		mIndexData  = new Array<UInt>();
 		mSyncRequired = false;
 
 		mFillColor = 0xffffff;
@@ -107,7 +107,7 @@ class Canvas extends DisplayObject
 
 	/** Specifies a simple one-color fill that subsequent calls to drawing methods
 	 *  (such as <code>drawCircle()</code>) will use. */
-	public function beginFill(color:uint=0xffffff, alpha:Float=1.0):Void
+	public function beginFill(color:UInt=0xffffff, alpha:Float=1.0):Void
 	{
 		mFillColor = color;
 		mFillAlpha = alpha;
@@ -174,7 +174,7 @@ class Canvas extends DisplayObject
 		if (forTouch && (!visible || !touchable)) return null;
 		if (!hitTestMask(localPoint)) return null;
 
-		for (var i:Int = 0, len:Int = mPolygons.length; i < len; ++i)
+		for (i in  0...mPolygons.length)
 			if (mPolygons[i].containsPoint(localPoint)) return this;
 
 		return null;
@@ -191,7 +191,7 @@ class Canvas extends DisplayObject
 		var newNumIndices:Int = mIndexData.length;
 
 		// triangulation was done with vertex-indices of polygon only; now add correct offset.
-		for (var i:Int=oldNumIndices; i<newNumIndices; ++i)
+		for (i in oldNumIndices...newNumIndices)
 			mIndexData[i] += oldNumVertices;
 
 		applyFillColor(oldNumVertices, polygon.numVertices);
@@ -218,7 +218,7 @@ class Canvas extends DisplayObject
 	private function applyFillColor(vertexIndex:Int, numVertices:Int):Void
 	{
 		var endIndex:Int = vertexIndex + numVertices;
-		for (var i:Int=vertexIndex; i<endIndex; ++i)
+		for (i in vertexIndex...endIndex)
 			mVertexData.setColorAndAlpha(i, mFillColor, mFillAlpha);
 	}
 

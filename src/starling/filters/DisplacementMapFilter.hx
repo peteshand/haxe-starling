@@ -52,11 +52,18 @@ class DisplacementMapFilter extends FragmentFilter
 	private var mMapTexCoordBuffer:VertexBuffer3D;
 	
 	/** Helper objects */
-	private static var sOneHalf:Array<Float> = new <Float>[0.5, 0.5, 0.5, 0.5];
-	private static var sMapTexCoords:Array<Float> = new <Float>[0, 0, 1, 0, 0, 1, 1, 1];
+	private static var sOneHalf:Array<Float> = [0.5, 0.5, 0.5, 0.5];
+	private static var sMapTexCoords:Array<Float> = [0, 0, 1, 0, 0, 1, 1, 1];
 	private static var sMatrix:Matrix3D = new Matrix3D();
-	private static var sMatrixData:Array<Float> = 
-		new <Float>[0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0];
+	private static var sMatrixData:Array<Float> = [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0];
+	
+	public var componentX(get, set):UInt;
+	public var componentY(get, set):UInt;
+	public var scaleX(get, set):Float;
+	public var scaleY(get, set):Float;
+	public var mapTexture(get, set):Texture;
+	public var mapPoint(get, set):Point;
+	public var repeat(get, set):Bool;
 	
 	/** Creates a new displacement map filter that uses the provided map texture. */
 	public function new(mapTexture:Texture, mapPoint:Point=null, 
@@ -78,7 +85,7 @@ class DisplacementMapFilter extends FragmentFilter
 	/** @inheritDoc */
 	public override function dispose():Void
 	{
-		if (mMapTexCoordBuffer) mMapTexCoordBuffer.dispose();
+		if (mMapTexCoordBuffer != null) mMapTexCoordBuffer.dispose();
 		super.dispose();
 	}
 	
@@ -86,7 +93,7 @@ class DisplacementMapFilter extends FragmentFilter
 	private override function createPrograms():Void
 	{
 		// the texture coordinates for the map texture are uploaded via a separate buffer
-		if (mMapTexCoordBuffer) mMapTexCoordBuffer.dispose();
+		if (mMapTexCoordBuffer != null) mMapTexCoordBuffer.dispose();
 		mMapTexCoordBuffer = Starling.Context.createVertexBuffer(4, 2);
 		
 		var target:Starling = Starling.current;
@@ -165,7 +172,7 @@ class DisplacementMapFilter extends FragmentFilter
 		var scale:Float = Starling.contentScaleFactor;
 		var columnX:Int, columnY:Int;
 		
-		for (var i:Int=0; i<16; ++i)
+		for (i in 0...16)
 			sMatrixData[i] = 0;
 		
 		if      (mComponentX == BitmapDataChannel.RED)   columnX = 0;
@@ -205,51 +212,70 @@ class DisplacementMapFilter extends FragmentFilter
 
 	/** Describes which color channel to use in the map image to displace the x result. 
 	 *  Possible values are constants from the BitmapDataChannel class. */
-	public function get componentX():UInt { return mComponentX; }
-	public function set componentX(value:UInt):Void { mComponentX = value; }
+	public function get_componentX():UInt { return mComponentX; }
+	public function set_componentX(value:UInt):UInt
+	{
+		mComponentX = value;
+		return value;
+	}
 
 	/** Describes which color channel to use in the map image to displace the y result. 
 	 *  Possible values are constants from the BitmapDataChannel class. */
-	public function get componentY():UInt { return mComponentY; }
-	public function set componentY(value:UInt):Void { mComponentY = value; }
+	public function get_componentY():UInt { return mComponentY; }
+	public function set_componentY(value:UInt):UInt
+	{
+		mComponentY = value;
+		return value;
+	}
 
 	/** The multiplier used to scale the x displacement result from the map calculation. */
-	public function get scaleX():Float { return mScaleX; }
-	public function set scaleX(value:Float):Void { mScaleX = value; }
+	public function get_scaleX():Float { return mScaleX; }
+	public function set_scaleX(value:Float):Float
+	{
+		mScaleX = value;
+		return value;
+	}
 
 	/** The multiplier used to scale the y displacement result from the map calculation. */
-	public function get scaleY():Float { return mScaleY; }
-	public function set scaleY(value:Float):Void { mScaleY = value; }
+	public function get_scaleY():Float { return mScaleY; }
+	public function set_scaleY(value:Float):Float
+	{
+		mScaleY = value;
+		return value;
+	}
 	
 	/** The texture that will be used to calculate displacement. */
-	public function get mapTexture():Texture { return mMapTexture; }
-	public function set mapTexture(value:Texture):Void
+	public function get_mapTexture():Texture { return mMapTexture; }
+	public function set_mapTexture(value:Texture):Texture
 	{
 		if (mMapTexture != value)
 		{
 			mMapTexture = value;
 			createPrograms();
 		}
+		return value;
 	}
 	
 	/** A value that contains the offset of the upper-left corner of the target display 
 	 *  object from the upper-left corner of the map image. */   
-	public function get mapPoint():Point { return mMapPoint; }
-	public function set mapPoint(value:Point):Void
+	public function get_mapPoint():Point { return mMapPoint; }
+	public function set_mapPoint(value:Point):Point
 	{
-		if (value) mMapPoint.setTo(value.x, value.y);
+		if (value != null) mMapPoint.setTo(value.x, value.y);
 		else mMapPoint.setTo(0, 0);
+		return value;
 	}
 	
 	/** Indicates how the pixels at the edge of the input image (the filtered object) will
 	 *  be wrapped at the edge. */
-	public function get repeat():Bool { return mRepeat; }
-	public function set repeat(value:Bool):Void 
+	public function get_repeat():Bool { return mRepeat; }
+	public function set_repeat(value:Bool):Bool 
 	{ 
 		if (mRepeat != value)
 		{
 			mRepeat = value;
 			createPrograms();
 		}
+		return value;
 	}
 }

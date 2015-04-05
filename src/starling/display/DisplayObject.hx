@@ -12,6 +12,7 @@ package starling.display;
 
 import lime.ui.MouseCursor;
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
 import openfl.errors.IllegalOperationError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
@@ -1051,7 +1052,9 @@ class DisplayObject extends EventDispatcher
 	public function get_base():DisplayObject
 	{
 		var currentObject:DisplayObject = this;
-		while (currentObject.mParent != null) currentObject = currentObject.mParent;
+		while (currentObject.mParent != null) {
+			currentObject = currentObject.mParent;
+		}
 		if (currentObject == this) return null;
 		else return currentObject;
 	}
@@ -1079,7 +1082,12 @@ class DisplayObject extends EventDispatcher
 			return null;
 		}
 		else {
-			return cast (base);
+			try {
+				return cast (base);
+			}
+			catch (e:Error) {
+				return null;
+			}
 		}
 	}
 }

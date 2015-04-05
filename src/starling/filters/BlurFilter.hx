@@ -14,6 +14,7 @@ import openfl.display3D._shaders.AGLSLShaderUtils;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DProgramType;
 import openfl.display3D.Program3D;
+import openfl.Vector;
 
 import starling.core.Starling;
 import starling.textures.Texture;
@@ -42,7 +43,7 @@ class BlurFilter extends FragmentFilter
 	private var mUniformColor:Bool;
 	
 	/** helper object */
-	private var sTmpWeights:Array<Float> = new Array<Float>(5, true);
+	private var sTmpWeights:Vector<Float> = new Vector<Float>(5, true);
 	
 	public var blurX(get, set):Float;
 	public var blurY(get, set):Float;
@@ -189,14 +190,14 @@ class BlurFilter extends FragmentFilter
 		// vertex attribute 1:   texture coordinates (FLOAT_2)
 		// texture 0:            input texture
 		
-		updateParameters(pass, texture.nativeWidth, texture.nativeHeight);
+		updateParameters(pass, cast texture.nativeWidth, cast texture.nativeHeight);
 		
-		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,   4, mOffsets);
-		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, mWeights);
+		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,   4, cast mOffsets);
+		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, cast mWeights);
 		
 		if (mUniformColor && pass == numPasses - 1)
 		{
-			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1, mColor);
+			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1, cast mColor);
 			context.setProgram(mTintedProgram);
 		}
 		else

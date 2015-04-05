@@ -14,6 +14,7 @@ import openfl.errors.ArgumentError;
 import openfl.errors.IllegalOperationError;
 import openfl.media.Sound;
 import openfl.media.SoundTransform;
+import openfl.Vector;
 
 import starling.animation.IAnimatable;
 import starling.events.Event;
@@ -71,7 +72,7 @@ class MovieClip extends Image implements IAnimatable
 	
 	/** Creates a movie clip from the provided textures and with the specified default framerate.
 	 *  The movie will have the size of the first frame. */  
-	public function new(textures:Array<Texture>, fps:Float=12)
+	public function new(textures:Vector<Texture>, fps:Float=12)
 	{
 		if (textures.length > 0)
 		{
@@ -94,10 +95,11 @@ class MovieClip extends Image implements IAnimatable
 		mPlaying = true;
 		mCurrentTime = 0.0;
 		mCurrentFrame = 0;
-		mTextures = textures.concat();
-		mSounds = new Array<Sound>(numFrames);
-		mDurations = new Array<Float>(numFrames);
-		mStartTimes = new Array<Float>(numFrames);
+		mTextures = textures.concat(new Array<Texture>());
+		trace("CHECK INIT LENGTH IS NOT NEEDED");
+		mSounds = new Array<Sound>(/*numFrames*/);
+		mDurations = new Array<Float>(/*numFrames*/);
+		mStartTimes = new Array<Float>(/*numFrames*/);
 		
 		for (i in 0...numFrames)
 		{
@@ -122,12 +124,13 @@ class MovieClip extends Image implements IAnimatable
 		if (frameID < 0 || frameID > numFrames) throw new ArgumentError("Invalid frame id");
 		if (duration < 0) duration = mDefaultFrameDuration;
 		
-		mTextures.splice(frameID, 0, texture);
-		mSounds.splice(frameID, 0, sound);
-		mDurations.splice(frameID, 0, duration);
+		
+		mTextures.insert(frameID, texture); //mTextures.splice(frameID, 0, texture);
+		mSounds.insert(frameID, sound); //mSounds.splice(frameID, 0, sound);
+		mDurations.insert(frameID, duration); // mDurations.splice(frameID, 0, duration);
 		
 		if (frameID > 0 && frameID == numFrames) 
-			mStartTimes[frameID] = mStartTimes[Int(frameID-1)] + mDurations[Int(frameID-1)];
+			mStartTimes[frameID] = mStartTimes[cast (frameID-1)] + mDurations[cast (frameID-1)];
 		else
 			updateStartTimes();
 	}
@@ -216,11 +219,11 @@ class MovieClip extends Image implements IAnimatable
 	{
 		var numFrames:Int = this.numFrames;
 		
-		mStartTimes.length = 0;
+		mStartTimes = [];
 		mStartTimes[0] = 0;
 		
 		for (i in 1...numFrames)
-			mStartTimes[i] = mStartTimes[Int(i-1)] + mDurations[Int(i-1)];
+			mStartTimes[i] = mStartTimes[cast(i-1)] + mDurations[cast(i-1)];
 	}
 	
 	// IAnimatable
@@ -272,7 +275,7 @@ class MovieClip extends Image implements IAnimatable
 				}
 				
 				var sound:Sound = mSounds[mCurrentFrame];
-				if (sound && !mMuted) sound.play(0, 0, mSoundTransform);
+				if (sound != null && !mMuted) sound.play(0, 0, mSoundTransform);
 				if (breakAfterFrame) break;
 			}
 			
@@ -297,7 +300,7 @@ class MovieClip extends Image implements IAnimatable
 	public function get_totalTime():Float 
 	{
 		var numFrames:Int = mTextures.length;
-		return mStartTimes[Int(numFrames-1)] + mDurations[Int(numFrames-1)];
+		return mStartTimes[cast (numFrames-1)] + mDurations[cast (numFrames-1)];
 	}
 	
 	/** The time that has passed since the clip was started (each loop starts at zero). */
@@ -342,7 +345,7 @@ class MovieClip extends Image implements IAnimatable
 			mCurrentTime += getFrameDuration(i);
 		
 		texture = mTextures[mCurrentFrame];
-		if (!mMuted && mSounds[mCurrentFrame]) mSounds[mCurrentFrame].play();
+		if (!mMuted && mSounds[mCurrentFrame] != null) mSounds[mCurrentFrame].play();
 		return value;
 	}
 	
