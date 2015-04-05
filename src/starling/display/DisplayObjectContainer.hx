@@ -87,7 +87,6 @@ class DisplayObjectContainer extends DisplayObject
 	{
 		super();
 		var name:String = Type.getClassName(Type.getClass(this));
-		trace("CHECK name = " + name);
 		if (Capabilities.isDebugger && name == "starling.display.DisplayObjectContainer")
 		{
 			throw new AbstractClassError();

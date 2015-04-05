@@ -107,6 +107,8 @@ class QuadBatch extends DisplayObject
 		super();
 		mVertexData = new VertexData(0, true);
 		mIndexData = new Array<UInt>();
+		mIndexData.fixed = false;
+		
 		mNumQuads = 0;
 		mTinted = false;
 		mSyncRequired = false;
@@ -723,6 +725,7 @@ class QuadBatch extends DisplayObject
 		if (mNumQuads > value) mNumQuads = value;
 		
 		mVertexData.numVertices = value * 4;
+		
 		mIndexData.length = value * 6;
 		
 		for (i in oldCapacity...value)
@@ -734,7 +737,7 @@ class QuadBatch extends DisplayObject
 			mIndexData[cast(i*6+4)] = i*4 + 3;
 			mIndexData[cast(i*6+5)] = i*4 + 2;
 		}
-
+		
 		destroyBuffers();
 		mSyncRequired = true;
 		return value;

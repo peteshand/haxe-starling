@@ -1,0 +1,13 @@
+{
+	"name": "starling",
+	"url": "https://github.com/peteshand/openfl-starling",
+	"license": "MIT",
+	"tags": [ "starling", "2d", "gpu", "openfl", "flash", "air", "js", "web" ],
+	"description": "GPU powered 2D rendering engine which mimics the conventional Flash display list architecture",
+	"version": "0.0.2-alpha",
+	"releasenote": "alpha release: basic rendering available for flash and js target",
+	"contributors": [ "p.j.shand" ],
+	"dependencies": {
+		"openfl": ""
+	}
+}

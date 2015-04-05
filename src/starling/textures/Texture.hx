@@ -437,8 +437,7 @@ class Texture
 									 scale:Float=-1, format:Context3DTextureFormat=null):Texture
 	{
 		if (format == null) format = Context3DTextureFormat.BGRA;
-		var texture:Texture = Texture.empty(width, height, true, false,
-											optimizeForRenderToTexture, scale, format);
+		var texture:Texture = Texture.empty(width, height, true, false, optimizeForRenderToTexture, scale, format);
 		
 		texture.root.clear(color, Color.getAlpha(color) / 255.0);
 		texture.root.onRestore = function():Void
@@ -470,9 +469,8 @@ class Texture
 								 mipMapping:Bool=true, optimizeForRenderToTexture:Bool=false,
 								 scale:Float=-1, format:Context3DTextureFormat=null, repeat:Bool=false):Texture
 	{
-		if (format == null) format = Context3DTextureFormat.BGRA;
-		
 		if (scale <= 0) scale = Starling.ContentScaleFactor;
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		
 		var actualWidth:Int, actualHeight:Int;
 		var nativeTexture:TextureBase;
@@ -480,8 +478,9 @@ class Texture
 		
 		if (context == null) throw new MissingContextError();
 		
-		var origWidth:Float  = width  * scale;
-		var origHeight:Float = height * scale;
+		var origWidth:Int  = Std.int(width  * scale);
+        var origHeight:Int = Std.int(height * scale);
+		
 		var useRectTexture:Bool = !mipMapping && !repeat &&
 			Starling.current.profile != "baselineConstrained" &&
 			Reflect.hasField(context, "createRectangleTexture") && 
