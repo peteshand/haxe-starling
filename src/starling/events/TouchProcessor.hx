@@ -66,7 +66,7 @@ class TouchProcessor
 	private var mQueue:Vector<Array<Dynamic>>;
 	
 	/** The list of all currently active touches. */
-	private var mCurrentTouches:Vector<Touch>;
+	private var mCurrentTouches:Vector<Touch> = new Vector<Touch>();
 	
 	/** Helper objects. */
 	private static var sUpdatedTouches = new Vector<Touch>();
@@ -86,10 +86,11 @@ class TouchProcessor
 	{
 		mRoot = mStage = stage;
 		mElapsedTime = 0.0;
-		mCurrentTouches = new Array<Touch>();
+		
 		mQueue = new Vector<Array<Dynamic>>();
 		mLastTaps = new Array<Touch>();
-
+		mCurrentTouches.length = 0;
+		
 		mStage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		mStage.addEventListener(KeyboardEvent.KEY_UP,   onKey);
 		monitorInterruptions(true);
@@ -115,7 +116,7 @@ class TouchProcessor
 		sUpdatedTouches.length = 0;
 		
 		// remove old taps
-		if (mLastTaps.length > 0)
+		/*if (mLastTaps.length > 0)
 		{
 			//for (i = mLastTaps.length - 1; i >= 0; --i)
 			for (j in 0...mLastTaps.length) {
@@ -123,18 +124,27 @@ class TouchProcessor
 				if (mElapsedTime - mLastTaps[i].timestamp > mMultitapTime)
 					mLastTaps.splice(i, 1);
 			}
-		}
+		}*/
 		
-		while (mQueue.length > 0)
+		var len = mQueue.length;
+		for (i in 0...len) 
+		//while (mQueue.length > 0)
 		{
+			var j = len - 1 - i;
+			var mQueueItem = mQueue[j];
+			if (mQueueItem == null) {
+				mQueue = new Vector<Array<Dynamic>>();
+				continue;
+			}
+			
 			// Set touches that were new or moving to phase 'stationary'.
 			for (touch in mCurrentTouches)
 				if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED)
 					touch.phase = TouchPhase.STATIONARY;
 
 			// analyze new touches, but each ID only once
-			while (mQueue.length > 0 &&
-				  !containsTouchWithID(sUpdatedTouches, mQueue[mQueue.length-1][0]))
+			//while (mQueue.length > 0 && containsTouchWithID(sUpdatedTouches, mQueue[mQueue.length-1][0]) == false)
+			while (mQueue.length > 0 && containsTouchWithID(sUpdatedTouches, mQueueItem[0]) == false)
 			{
 				var touchArgs:Array<Dynamic> = mQueue.pop();
 				touch = createOrUpdateTouch(
@@ -143,7 +153,6 @@ class TouchProcessor
 				
 				sUpdatedTouches[sUpdatedTouches.length] = touch; // avoiding 'push'
 			}
-
 			// process the current set of touches (i.e. dispatch touch events)
 			processTouches(sUpdatedTouches, mShiftDown, mCtrlDown);
 
@@ -154,8 +163,11 @@ class TouchProcessor
 					mCurrentTouches.splice(i, 1);
 			}
 			
-			sUpdatedTouches.length = 0;
+			sUpdatedTouches = new Vector<Touch>();//sUpdatedTouches.length = 0;
 		}
+		
+		mQueue = new Vector<Array<Dynamic>>();
+		
 	}
 	
 	/** Dispatches TouchEvents to the display objects that are affected by the list of
@@ -166,8 +178,7 @@ class TouchProcessor
 	 *  @param shiftDown  indicates if the shift key was down when the touches occurred.
 	 *  @param ctrlDown   indicates if the ctrl or cmd key was down when the touches occurred.
 	 */
-	private function processTouches(touches:Array<Touch>,
-									  shiftDown:Bool, ctrlDown:Bool):Void
+	private function processTouches(touches:Vector<Touch>, shiftDown:Bool, ctrlDown:Bool):Void
 	{
 		sHoveringTouchData.length = 0;
 		
@@ -177,9 +188,11 @@ class TouchProcessor
 		var touch:Touch;
 		
 		// hit test our updated touches
+		
 		for (touch in touches)
 		{
 			// hovering touches need special handling (see below)
+			
 			if (touch.phase == TouchPhase.HOVER && touch.target != null)
 				sHoveringTouchData[sHoveringTouchData.length] = {
 					touch: touch,
@@ -203,15 +216,17 @@ class TouchProcessor
 		}
 		
 		// dispatch events for the rest of our updated touches
-		for (touch in touches)
+		for (touch in touches) {
 			touch.dispatchEvent(touchEvent);
+		}
 	}
 	
 	/** Enqueues a new touch our mouse event with the given properties. */
 	public function enqueue(touchID:Int, phase:String, globalX:Float, globalY:Float,
 							pressure:Float=1.0, width:Float=1.0, height:Float=1.0):Void
 	{
-		mQueue.unshift([touchID, phase, globalX, globalY, pressure, width, height]); // mQueue.unshift(arguments);
+		var a:Array<Dynamic> = [touchID, phase, globalX, globalY, pressure, width, height];
+		mQueue.unshift(a); // mQueue.unshift(arguments);
 		
 		// multitouch simulation (only with mouse)
 		if (mCtrlDown && simulateMultitouch && touchID == 0) 
@@ -330,7 +345,10 @@ class TouchProcessor
 				mCurrentTouches.splice(i, 1);
 		}
 		
-		mCurrentTouches.push(touch);
+		
+		if (touch != null) {
+			mCurrentTouches.push(touch);
+		}
 	}
 	
 	private function getCurrentTouch(touchID:Int):Touch
@@ -489,6 +507,6 @@ class TouchProcessor
 
 		// purge touches
 		mCurrentTouches.length = 0;
-		mQueue.length = 0;
+		mQueue = new Vector<Array<Dynamic>>(); // mQueue.length = 0;
 	}
 }

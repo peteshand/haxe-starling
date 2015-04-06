@@ -334,8 +334,9 @@ class Starling extends EventDispatcher
 		stage.align = StageAlign.TOP_LEFT;
 		
 		// register touch/mouse event handlers            
-		for (touchEventType in touchEventTypes)
+		for (touchEventType in touchEventTypes) {
 			stage.addEventListener(touchEventType, onTouch, false, 0, true);
+		}
 		
 		// register other event handlers
 		stage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
@@ -534,7 +535,7 @@ class Starling extends EventDispatcher
 		
 		// to avoid overloading time-based animations, the maximum delta is truncated.
 		if (passedTime > 1.0) passedTime = 1.0;
-
+		
 		advanceTime(passedTime);
 		render();
 	}
@@ -766,11 +767,9 @@ class Starling extends EventDispatcher
 	
 	private function onKey(event:KeyboardEvent):Void
 	{
-		if (!mStarted) return;
+		if (mStarted == true) return;
 		
-		var keyEvent:starling.events.KeyboardEvent = new starling.events.KeyboardEvent(
-			event.type, event.charCode, event.keyCode, event.keyLocation, 
-			event.ctrlKey, event.altKey, event.shiftKey);
+		var keyEvent:starling.events.KeyboardEvent = new starling.events.KeyboardEvent(event.type, event.charCode, event.keyCode, event.keyLocation, event.ctrlKey, event.altKey, event.shiftKey);
 		
 		makeCurrent();
 		mStage.broadcastEvent(keyEvent);
@@ -808,7 +807,7 @@ class Starling extends EventDispatcher
 	
 	private function onTouch(event:Event):Void
 	{
-		if (!mStarted) return;
+		if (mStarted == false) return;
 		
 		var globalX:Float;
 		var globalY:Float;
@@ -835,7 +834,6 @@ class Starling extends EventDispatcher
 		else
 		{
 			var touchEvent:TouchEvent = cast event;
-		
 			// On a system that supports both mouse and touch input, the primary touch point
 			// is dispatched as mouse event as well. Since we don't want to listen to that
 			// event twice, we ignore the primary touch in that case.
@@ -869,6 +867,7 @@ class Starling extends EventDispatcher
 		globalX = mStage.stageWidth  * (globalX - mViewPort.x) / mViewPort.width;
 		globalY = mStage.stageHeight * (globalY - mViewPort.y) / mViewPort.height;
 		
+		
 		// enqueue touch in touch processor
 		if (phase != null) mTouchProcessor.enqueue(touchID, phase, globalX, globalY, pressure, width, height);
 		
@@ -881,18 +880,18 @@ class Starling extends EventDispatcher
 	{
 		var types = new Array<String>();
 		
-		if (multitouchEnabled) {
+		if (multitouchEnabled == true) {
 			types.push(TouchEvent.TOUCH_BEGIN);
 			types.push(TouchEvent.TOUCH_MOVE);
 			types.push(TouchEvent.TOUCH_END);
 		}
 		
-		if (!multitouchEnabled /*|| Mouse.supportsCursor*/) {
+		//if (multitouchEnabled == false /*|| Mouse.supportsCursor*/) {
 			types.push(MouseEvent.MOUSE_DOWN);
 			types.push(MouseEvent.MOUSE_MOVE);
 			types.push(MouseEvent.MOUSE_UP);
-		}
-			
+		//}
+		
 		return types;
 	}
 	

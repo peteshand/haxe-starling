@@ -14,6 +14,7 @@ import openfl.display3D._shaders.AGLSLShaderUtils;
 import openfl.display3D.Context3D;
 import openfl.display3D.Context3DProgramType;
 import openfl.display3D.Program3D;
+import openfl.Vector;
 
 import starling.core.Starling;
 import starling.textures.Texture;
@@ -33,16 +34,16 @@ class BlurFilter extends FragmentFilter
 	private var mNormalProgram:Program3D;
 	private var mTintedProgram:Program3D;
 	
-	private var mOffsets = new Array<Float>();
-	private var mWeights = new Array<Float>();
-	private var mColor   = new Array<Float>();
+	private var mOffsets = new Vector<Float>();
+	private var mWeights = new Vector<Float>();
+	private var mColor   = new Vector<Float>();
 	
 	private var mBlurX:Float;
 	private var mBlurY:Float;
 	private var mUniformColor:Bool;
 	
 	/** helper object */
-	private var sTmpWeights:Array<Float> = new Array<Float>(5, true);
+	private var sTmpWeights:Vector<Float> = new Vector<Float>(5, true);
 	
 	public var blurX(get, set):Float;
 	public var blurY(get, set):Float;
@@ -169,14 +170,14 @@ class BlurFilter extends FragmentFilter
 		else fragmentShader +=
 			"add  oc, ft5, ft4                              \n";   // add to output color
 		
-		#if js {
-			var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
-			var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
-			return target.registerProgramFromSource(programName, vertexByteCode, fragmentByteCode);
-		}
-		#else 
+		//#if js {
+		//	var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
+		//	var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
+		//	return target.registerProgramFromSource(programName, vertexByteCode, fragmentByteCode);
+		//}
+		//#else 
 			return target.registerProgramFromSource(programName, vertexShader, fragmentShader);
-		#end
+		//#end
 	}
 	
 	/** @private */
@@ -189,14 +190,14 @@ class BlurFilter extends FragmentFilter
 		// vertex attribute 1:   texture coordinates (FLOAT_2)
 		// texture 0:            input texture
 		
-		updateParameters(pass, texture.nativeWidth, texture.nativeHeight);
+		updateParameters(pass, cast texture.nativeWidth, cast texture.nativeHeight);
 		
-		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,   4, mOffsets);
-		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, mWeights);
+		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,   4, cast mOffsets);
+		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, cast mWeights);
 		
 		if (mUniformColor && pass == numPasses - 1)
 		{
-			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1, mColor);
+			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1, cast mColor);
 			context.setProgram(mTintedProgram);
 		}
 		else
@@ -297,18 +298,20 @@ class BlurFilter extends FragmentFilter
 	/** The blur factor in x-direction (stage coordinates). 
 	 *  The number of required passes will be <code>Math.ceil(value)</code>. */
 	public function get_blurX():Float { return mBlurX; }
-	public function set_blurX(value:Float):Void 
+	public function set_blurX(value:Float):Float 
 	{ 
 		mBlurX = value; 
 		updateMarginsAndPasses(); 
+		return value;
 	}
 	
 	/** The blur factor in y-direction (stage coordinates). 
 	 *  The number of required passes will be <code>Math.ceil(value)</code>. */
 	public function get_blurY():Float { return mBlurY; }
-	public function set_blurY(value:Float):Void 
+	public function set_blurY(value:Float):Float 
 	{ 
 		mBlurY = value; 
-		updateMarginsAndPasses(); 
+		updateMarginsAndPasses();
+		return value;
 	}
 }

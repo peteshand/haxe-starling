@@ -11,8 +11,10 @@
 package starling.textures;
 
 import openfl.display3D.Context3D;
+import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.VertexBuffer3D;
 import openfl.display3D.textures.TextureBase;
+import openfl.errors.Error;
 import openfl.geom.Matrix;
 import openfl.geom.Rectangle;
 import starling.utils.StarlingUtils;
@@ -97,6 +99,10 @@ class RenderTexture extends SubTexture
 	 */
 	public static var optimizePersistentBuffers:Bool = false;
 
+	private var supportsNonPotDimensions(get, null):Bool;
+	private var isDoubleBuffered(get, null):Bool;
+	public var isPersistent(get, null):Bool;
+	
 	/** Creates a new RenderTexture with a certain size (in points). If the texture is
 	 *  persistent, the contents of the texture remains intact after each draw call, allowing
 	 *  you to use the texture just like a canvas. If it is not, it will be cleared before each
@@ -106,14 +112,15 @@ class RenderTexture extends SubTexture
 	 *  memory is doubled). You can avoid that via 'optimizePersistentBuffers', though.</p>
 	 */
 	public function new(width:Int, height:Int, persistent:Bool=true,
-								  scale:Float=-1, format:String="bgra", repeat:Bool=false)
+								  scale:Float=-1, format:Context3DTextureFormat=null, repeat:Bool=false)
 	{
+		if (format == null) format = Context3DTextureFormat.BGRA;
 		// TODO: when Adobe has fixed this bug on the iPad 1 (see 'supportsNonPotDimensions'),
 		//       we can remove 'legalWidth/Height' and just pass on the original values.
 		//
 		// [Workaround]
 
-		if (scale <= 0) scale = Starling.contentScaleFactor;
+		if (scale <= 0) scale = Starling.ContentScaleFactor;
 
 		var legalWidth:Float  = width;
 		var legalHeight:Float = height;
@@ -192,7 +199,7 @@ class RenderTexture extends SubTexture
 	 *  @param drawingBlock  a callback with the form: <pre>function():Void;</pre>
 	 *  @param antiAliasing  Only supported beginning with AIR 13, and only on Desktop.
 	 *                       Values range from 0 (no antialiasing) to 4 (best quality). */
-	public function drawBundled(drawingBlock:Function, antiAliasing:Int=0):Void
+	public function drawBundled(drawingBlock:RenderFunction, antiAliasing:Int=0):Void
 	{
 		renderBundled(drawingBlock, null, null, 1.0, antiAliasing);
 	}
@@ -206,18 +213,18 @@ class RenderTexture extends SubTexture
 		mSupport.blendMode = object.blendMode == BlendMode.AUTO ?
 			BlendMode.NORMAL : object.blendMode;
 
-		if (matrix) mSupport.prependMatrix(matrix);
+		if (matrix != null) mSupport.prependMatrix(matrix);
 		else        mSupport.transformMatrix(object);
 
-		if (mask)   mSupport.pushMask(mask);
+		if (mask != null)   mSupport.pushMask(mask);
 
-		if (filter) filter.render(object, mSupport, alpha);
+		if (filter != null) filter.render(object, mSupport, alpha);
 		else        object.render(mSupport, alpha);
 
-		if (mask)   mSupport.popMask();
+		if (mask != null)   mSupport.popMask();
 	}
 	
-	private function renderBundled(renderBlock:Function, object:DisplayObject=null,
+	private function renderBundled(renderBlock:RenderFunction, object:DisplayObject=null,
 								   matrix:Matrix=null, alpha:Float=1.0,
 								   antiAliasing:Int=0):Void
 	{
@@ -252,9 +259,9 @@ class RenderTexture extends SubTexture
 		try
 		{
 			mDrawing = true;
-			StarlingUtils.execute(renderBlock, object, matrix, alpha);
+			StarlingUtils.execute(renderBlock, [object, matrix, alpha]);
 		}
-		finally
+		catch (e:Error)
 		{
 			mDrawing = false;
 			mSupport.finishQuadBatch();
@@ -280,7 +287,7 @@ class RenderTexture extends SubTexture
 	/** On the iPad 1 (and maybe other hardware?) clearing a non-POT RectangleTexture causes
 	 *  an error in the next "createVertexBuffer" call. Thus, we're forced to make this
 	 *  really ... elegant check here. */
-	private function get supportsNonPotDimensions():Bool
+	private function get_supportsNonPotDimensions():Bool
 	{
 		var target:Starling = Starling.current;
 		var context:Context3D = Starling.Context;
@@ -288,14 +295,15 @@ class RenderTexture extends SubTexture
 
 		if (support == null)
 		{
-			if (target.profile != "baselineConstrained" && "createRectangleTexture" in context)
+			if (target.profile != "baselineConstrained" && Reflect.hasField(context, "createRectangleTexture" /*"createRectangleTexture" in context*/))
 			{
-				var texture:TextureBase;
-				var buffer:VertexBuffer3D;
+				var texture:TextureBase = null;
+				var buffer:VertexBuffer3D = null;
 
 				try
 				{
-					texture = context["createRectangleTexture"](2, 3, "bgra", true);
+					var createRectangleTextureFunc = Reflect.getProperty(context, "createRectangleTexture");
+					texture = Reflect.callMethod(context, createRectangleTextureFunc, [2, 3, Context3DTextureFormat.BGRA, true]); // texture = context["createRectangleTexture"](2, 3, "bgra", true);
 					context.setRenderToTexture(texture);
 					context.clear();
 					context.setRenderToBackBuffer();
@@ -305,11 +313,8 @@ class RenderTexture extends SubTexture
 				catch (e:Error)
 				{
 					support = false;
-				}
-				finally
-				{
-					if (texture) texture.dispose();
-					if (buffer) buffer.dispose();
+					if (texture != null) texture.dispose();
+					if (buffer != null) buffer.dispose();
 				}
 			}
 			else
@@ -328,14 +333,16 @@ class RenderTexture extends SubTexture
 	/** Indicates if the render texture is using double buffering. This might be necessary for
 	 *  persistent textures, depending on the runtime version and the value of
 	 *  'forceDoubleBuffering'. */
-	private function get isDoubleBuffered():Bool { return mBufferTexture != null; }
+	private function get_isDoubleBuffered():Bool { return mBufferTexture != null; }
 
 	/** Indicates if the texture is persistent over multiple draw calls. */
-	public function get isPersistent():Bool { return mIsPersistent; }
+	public function get_isPersistent():Bool { return mIsPersistent; }
 	
 	/** @inheritDoc */
-	public override function get base():TextureBase { return mActiveTexture.base; }
+	public override function get_base():TextureBase { return mActiveTexture.base; }
 	
 	/** @inheritDoc */
-	public override function get root():ConcreteTexture { return mActiveTexture.root; }
+	public override function get_root():ConcreteTexture { return mActiveTexture.root; }
 }
+
+typedef RenderFunction = Dynamic;

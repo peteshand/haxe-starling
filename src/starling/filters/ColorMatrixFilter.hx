@@ -17,6 +17,7 @@ import openfl.display3D.Context3D;
 import openfl.display3D.Context3DProgramType;
 import openfl.display3D.Program3D;
 import openfl.errors.ArgumentError;
+import openfl.Vector;
 
 import starling.core.Starling;
 import starling.textures.Texture;
@@ -45,29 +46,87 @@ import starling.utils.Color;
 class ColorMatrixFilter extends FragmentFilter
 {
 	private var mShaderProgram:Program3D;
-	private var mUserMatrix:Array<Float>;   // offset in range 0-255
-	private var mShaderMatrix:Array<Float>; // offset in range 0-1, changed order
+	private var mUserMatrix:Vector<Float>;   // offset in range 0-255
+	private var mShaderMatrix:Vector<Float>; // offset in range 0-1, changed order
 	
 	private static var PROGRAM_NAME:String = "CMF";
-	private static var MIN_COLOR:Array<Float> = new <Float>[0, 0, 0, 0.0001];
-	private static var IDENTITY:Array = [1,0,0,0,0,  0,1,0,0,0,  0,0,1,0,0,  0,0,0,1,0];
+	private static var _MIN_COLOR:Vector<Float>;
+	private static var MIN_COLOR(get, set):Vector<Float>;
+	private static var _IDENTITY:Array<Float>;
+	private static var IDENTITY(get, set):Array<Float>;
 	private static var LUMA_R:Float = 0.299;
 	private static var LUMA_G:Float = 0.587;
 	private static var LUMA_B:Float = 0.114;
 	
 	/** helper objects */
-	private static var sTmpMatrix1:Array<Float> = new Array<Float>(20, true);
-	private static var sTmpMatrix2:Array<Float> = new <Float>[];
+	private static var sTmpMatrix1 = new Vector<Float>(20, true);
+	private static var sTmpMatrix2 = new Vector<Float>();
+	
+	public var matrix(get, set):Array<Float>;
+	
+	static function get_IDENTITY():Array<Float> 
+	{
+		if (_IDENTITY == null) {
+			_IDENTITY = new Array<Float>();
+			_IDENTITY.push(1);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			
+			_IDENTITY.push(0);
+			_IDENTITY.push(1);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			_IDENTITY.push(1);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			_IDENTITY.push(0);
+			_IDENTITY.push(1);
+			_IDENTITY.push(0);
+		}
+		return _IDENTITY;
+	}
+	
+	static function set_IDENTITY(value:Array<Float>):Array<Float> 
+	{
+		return _IDENTITY = value;
+	}
+	
+	static function get_MIN_COLOR():Vector<Float> 
+	{
+		if (_MIN_COLOR == null) {
+			_MIN_COLOR = new Vector<Float>();
+			_MIN_COLOR.push(0);
+			_MIN_COLOR.push(0);
+			_MIN_COLOR.push(0);
+			_MIN_COLOR.push(0.0001);
+		}
+		return _MIN_COLOR;
+	}
+	
+	static function set_MIN_COLOR(value:Vector<Float>):Vector<Float> 
+	{
+		return _MIN_COLOR = value;
+	}
 	
 	/** Creates a new ColorMatrixFilter instance with the specified matrix. 
 	 *  @param matrix a vector of 20 items arranged as a 4x5 matrix.
 	 */
 	public function new(matrix:Array<Float>=null)
 	{
-		mUserMatrix   = new <Float>[];
-		mShaderMatrix = new <Float>[];
+		mUserMatrix   = new Vector<Float>();
+		mShaderMatrix = new Array<Float>();
 		
 		this.matrix = matrix;
+		super();
 	}
 	
 	/** @private */
@@ -103,7 +162,7 @@ class ColorMatrixFilter extends FragmentFilter
 	private override function activate(pass:Int, context:Context3D, texture:Texture):Void
 	{
 		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, mShaderMatrix);
-		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 5, MIN_COLOR);
+		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 5, ColorMatrixFilter.MIN_COLOR);
 		context.setProgram(mShaderProgram);
 	}
 	
@@ -211,16 +270,16 @@ class ColorMatrixFilter extends FragmentFilter
 	{
 		var i:Int = 0;
 
-		for (var y:Int=0; y<4; ++y)
+		for (y in 0...4)
 		{
-			for (var x:Int=0; x<5; ++x)
+			for (x in 0...5)
 			{
-				sTmpMatrix1[Int(i+x)] = 
+				sTmpMatrix1[cast(i+x)] = 
 					matrix[i]        * mUserMatrix[x]           +
-					matrix[Int(i+1)] * mUserMatrix[Int(x +  5)] +
-					matrix[Int(i+2)] * mUserMatrix[Int(x + 10)] +
-					matrix[Int(i+3)] * mUserMatrix[Int(x + 15)] +
-					(x == 4 ? matrix[Int(i+4)] : 0);
+					matrix[cast(i+1)] * mUserMatrix[cast(x +  5)] +
+					matrix[cast(i+2)] * mUserMatrix[cast(x + 10)] +
+					matrix[cast(i+3)] * mUserMatrix[cast(x + 15)] +
+					(x == 4 ? matrix[cast(i+4)] : 0);
 			}
 			
 			i+=5;
@@ -239,8 +298,26 @@ class ColorMatrixFilter extends FragmentFilter
 								  ):ColorMatrixFilter
 	{
 		sTmpMatrix2.length = 0;
-		sTmpMatrix2.push(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, 
-			m10, m11, m12, m13, m14, m15, m16, m17, m18, m19);
+		sTmpMatrix2.push(m0);
+		sTmpMatrix2.push(m1);
+		sTmpMatrix2.push(m2);
+		sTmpMatrix2.push(m3);
+		sTmpMatrix2.push(m4);
+		sTmpMatrix2.push(m5);
+		sTmpMatrix2.push(m6);
+		sTmpMatrix2.push(m7);
+		sTmpMatrix2.push(m8);
+		sTmpMatrix2.push(m9);
+		sTmpMatrix2.push(m10);
+		sTmpMatrix2.push(m11);
+		sTmpMatrix2.push(m12);
+		sTmpMatrix2.push(m13);
+		sTmpMatrix2.push(m14);
+		sTmpMatrix2.push(m15);
+		sTmpMatrix2.push(m16);
+		sTmpMatrix2.push(m17);
+		sTmpMatrix2.push(m18);
+		sTmpMatrix2.push(m19);
 		
 		concat(sTmpMatrix2);
 		return this;
@@ -248,7 +325,7 @@ class ColorMatrixFilter extends FragmentFilter
 
 	private function copyMatrix(from:Array<Float>, to:Array<Float>):Void
 	{
-		for (var i:Int=0; i<20; ++i)
+		for (i in 0...20)
 			to[i] = from[i];
 	}
 	
@@ -258,29 +335,45 @@ class ColorMatrixFilter extends FragmentFilter
 		// and it needs the offsets in the range 0-1.
 		
 		mShaderMatrix.length = 0;
-		mShaderMatrix.push(
-			mUserMatrix[0],  mUserMatrix[1],  mUserMatrix[2],  mUserMatrix[3],
-			mUserMatrix[5],  mUserMatrix[6],  mUserMatrix[7],  mUserMatrix[8],
-			mUserMatrix[10], mUserMatrix[11], mUserMatrix[12], mUserMatrix[13], 
-			mUserMatrix[15], mUserMatrix[16], mUserMatrix[17], mUserMatrix[18],
-			mUserMatrix[4] / 255.0,  mUserMatrix[9] / 255.0,  mUserMatrix[14] / 255.0,  
-			mUserMatrix[19] / 255.0
-		);
+		mShaderMatrix.push(mUserMatrix[0]);
+		mShaderMatrix.push(mUserMatrix[1]);
+		mShaderMatrix.push(mUserMatrix[2]);
+		mShaderMatrix.push(mUserMatrix[3]);
+		mShaderMatrix.push(mUserMatrix[4] / 255.0);
+		mShaderMatrix.push(mUserMatrix[5]);
+		mShaderMatrix.push(mUserMatrix[6]);
+		mShaderMatrix.push(mUserMatrix[7]);
+		mShaderMatrix.push(mUserMatrix[8]);
+		mShaderMatrix.push(mUserMatrix[9] / 255.0);
+		mShaderMatrix.push(mUserMatrix[10]);
+		mShaderMatrix.push(mUserMatrix[11]);
+		mShaderMatrix.push(mUserMatrix[12]);
+		mShaderMatrix.push(mUserMatrix[13]);
+		mShaderMatrix.push(mUserMatrix[14] / 255.0);
+		mShaderMatrix.push(mUserMatrix[15]);
+		mShaderMatrix.push(mUserMatrix[16]);
+		mShaderMatrix.push(mUserMatrix[17]);
+		mShaderMatrix.push(mUserMatrix[18]);
+		mShaderMatrix.push(mUserMatrix[19] / 255.0);
 	}
 	
 	// properties
 	
 	/** A vector of 20 items arranged as a 4x5 matrix. */
-	public function get matrix():Array<Float> { return mUserMatrix; }
-	public function set matrix(value:Array<Float>):Void
+	public function get_matrix():Array<Float> { return mUserMatrix; }
+	public function set_matrix(value:Array<Float>):Array<Float>
 	{
-		if (value && value.length != 20) 
+		if (value != null && value.length != 20) 
 			throw new ArgumentError("Invalid matrix length: must be 20");
 		
 		if (value == null)
 		{
 			mUserMatrix.length = 0;
-			mUserMatrix.push.apply(mUserMatrix, IDENTITY);
+			//mUserMatrix.push.apply(mUserMatrix, IDENTITY);
+			for (i in 0...ColorMatrixFilter.IDENTITY.length) 
+			{
+				mUserMatrix.push(ColorMatrixFilter.IDENTITY[i]);
+			}
 		}
 		else
 		{
@@ -288,5 +381,6 @@ class ColorMatrixFilter extends FragmentFilter
 		}
 		
 		updateShaderMatrix();
+		return value;
 	}
 }

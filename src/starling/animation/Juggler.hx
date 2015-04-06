@@ -10,8 +10,9 @@
 
 package starling.animation;
 
-import haxe.ds.Vector;
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
+import openfl.Vector;
 import starling.animation.IAnimatable;
 import starling.events.Event;
 import starling.events.EventDispatcher;
@@ -48,7 +49,7 @@ import starling.events.EventDispatcher;
  */
 class Juggler implements IAnimatable
 {
-	private var mObjects:Array<IAnimatable>;
+	private var mObjects:Vector<IAnimatable>;
 	private var mElapsedTime:Float;
 	
 	public var elapsedTime(get, null):Float;
@@ -58,7 +59,8 @@ class Juggler implements IAnimatable
 	public function new()
 	{
 		mElapsedTime = 0;
-		mObjects = cast [];
+		mObjects = new Vector<IAnimatable>();
+		mObjects.fixed = false;
 	}
 
 	/** Adds an object to the juggler. */
@@ -73,7 +75,7 @@ class Juggler implements IAnimatable
 		}
 	}
 	
-	function indexOf(vec:Array<IAnimatable>, obj:IAnimatable) 
+	function indexOf(vec:Vector<IAnimatable>, obj:IAnimatable) 
 	{
 		for (i in 0...vec.length) 
 		{
@@ -284,23 +286,28 @@ class Juggler implements IAnimatable
 			}
 		}
 		
-		if (currentIndex != i)
+		// FIX
+		/*if (currentIndex != i)
 		{
 			numObjects = mObjects.length; // count might have changed!
 			
-			while (i < numObjects)
-				mObjects[cast(currentIndex++)] = mObjects[cast (i++)];
-			
-			trace("CHECK");
-			mObjects.splice(currentIndex, mObjects.length - currentIndex); // mObjects.length = currentIndex;
-		}
+			while (i < numObjects) {
+				mObjects[currentIndex] = mObjects[i];
+				currentIndex += 1;
+				i += 1;
+			}
+			mObjects.length = currentIndex - 1;
+		}*/
 	}
 	
 	private function onRemove(event:Event):Void
 	{
 		remove(cast event.target);
 		
-		var tween:Tween = cast event.target;
+		var tween:Tween = null;
+		try { tween = cast event.target; }
+		catch (e:Error) { }
+		
 		if (tween != null && tween.isComplete)
 			add(tween.nextTween);
 	}

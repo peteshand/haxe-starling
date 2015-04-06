@@ -49,13 +49,15 @@ class Image extends Quad
 	public var texture(get, set):Texture;
 	public var smoothing(get, set):String;
 	
-	
+	private var random:Int = 0;
 	
 	/** Creates a quad with a texture mapped onto it. */
 	public function new(texture:Texture)
 	{
 		if (texture != null)
 		{
+			random = cast Math.random() * 200000;
+			
 			var frame:Rectangle = texture.frame;
 			var width:Float  = (frame != null) ? frame.width  : texture.width;
 			var height:Float = (frame != null) ? frame.height : texture.height;

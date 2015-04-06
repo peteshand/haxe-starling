@@ -66,7 +66,7 @@ class VertexData
 	public var tinted(get, null):Bool;
 	public var premultipliedAlpha(get, set):Bool;
 	public var numVertices(get, set):Int;
-	public var rawData(get, null):Vector<Float>;
+	public var rawData(get, set):Vector<Float>;
 	
 	/** Helper object. */
 	private static var sHelperPoint:Point = new Point();
@@ -584,4 +584,10 @@ class VertexData
 	
 	/** The raw vertex data; not a copy! */
 	public function get_rawData():Vector<Float> { return mRawData; }
+	
+	public function set_rawData(value:Vector<Float>):Vector<Float>
+	{
+		mRawData = value;
+		return value;
+	}
 }

@@ -301,8 +301,10 @@ class TextField extends DisplayObjectContainer
 			vAlign = VAlign.TOP;
 		}
 		
-		//hAlign
-		var textFormat:TextFormat = new TextFormat(mFontName, mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, cast (hAlign, TextFormatAlign));
+		var align = TextFormatAlign.CENTER;
+		if (hAlign == HAlign.LEFT) align = TextFormatAlign.LEFT;
+		else if (hAlign == HAlign.RIGHT) align = TextFormatAlign.RIGHT;
+		var textFormat:TextFormat = new TextFormat(mFontName, mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, align);
 		textFormat.kerning = mKerning;
 		
 		sNativeTextField.defaultTextFormat = textFormat;
@@ -365,7 +367,7 @@ class TextField extends DisplayObjectContainer
 		
 		if (Reflect.isFunction(drawWithQualityFunc)) {
 			var func:Dynamic = drawWithQualityFunc;
-			func(bitmapData, sNativeTextField, drawMatrix, null, null, null, false, StageQuality.MEDIUM);
+			Reflect.callMethod(bitmapData, func, [sNativeTextField, drawMatrix, null, null, null, false, StageQuality.MEDIUM]);
 		}
 		else
 			bitmapData.draw(sNativeTextField, drawMatrix);

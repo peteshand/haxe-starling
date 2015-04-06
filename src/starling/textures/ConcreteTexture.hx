@@ -209,7 +209,6 @@ class ConcreteTexture extends Texture
 	public function attachVideo(type:String, attachment:Dynamic, onComplete:ConcreteTextureFunction=null):Void
 	{
 		var name:String = Type.getClassName(Type.getClass(mBase));
-		trace("CHECK name = " + name);
 		if (name == "flash.display3D.textures.VideoTexture")
 		{
 			mDataUploaded = true;

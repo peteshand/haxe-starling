@@ -130,10 +130,11 @@ class EventDispatcher
 	 *  Invokes an event on the current object. This method does not do any bubbling, nor
 	 *  does it back-up and restore the previous target on the event. The 'dispatchEvent' 
 	 *  method uses this method internally. */
-	/*internal*/ public function invokeEvent(event:Event):Bool
+	/*internal*/ 
+	public function invokeEvent(event:Event):Bool
 	{
-		var listeners:Array<EDFunction> = mEventListeners != null ?
-			cast (mEventListeners[event.type], Array<EDFunction>) : null;
+		var listeners:Array<EDFunction> = (mEventListeners != null) ?
+			mEventListeners[event.type] : null;
 		
 		var numListeners:Int = listeners == null ? 0 : listeners.length;
 		
@@ -150,10 +151,16 @@ class EventDispatcher
 			{
 				var listener:EDFunction = cast listeners[i];
 				var numArgs:Int = listener.length;
+				#if flash
+					if (numArgs == 0) listener();
+					else if (numArgs == 1) {
+						listener(event);
+					}
+					else listener(event, event.data);
+				#else
+					listener(event, event.data);
+				#end
 				
-				if (numArgs == 0) listener();
-				else if (numArgs == 1) listener(event);
-				else listener(event, event.data);
 				
 				if (event.stopsImmediatePropagation)
 					return true;
@@ -185,7 +192,7 @@ class EventDispatcher
 		
 		while ((element = element.parent) != null)
 			chain[cast(length++, Int)] = element;
-
+		
 		for (i in 0...length)
 		{
 			var stopPropagation:Bool = chain[i].invokeEvent(event);

@@ -65,13 +65,12 @@ class TouchEvent extends Event
 	private static var sTouches = new Vector<Touch>();
 	
 	public var timestamp(get, null):Float;
-	public var touches(get, null):Array<Touch>;
+	public var touches(get, null):Vector<Touch>;
 	public var shiftKey(get, null):Bool;
 	public var ctrlKey(get, null):Bool;
 	
 	/** Creates a new TouchEvent instance. */
-	public function new(type:String, touches:Array<Touch>, shiftKey:Bool=false, 
-							   ctrlKey:Bool=false, bubbles:Bool=true)
+	public function new(type:String, touches:Vector<Touch>, shiftKey:Bool=false, ctrlKey:Bool=false, bubbles:Bool=true)
 	{
 		super(type, bubbles, touches);
 		
@@ -89,11 +88,10 @@ class TouchEvent extends Event
 	/** Returns a list of touches that originated over a certain target. If you pass a
 	 *  'result' vector, the touches will be added to this vector instead of creating a new 
 	 *  object. */
-	public function getTouches(target:DisplayObject, phase:String=null,
-							   result:Array<Touch>=null):Array<Touch>
+	public function getTouches(target:DisplayObject, phase:String=null, result:Vector<Touch>=null):Vector<Touch>
 	{
-		if (result == null) result = new Array<Touch>();
-		var allTouches:Array<Touch> = cast data;
+		if (result == null) result = new Vector<Touch>();
+		var allTouches:Vector<Touch> = cast data;
 		var numTouches:Int = allTouches.length;
 		
 		for (i in 0...numTouches)
@@ -117,7 +115,7 @@ class TouchEvent extends Event
 	 */
 	public function getTouch(target:DisplayObject, phase:String=null, id:Int=-1):Touch
 	{
-		getTouches(target, phase, sTouches);
+		sTouches = getTouches(target, phase, sTouches);
 		var numTouches:Int = sTouches.length;
 		
 		if (numTouches > 0) 
@@ -141,7 +139,7 @@ class TouchEvent extends Event
 	public function interactsWith(target:DisplayObject):Bool
 	{
 		var result:Bool = false;
-		getTouches(target, null, sTouches);
+		sTouches = getTouches(target, null, sTouches);
 		
 		for (j in 0...sTouches.length) 
 		{
@@ -165,7 +163,7 @@ class TouchEvent extends Event
 	/*internal*/ 
 	public function dispatch(chain:Vector<EventDispatcher>):Void
 	{
-		trace("CHECK");
+		//trace("CHECK");
 		if (chain != null && cast chain.length)
 		{
 			var chainLength:Int = bubbles ? chain.length : 1;
@@ -195,7 +193,7 @@ class TouchEvent extends Event
 	public function get_timestamp():Float { return mTimestamp; }
 	
 	/** All touches that are currently available. */
-	public function get_touches():Array<Touch> { return (cast data).concat(); }
+	public function get_touches():Vector<Touch> { return (cast data).concat(); }
 	
 	/** Indicates if the shift key was pressed when the event occurred. */
 	public function get_shiftKey():Bool { return mShiftKey; }

@@ -74,7 +74,7 @@ class TextureAtlas
 {
 	private var mAtlasTexture:Texture;
 	private var mSubTextures:Map<String, Texture>;
-	private var mSubTextureNames:Array<String>;
+	private var mSubTextureNames:Iterator<String>;
 	
 	/** helper objects */
 	private static var sNames = new Vector<String>();
@@ -103,32 +103,38 @@ class TextureAtlas
 	private function parseAtlasXml(atlasXml:Xml):Void
 	{
 		trace("FIX");
-		/*var scale:Float = mAtlasTexture.scale;
+		var scale:Float = mAtlasTexture.scale;
 		var region:Rectangle = new Rectangle();
 		var frame:Rectangle  = new Rectangle();
 		
-		for (element in atlasXml.SubTexture)
-		{
-			var subTexture:Xml = cast element;
-			var name:String        = StarlingUtils.cleanMasterString(subTexture.@name);
-			var x:Float           = parseFloat(subTexture.@x) / scale;
-			var y:Float           = parseFloat(subTexture.@y) / scale;
-			var width:Float       = parseFloat(subTexture.@width)  / scale;
-			var height:Float      = parseFloat(subTexture.@height) / scale;
-			var frameX:Float      = parseFloat(subTexture.@frameX) / scale;
-			var frameY:Float      = parseFloat(subTexture.@frameY) / scale;
-			var frameWidth:Float  = parseFloat(subTexture.@frameWidth)  / scale;
-			var frameHeight:Float = parseFloat(subTexture.@frameHeight) / scale;
-			var rotated:Bool    = parseBool( subTexture.@rotated);
-
-			region.setTo(x, y, width, height);
-			frame.setTo(frameX, frameY, frameWidth, frameHeight);
-
-			if (frameWidth > 0 && frameHeight > 0)
-				addRegion(name, region, frame, rotated);
-			else
-				addRegion(name, region, null,  rotated);
-		}*/
+		for (element in atlasXml.firstElement()) {
+			if (element.nodeType == Xml.Element ) {
+				
+				var subTexture:Xml = cast element;
+				var name:String        = StarlingUtils.cleanMasterString(subTexture.get("name"));
+				
+				var x:Float           = Std.parseFloat(subTexture.get("x")) / scale;
+				var y:Float           = Std.parseFloat(subTexture.get("y")) / scale;
+				var width:Float       = Std.parseFloat(subTexture.get("width"))  / scale;
+				var height:Float      = Std.parseFloat(subTexture.get("height")) / scale;
+				var frameX:Float      = Std.parseFloat(subTexture.get("frameX")) / scale;
+				var frameY:Float      = Std.parseFloat(subTexture.get("frameY")) / scale;
+				var frameWidth:Float  = Std.parseFloat(subTexture.get("frameWidth"))  / scale;
+				var frameHeight:Float = Std.parseFloat(subTexture.get("frameHeight")) / scale;
+				
+				var rotatedStr:String = subTexture.get("rotated");
+				var rotated:Bool = false;
+				if (rotatedStr != null && rotatedStr.toLowerCase() == "true") rotated = true;
+				
+				region.setTo(x, y, width, height);
+				frame.setTo(frameX, frameY, frameWidth, frameHeight);
+				
+				if (frameWidth > 0 && frameHeight > 0)
+					addRegion(name, region, frame, rotated);
+				else
+					addRegion(name, region, null,  rotated);
+			}
+		}
 	}
 	
 	/** Retrieves a SubTexture by name. Returns <code>null</code> if it is not found. */
@@ -156,22 +162,27 @@ class TextureAtlas
 		var name:String;
 		if (result == null) result = new Array<String>();
 		
+		trace("FIX SORT");
+		
 		if (mSubTextureNames == null)
 		{
 			// optimization: store sorted list of texture names
-			mSubTextureNames = new Array<String>();
-			for (name in mSubTextures) {
-				if (Std.is(name, String)) mSubTextureNames.push(cast name);
-			}
+			mSubTextureNames = mSubTextures.keys();
 			
-			trace("FIX");
+			/*for (name in mSubTextures) {
+				if (Std.is(name, String)) mSubTextureNames.push(cast name);
+			}*/
+			
+			
 			//mSubTextureNames.sort(Array.CASEINSENSITIVE);
 		}
-
-		for (name in mSubTextureNames)
-			if (name.indexOf(prefix) == 0)
-				result[result.length] = name;
 		
+		for (key in mSubTextureNames)
+		{
+			if (key.indexOf(prefix) == 0) {
+				result.push(key);
+			}
+		}
 		return result;
 	}
 	
