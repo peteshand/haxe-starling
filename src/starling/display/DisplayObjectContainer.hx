@@ -11,6 +11,7 @@
 package starling.display;
 
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
 import openfl.errors.RangeError;
 import openfl.geom.Matrix;
 import openfl.geom.Matrix3D;
@@ -79,7 +80,6 @@ class DisplayObjectContainer extends DisplayObject
 	public var numChildren(get, null):Int;
 	public var touchGroup(get, set):Bool;
 	
-	private var random:Int;
 	// construction
 	
 	/** @private */
@@ -92,9 +92,7 @@ class DisplayObjectContainer extends DisplayObject
 			throw new AbstractClassError();
 		}
 		
-		random = cast Math.random() * 1000000;
 		mChildren = new Array<DisplayObject>();
-		
 	}
 	
 	/** Disposes the resources of all children. */
@@ -140,18 +138,16 @@ class DisplayObjectContainer extends DisplayObject
 				
 				if (stage != null)
 				{
-					var container:DisplayObjectContainer = cast child;
+					child.dispatchEventWith(Event.ADDED_TO_STAGE);
 					
-					
-					
+					/*var container:DisplayObjectContainer = cast child;
 					if (container != null) {
 						trace("CHECK");
 						container.dispatchEventWith(Event.ADDED_TO_STAGE); //container.broadcastEventWith(Event.ADDED_TO_STAGE);
-						
 					}
 					else {
 						child.dispatchEventWith(Event.ADDED_TO_STAGE);
-					}
+					}*/
 				}
 			}
 			
@@ -496,7 +492,9 @@ class DisplayObjectContainer extends DisplayObject
 	function getChildEventListeners(object:DisplayObject, eventType:String, 
 											 listeners:Array<DisplayObject>):Void
 	{
-		var container:DisplayObjectContainer = cast object;
+		var container:DisplayObjectContainer = null;
+		try { container = cast object; }
+		catch (e:Error) { }
 		
 		if (object.hasEventListener(eventType))
 			listeners[listeners.length] = object; // avoiding 'push'                
@@ -504,7 +502,8 @@ class DisplayObjectContainer extends DisplayObject
 		if (container != null)
 		{
 			var children:Array<DisplayObject> = container.mChildren;
-			var numChildren:Int = children.length;
+			var numChildren:Int = 0;
+			if (children != null) numChildren = children.length;
 			
 			for (i in 0...numChildren)
 				getChildEventListeners(children[i], eventType, listeners);

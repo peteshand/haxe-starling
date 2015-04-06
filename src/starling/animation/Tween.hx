@@ -260,7 +260,7 @@ class Tween extends EventDispatcher implements IAnimatable
 			}
 		}
 		
-		trace("CHECK");
+		//trace("CHECK");
 		#if flash
 		if (Math.isNaN(carryOverTime)) 
 		#else
@@ -318,7 +318,6 @@ class Tween extends EventDispatcher implements IAnimatable
 	{
 		var newValue:Float = startValue + mProgress * (endValue - startValue);
 		if (mRoundToInt) newValue = Math.round(newValue);
-		trace("CHECK");
 		Reflect.setProperty(mTarget, property, newValue); //mTarget[property] = newValue;
 	}
 

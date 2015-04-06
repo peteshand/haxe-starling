@@ -297,8 +297,8 @@ class RenderTexture extends SubTexture
 		{
 			if (target.profile != "baselineConstrained" && Reflect.hasField(context, "createRectangleTexture" /*"createRectangleTexture" in context*/))
 			{
-				var texture:TextureBase;
-				var buffer:VertexBuffer3D;
+				var texture:TextureBase = null;
+				var buffer:VertexBuffer3D = null;
 
 				try
 				{

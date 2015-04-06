@@ -42,7 +42,7 @@ class Polygon
 	public function new(vertices:Array<Float>=null)
 	{
 		mCoords = new Vector<Float>();
-		addVertices.apply(this, vertices);
+		addVertices(vertices);
 	}
 
 	/** Creates a clone of this polygon. */
@@ -62,7 +62,7 @@ class Polygon
 	public function reverse():Void
 	{
 		var numCoords:Int = mCoords.length;
-		var numVertices:Int = numCoords / 2;
+		var numVertices:Int = cast numCoords / 2;
 		var tmp:Float;
 
 		var i = 0;
@@ -152,7 +152,7 @@ class Polygon
 			var jy:Float = mCoords[j * 2 + 1];
 
 			if ((iy < y && jy >= y || jy < y && iy >= y) && (ix <= x || jx <= x))
-				oddNodes ^= UInt(ix + (y - iy) / (jy - iy) * (jx - ix) < x);
+				oddNodes ^= cast (ix + (y - iy) / (jy - iy) * (jx - ix) < x);
 
 			j = i;
 		}
@@ -184,7 +184,7 @@ class Polygon
 
 		if (numVertices < 3) return result;
 
-		var restIndices:Array<UInt> = new Array<UInt>(numVertices);
+		var restIndices = new Vector<UInt>(numVertices);
 
 		for (i in 0...numVertices)
 			restIndices[i] = i;
@@ -228,7 +228,9 @@ class Polygon
 
 			if (earFound)
 			{
-				result.push(i0, i1, i2);
+				result.push(i0);
+				result.push(i1);
+				result.push(i2);
 				restIndices.splice((restIndexPos + 1) % numRestIndices, 1);
 				numRestIndices--;
 				restIndexPos = 0;
@@ -240,7 +242,9 @@ class Polygon
 			}
 		}
 
-		result.push(restIndices[0], restIndices[1], restIndices[2]);
+		result.push(restIndices[0]);
+		result.push(restIndices[1]);
+		result.push(restIndices[2]);
 		return result;
 	}
 
@@ -280,8 +284,8 @@ class Polygon
 		for (i in 0...numPoints)
 		{
 			result += "  [Vertex " + i + ": " +
-			"x="   + mCoords[i * 2    ].toFixed(1) + ", " +
-			"y="   + mCoords[i * 2 + 1].toFixed(1) + "]"  +
+			"x="   + cast(Math.floor(mCoords[i * 2    ] * 10) / 10, Int) + ", " +
+			"y="   + cast(Math.floor(mCoords[i * 2 + 1] * 10) / 10, Int) + "]"  +
 			(i == numPoints - 1 ? "\n" : ",\n");
 		}
 
@@ -368,7 +372,7 @@ class Polygon
 
 		if (t < 0 || t > 1) return false; // outside c->d
 
-		var s:Float = aby ? (cy - ay + t * cdy) / aby :
+		var s:Float = aby > 0 ? (cy - ay + t * cdy) / aby :
 							 (cx - ax + t * cdx) / abx;
 
 		return s >= 0.0 && s <= 1.0; // inside a->b
@@ -390,7 +394,7 @@ class Polygon
 			var ay:Float = mCoords[ i + 1 ];
 			var bx:Float = mCoords[(i + 2) % numCoords];
 			var by:Float = mCoords[(i + 3) % numCoords];
-			var endJ:Float = (i + numCoords - 2) / 2;
+			var endJ:Int = cast ((i + numCoords - 2) / 2);
 
 			for (c in (i + 4)...endJ)
 			{
@@ -456,7 +460,7 @@ class Polygon
 	 *  value will fill up the path with zeros. */
 	public function get_numVertices():Int
 	{
-		return mCoords.length / 2;
+		return cast mCoords.length / 2;
 	}
 
 	public function set_numVertices(value:Int):Int

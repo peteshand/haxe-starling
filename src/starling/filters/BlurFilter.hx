@@ -34,9 +34,9 @@ class BlurFilter extends FragmentFilter
 	private var mNormalProgram:Program3D;
 	private var mTintedProgram:Program3D;
 	
-	private var mOffsets = new Array<Float>();
-	private var mWeights = new Array<Float>();
-	private var mColor   = new Array<Float>();
+	private var mOffsets = new Vector<Float>();
+	private var mWeights = new Vector<Float>();
+	private var mColor   = new Vector<Float>();
 	
 	private var mBlurX:Float;
 	private var mBlurY:Float;
@@ -170,14 +170,14 @@ class BlurFilter extends FragmentFilter
 		else fragmentShader +=
 			"add  oc, ft5, ft4                              \n";   // add to output color
 		
-		#if js {
-			var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
-			var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
-			return target.registerProgramFromSource(programName, vertexByteCode, fragmentByteCode);
-		}
-		#else 
+		//#if js {
+		//	var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
+		//	var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
+		//	return target.registerProgramFromSource(programName, vertexByteCode, fragmentByteCode);
+		//}
+		//#else 
 			return target.registerProgramFromSource(programName, vertexShader, fragmentShader);
-		#end
+		//#end
 	}
 	
 	/** @private */
@@ -298,18 +298,20 @@ class BlurFilter extends FragmentFilter
 	/** The blur factor in x-direction (stage coordinates). 
 	 *  The number of required passes will be <code>Math.ceil(value)</code>. */
 	public function get_blurX():Float { return mBlurX; }
-	public function set_blurX(value:Float):Void 
+	public function set_blurX(value:Float):Float 
 	{ 
 		mBlurX = value; 
 		updateMarginsAndPasses(); 
+		return value;
 	}
 	
 	/** The blur factor in y-direction (stage coordinates). 
 	 *  The number of required passes will be <code>Math.ceil(value)</code>. */
 	public function get_blurY():Float { return mBlurY; }
-	public function set_blurY(value:Float):Void 
+	public function set_blurY(value:Float):Float 
 	{ 
 		mBlurY = value; 
-		updateMarginsAndPasses(); 
+		updateMarginsAndPasses();
+		return value;
 	}
 }

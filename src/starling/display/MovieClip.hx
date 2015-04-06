@@ -284,8 +284,9 @@ class MovieClip extends Image implements IAnimatable
 				dispatchCompleteEvent = true;
 		}
 		
-		if (mCurrentFrame != previousFrame)
+		if (mCurrentFrame != previousFrame) {
 			texture = mTextures[mCurrentFrame];
+		}
 		
 		if (dispatchCompleteEvent)
 			dispatchEventWith(Event.COMPLETE);

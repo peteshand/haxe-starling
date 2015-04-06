@@ -18,6 +18,7 @@ import openfl.display3D.VertexBuffer3D;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
+import openfl.Vector;
 
 import starling.core.RenderSupport;
 import starling.core.Starling;
@@ -38,7 +39,7 @@ class Canvas extends DisplayObject
 
 	private var mVertexData:VertexData;
 	private var mVertexBuffer:VertexBuffer3D;
-	private var mIndexData:Array<UInt>;
+	private var mIndexData:Vector<UInt>;
 	private var mIndexBuffer:IndexBuffer3D;
 
 	private var mFillColor:UInt;
@@ -46,14 +47,15 @@ class Canvas extends DisplayObject
 
 	// helper objects (to avoid temporary objects)
 	private static var sHelperMatrix:Matrix = new Matrix();
-	private static var sRenderAlpha:Array<Float> = [1.0, 1.0, 1.0, 1.0];
+	private static var _sRenderAlpha:Vector<Float>;
+	private static var sRenderAlpha(get, set):Vector<Float>;
 
 	/** Creates a new (empty) Canvas. Call one or more of the 'draw' methods to add content. */
 	public function Canvas()
 	{
 		mPolygons   = new Array<Polygon>();
 		mVertexData = new VertexData(0);
-		mIndexData  = new Array<UInt>();
+		mIndexData  = new Vector<UInt>();
 		mSyncRequired = false;
 
 		mFillColor = 0xffffff;
@@ -151,7 +153,7 @@ class Canvas extends DisplayObject
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
 		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderAlpha, 1);
 
-		context.drawTriangles(mIndexBuffer, 0, mIndexData.length / 3);
+		context.drawTriangles(mIndexBuffer, 0, cast mIndexData.length / 3);
 
 		context.setVertexBufferAt(0, null);
 		context.setVertexBufferAt(1, null);
@@ -232,22 +234,39 @@ class Canvas extends DisplayObject
 		var numVertices:Float = mVertexData.numVertices;
 		var numIndices:Float  = mIndexData.length;
 
-		mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
-		mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
+		mVertexBuffer = context.createVertexBuffer(cast numVertices, VertexData.ELEMENTS_PER_VERTEX);
+		mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, cast numVertices);
 
-		mIndexBuffer = context.createIndexBuffer(numIndices);
-		mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
+		mIndexBuffer = context.createIndexBuffer(cast numIndices);
+		mIndexBuffer.uploadFromVector(cast mIndexData, 0, cast numIndices);
 
 		mSyncRequired = false;
 	}
 
 	private function destroyBuffers():Void
 	{
-		if (mVertexBuffer) mVertexBuffer.dispose();
-		if (mIndexBuffer)  mIndexBuffer.dispose();
+		if (mVertexBuffer != null) mVertexBuffer.dispose();
+		if (mIndexBuffer != null)  mIndexBuffer.dispose();
 
 		mVertexBuffer = null;
 		mIndexBuffer  = null;
 		mSyncRequired = true;
+	}
+	
+	static function get_sRenderAlpha():Vector<Float> 
+	{
+		if (_sRenderAlpha == null) {
+			_sRenderAlpha = new Vector<Float>();
+			_sRenderAlpha.push(1);
+			_sRenderAlpha.push(1);
+			_sRenderAlpha.push(1);
+			_sRenderAlpha.push(1);
+		}
+		return _sRenderAlpha;
+	}
+	
+	static function set_sRenderAlpha(value:Vector<Float>):Vector<Float> 
+	{
+		return _sRenderAlpha = value;
 	}
 }

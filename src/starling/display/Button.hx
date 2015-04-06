@@ -10,6 +10,9 @@
 
 package starling.display;
 
+#if js
+import js.Browser;
+#end
 import openfl.errors.ArgumentError;
 import openfl.geom.Rectangle;
 import openfl.ui.Mouse;
@@ -95,7 +98,7 @@ class Button extends DisplayObjectContainer
 		mDownState = downState;
 		mOverState = overState;
 		mDisabledState = disabledState;
-
+		
 		mState = ButtonState.UP;
 		mBody = new Image(upState);
 		mScaleWhenDown = downState != null ? 1.0 : 0.9;
@@ -108,7 +111,8 @@ class Button extends DisplayObjectContainer
 		mContents = new Sprite();
 		mContents.addChild(mBody);
 		addChild(mContents);
-		addEventListener(TouchEvent.TOUCH, onTouch);
+		
+		addEventListener(TouchEvent.TOUCH, onButtonTouch);
 		
 		this.touchGroup = true;
 		this.text = text;
@@ -154,11 +158,15 @@ class Button extends DisplayObjectContainer
 		mTextField.y = mTextBounds.y;
 	}
 	
-	private function onTouch(event:TouchEvent):Void
+	private function onButtonTouch(event:TouchEvent):Void
 	{
+		
 		#if flash
-			trace("FIX for flash target");
-			//Mouse.cursor = (mUseHandCursor && mEnabled && event.interactsWith(this)) ? MouseCursor.BUTTON : MouseCursor.AUTO;
+			var cursor:String = (mUseHandCursor && mEnabled && event.interactsWith(this)) ? 'button' : 'auto';
+			Mouse.cursor = cursor;
+		#else
+			var cursor:String = (mUseHandCursor && mEnabled && event.interactsWith(this)) ? 'pointer' : 'auto';
+			Browser.document.getElementById("openfl-content").style.cursor = cursor;
 		#end
 		
 		var touch:Touch = event.getTouch(this);

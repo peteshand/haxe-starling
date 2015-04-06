@@ -606,8 +606,9 @@ class DisplayObject extends EventDispatcher
 	{
 		if (event.type == Event.REMOVED_FROM_STAGE && stage == null)
 			return; // special check to avoid double-dispatch of RfS-event.
-		else
+		else {
 			super.dispatchEvent(event);
+		}
 	}
 	
 	// enter frame event optimization

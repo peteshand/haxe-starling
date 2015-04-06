@@ -13,6 +13,7 @@ package starling.textures;
 import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.textures.TextureBase;
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
@@ -35,11 +36,13 @@ class SubTexture extends Texture
 	private var mRotated:Bool;
 	private var mWidth:Float;
 	private var mHeight:Float;
-	private var mTransformationMatrix:Matrix;
+	private var mTransformationMatrix:Matrix = new Matrix();
 	
 	/** Helper object. */
 	private static var sTexCoords:Point = new Point();
-	private static var sMatrix:Matrix = new Matrix();
+	
+	private static var _sMatrix:Matrix;
+	private static var sMatrix(get, set):Matrix;
 	
 	/** The texture which the SubTexture is based on. */
 	public var parent(get, null):Texture;
@@ -48,6 +51,17 @@ class SubTexture extends Texture
 	public var region(get, null):Rectangle;
 	public var clipping(get, null):Rectangle;
 	public var transformationMatrix(get, null):Matrix;
+	
+	static function get_sMatrix():Matrix 
+	{
+		if (_sMatrix == null) _sMatrix = new Matrix(1, 0, 0, 1, 0, 0);
+		return _sMatrix;
+	}
+	
+	static function set_sMatrix(value:Matrix):Matrix 
+	{
+		return _sMatrix = value;
+	}
 	
 	/** Creates a new SubTexture containing the specified region of a parent texture.
 	 *
@@ -61,16 +75,14 @@ class SubTexture extends Texture
 	 *  @param rotated    If true, the SubTexture will show the parent region rotated by
 	 *                    90 degrees (CCW).
 	 */
-	public function new(parent:Texture, region:Rectangle=null,
-							   ownsParent:Bool=false, frame:Rectangle=null,
-							   rotated:Bool=false)
+	public function new(_parent:Texture, region:Rectangle=null, ownsParent:Bool=false, frame:Rectangle=null, rotated:Bool=false)
 	{
 		super();
 		// TODO: in a future version, the order of arguments of this constructor should
 		//       be fixed ('ownsParent' at the very end).
 		
-		mParent = parent;
-		mRegion = region != null ? region.clone() : new Rectangle(0, 0, parent.width, parent.height);
+		mParent = _parent;
+		mRegion = region != null ? region.clone() : new Rectangle(0, 0, _parent.width, _parent.height);
 		mFrame = frame != null ? frame.clone() : null;
 		mOwnsParent = ownsParent;
 		mRotated = rotated;
@@ -110,8 +122,7 @@ class SubTexture extends Texture
 		var startIndex:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.TEXCOORD_OFFSET;
 		var stride:Int = VertexData.ELEMENTS_PER_VERTEX - 2;
 		
-		adjustTexCoords(vertexData.rawData, startIndex, stride, count);
-		
+		vertexData.rawData = adjustTexCoords(vertexData.rawData, startIndex, stride, count);
 		if (mFrame != null)
 		{
 			if (count != 4)
@@ -128,23 +139,26 @@ class SubTexture extends Texture
 	}
 
 	/** @inheritDoc */
-	public override function adjustTexCoords(texCoords:Array<Float>,
-											 startIndex:Int=0, stride:Int=0, count:Int=-1):Void
+	public override function adjustTexCoords(texCoords:Array<Float>, startIndex:Int=0, stride:Int=0, count:Int=-1):Array<Float>
 	{
 		if (count < 0) {
 			count = cast ((texCoords.length - startIndex - 2) / (stride + 2) + 1);
 		}
-
+		
 		var endIndex:Int = startIndex + count * (2 + stride);
 		var texture:SubTexture = this;
-		var u:Float, v:Float;
+		var u:Float;
+		var v:Float;
 		
 		sMatrix.identity();
 		
 		while (texture != null)
 		{
-			sMatrix.concat(texture.mTransformationMatrix);
-			texture = cast texture.parent;
+			if (texture.mTransformationMatrix != null) {
+				sMatrix.concat(texture.mTransformationMatrix);
+			}
+			try { texture = cast texture.mParent; }
+			catch (e:Error) { texture = null; }
 		}
 		
 		var i:Int = startIndex;
@@ -161,6 +175,8 @@ class SubTexture extends Texture
 			
 			i += (2 + stride);
 		}
+		
+		return texCoords;
 	}
 	
 	/** The texture which the SubTexture is based on. */

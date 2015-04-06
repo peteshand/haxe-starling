@@ -561,10 +561,10 @@ class Texture
 	 *  @param stride     the distance (in vector elements) of consecutive UV pairs.
 	 *  @param count      the number of UV pairs that should be adjusted, or "-1" for all of them.
 	 */
-	public function adjustTexCoords(texCoords:Array<Float>,
-									startIndex:Int=0, stride:Int=0, count:Int=-1):Void
+	public function adjustTexCoords(texCoords:Array<Float>, startIndex:Int=0, stride:Int=0, count:Int=-1):Array<Float>
 	{
 		// override in subclasses
+		return texCoords;
 	}
 
 	// properties
