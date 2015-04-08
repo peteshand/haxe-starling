@@ -133,9 +133,12 @@ class TouchProcessor
 			var j = len - 1 - i;
 			var mQueueItem = mQueue[j];
 			if (mQueueItem == null) {
-				mQueue = new Vector<Array<Dynamic>>();
+				//mQueue.splice(i, 1);
+				//mQueue = new Vector<Array<Dynamic>>();
 				continue;
 			}
+			
+			
 			
 			// Set touches that were new or moving to phase 'stationary'.
 			for (touch in mCurrentTouches)
@@ -147,6 +150,7 @@ class TouchProcessor
 			while (mQueue.length > 0 && containsTouchWithID(sUpdatedTouches, mQueueItem[0]) == false)
 			{
 				var touchArgs:Array<Dynamic> = mQueue.pop();
+				
 				touch = createOrUpdateTouch(
 							touchArgs[0], touchArgs[1], touchArgs[2], touchArgs[3],
 							touchArgs[4], touchArgs[5], touchArgs[6]);
@@ -167,7 +171,6 @@ class TouchProcessor
 		}
 		
 		mQueue = new Vector<Array<Dynamic>>();
-		
 	}
 	
 	/** Dispatches TouchEvents to the display objects that are affected by the list of
@@ -225,8 +228,8 @@ class TouchProcessor
 	public function enqueue(touchID:Int, phase:String, globalX:Float, globalY:Float,
 							pressure:Float=1.0, width:Float=1.0, height:Float=1.0):Void
 	{
-		var a:Array<Dynamic> = [touchID, phase, globalX, globalY, pressure, width, height];
-		mQueue.unshift(a); // mQueue.unshift(arguments);
+		var arguments:Array<Dynamic> = [touchID, phase, globalX, globalY, pressure, width, height];
+		mQueue.unshift(arguments); // mQueue.unshift(arguments);
 		
 		// multitouch simulation (only with mouse)
 		if (mCtrlDown && simulateMultitouch && touchID == 0) 

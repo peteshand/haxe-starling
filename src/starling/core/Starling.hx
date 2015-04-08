@@ -239,7 +239,7 @@ class Starling extends EventDispatcher
 	public var isStarted(get, null):Bool;
 	public var juggler(get, null):Juggler;
 	public var context(get, null):Context3D;
-	public var contextData(get, null):Map<String, Map<String, Dynamic>>;
+	public var contextData(get, null):Map<String, Dynamic>;
 	public var backBufferWidth(get, null):Int;
 	public var backBufferHeight(get, null):Int;
 	public var backBufferPixelsPerPoint(get, null):Int;
@@ -354,7 +354,6 @@ class Starling extends EventDispatcher
 				throw new ArgumentError("When sharing the context3D, " +
 					"the actual profile has to be supplied");
 			else {
-				trace("CHECK");
 				//mProfile = "profile" in mStage3D.context3D ? mStage3D.context3D["profile"] : cast profile;
 				mProfile = Reflect.hasField(mStage3D.context3D, "profile") ? Reflect.getProperty(mStage3D.context3D, "profile") : cast profile;
 			}
@@ -581,7 +580,6 @@ class Starling extends EventDispatcher
 			mClippedViewPort.height / scaleY,
 			mStage.stageWidth, mStage.stageHeight, mStage.cameraPosition);
 		
-		mStage.color = 0x448899;
 		if (mShareContext == false)
 			RenderSupport.Clear(mStage.color, 1.0);
 		
@@ -871,9 +869,12 @@ class Starling extends EventDispatcher
 		// enqueue touch in touch processor
 		if (phase != null) mTouchProcessor.enqueue(touchID, phase, globalX, globalY, pressure, width, height);
 		
-		// allow objects that depend on mouse-over state to be updated immediately
-		if (event.type == MouseEvent.MOUSE_UP)
-			mTouchProcessor.enqueue(touchID, TouchPhase.HOVER, globalX, globalY);
+		#if flash
+			// allow objects that depend on mouse-over state to be updated immediately
+			if (event.type == MouseEvent.MOUSE_UP) {
+				mTouchProcessor.enqueue(touchID, TouchPhase.HOVER, globalX, globalY);
+			}
+		#end
 	}
 	
 	private function get_touchEventTypes():Array<Dynamic>
@@ -963,7 +964,7 @@ class Starling extends EventDispatcher
 	 *  (e.g. textures), use this Map instead of creating a static class variable.
 	 *  The Map is actually bound to the stage3D instance, thus it survives a 
 	 *  context loss. */
-	public function get_contextData():Map<String, Map<String, Dynamic>>
+	public function get_contextData():Map<String, Dynamic>
 	{
 		return cast sContextData[mStage3D];
 	}

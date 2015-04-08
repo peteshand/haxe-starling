@@ -573,46 +573,46 @@ class Texture
 	 *  Only SubTextures can have a frame.
 	 *
 	 *  <p>CAUTION: not a copy, but the actual object! Do not modify!</p> */
-	public function get_frame():Rectangle { return null; }
+	private function get_frame():Rectangle { return null; }
 
 	/** Indicates if the texture should repeat like a wallpaper or stretch the outermost pixels.
 	 *  Note: this only works in textures with sidelengths that are powers of two and
 	 *  that are not loaded from a texture atlas (i.e. no subtextures). @default false */
-	public function get_repeat():Bool { return false; }
+	private function get_repeat():Bool { return false; }
 
 	/** The width of the texture in points. */
-	public function get_width():Float { return 0; }
+	private function get_width():Float { return 0; }
 
 	/** The height of the texture in points. */
-	public function get_height():Float { return 0; }
+	private function get_height():Float { return 0; }
 
 	/** The width of the texture in pixels (without scale adjustment). */
-	public function get_nativeWidth():Float { return 0; }
+	private function get_nativeWidth():Float { return 0; }
 
 	/** The height of the texture in pixels (without scale adjustment). */
-	public function get_nativeHeight():Float { return 0; }
+	private function get_nativeHeight():Float { return 0; }
 
 	/** The scale factor, which influences width and height properties. */
-	public function get_scale():Float { return 1.0; }
+	private function get_scale():Float { return 1.0; }
 
 	/** The Stage3D texture object the texture is based on. */
-	public function get_base():TextureBase { return null; }
+	private function get_base():TextureBase { return null; }
 
 	/** The concrete texture the texture is based on. */
-	public function get_root():ConcreteTexture { return null; }
+	private function get_root():ConcreteTexture { return null; }
 
 	/** The <code>Context3DTextureFormat</code> of the underlying texture data. */
-	public function get_format():Context3DTextureFormat { return Context3DTextureFormat.BGRA; }
+	private function get_format():Context3DTextureFormat { return Context3DTextureFormat.BGRA; }
 
 	/** Indicates if the texture contains mip maps. */
-	public function get_mipMapping():Bool { return false; }
+	private function get_mipMapping():Bool { return false; }
 
 	/** Indicates if the alpha values are premultiplied into the RGB values. */
-	public function get_premultipliedAlpha():Bool { return false; }
+	private function get_premultipliedAlpha():Bool { return false; }
 
 	/** Returns the maximum size constraint (for both width and height) for textures in the
 	 *  current Context3D profile. */
-	public static function get_maxSize():Int
+	private static function get_maxSize():Int
 	{
 		var target:Starling = Starling.current;
 		var profile:String = (target != null) ? target.profile : "baseline";

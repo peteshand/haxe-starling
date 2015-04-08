@@ -321,7 +321,9 @@ class RenderTexture extends SubTexture
 			{
 				support = false;
 			}
-
+			
+			trace("CONTEXT_POT_SUPPORT_KEY = " + CONTEXT_POT_SUPPORT_KEY);
+			
 			target.contextData[CONTEXT_POT_SUPPORT_KEY] = support;
 		}
 
