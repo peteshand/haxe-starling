@@ -12,6 +12,7 @@
 package starling.animation;
 
 import openfl.errors.ArgumentError;
+import openfl.errors.Error;
 import openfl.Vector;
 import starling.events.Event;
 import starling.events.EventDispatcher;
@@ -318,7 +319,10 @@ class Tween extends EventDispatcher implements IAnimatable
 	{
 		var newValue:Float = startValue + mProgress * (endValue - startValue);
 		if (mRoundToInt) newValue = Math.round(newValue);
-		Reflect.setProperty(mTarget, property, newValue); //mTarget[property] = newValue;
+		try {
+			Reflect.setProperty(mTarget, property, newValue); //mTarget[property] = newValue; 
+		}
+		catch (e:Error) {}
 	}
 
 	private function updateRgb(property:String, startValue:Float, endValue:Float):Void

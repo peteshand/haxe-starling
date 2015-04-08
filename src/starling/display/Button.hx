@@ -160,7 +160,6 @@ class Button extends DisplayObjectContainer
 	
 	private function onButtonTouch(event:TouchEvent):Void
 	{
-		
 		#if flash
 			var cursor:String = (mUseHandCursor && mEnabled && event.interactsWith(this)) ? 'button' : 'auto';
 			Mouse.cursor = cursor;
@@ -171,6 +170,11 @@ class Button extends DisplayObjectContainer
 		
 		var touch:Touch = event.getTouch(this);
 		var isWithinBounds:Bool;
+		
+		if (touch != null){
+			trace("touch.phase = " + touch.phase);
+			trace("mState = " + mState);
+		}
 		
 		if (!mEnabled)
 		{

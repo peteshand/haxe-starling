@@ -68,7 +68,7 @@ class RenderSupport
 	private var mRenderTarget:Texture;
 	
 	private var mClipRectStack:Array<Rectangle>;
-	private var mClipRectStackSize:Int;
+	private var mClipRectStackSize:Int = 0;
 	
 	private var mQuadBatches:Array<QuadBatch>;
 	private var mCurrentQuadBatchID:Int;
@@ -489,7 +489,6 @@ class RenderSupport
 		if (context == null) return;
 
 		finishQuadBatch();
-		trace("RenderSupport 3");
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL, 
@@ -499,7 +498,6 @@ class RenderSupport
 		drawMask(mask);
 
 		context.setStencilReferenceValue(mMasks.length);
-		trace("RenderSupport 4");
 		//triangleFace:String="frontAndBack", compareMode:String="always", actionOnBothPass:String="keep", actionOnDepthFail:String="keep", actionOnDepthPassStencilFail:String="keep"
 		
 		
@@ -519,7 +517,6 @@ class RenderSupport
 
 		finishQuadBatch();
 
-		trace("RenderSupport 1");
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
@@ -529,7 +526,6 @@ class RenderSupport
 		drawMask(mask);
 
 		context.setStencilReferenceValue(mMasks.length);
-		trace("RenderSupport 2");
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,

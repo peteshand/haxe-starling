@@ -477,9 +477,9 @@ class VertexData
 				"x="   + Math.floor(position.x)    + ", " +
 				"y="   + Math.floor(position.y)    + ", " +
 				//"rgb=" + getColor(i).toString(16) + ", " +
-				"a="   + cast(Math.floor(getAlpha(i) * 10) / 10, Int)   + ", " +
-				"u="   + cast(Math.floor(texCoords.x * 1000) / 1000, Int) + ", " +
-				"v="   + cast(Math.floor(texCoords.y * 1000) / 1000, Int) + "]"  +
+				"a="   + cast(Math.floor(getAlpha(i) * 10) / 10, Float)   + ", " +
+				"u="   + cast(Math.floor(texCoords.x * 1000) / 1000, Float) + ", " +
+				"v="   + cast(Math.floor(texCoords.y * 1000) / 1000, Float) + "]"  +
 				(i == numVertices-1 ? "\n" : ",\n");
 		}
 		

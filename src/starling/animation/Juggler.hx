@@ -236,12 +236,24 @@ class Juggler implements IAnimatable
 			var value:Dynamic = Reflect.getProperty(properties, property);
 			
 			trace("CHECK");
-			if (Reflect.hasField(tween, property)) // if (tween.hasOwnProperty(property))
+			var hasProperty = Reflect.hasField(tween, property);
+			//trace("tween = " + tween);
+			
+			var propertyName = Tween.getPropertyName(property);
+			var targetHasProperty:Bool = target.hasOwnProperty(propertyName);
+			trace("hasProperty = " + hasProperty);
+			trace("targetHasProperty = " + targetHasProperty);
+			//trace("target = " + target);
+			
+			if (hasProperty) {// if (tween.hasOwnProperty(property))
 				Reflect.setProperty(tween, property, value);// tween[property] = value;
-			else if (target.hasOwnProperty(Tween.getPropertyName(property)))
+			}
+			//else if (targetHasProperty){
 				tween.animate(property, cast value);
-			else
-				throw new ArgumentError("Invalid property: " + property);
+			//}
+			//else {
+			//	throw new ArgumentError("Invalid property: " + property);
+			//}
 		}
 		
 		tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
@@ -308,8 +320,13 @@ class Juggler implements IAnimatable
 		try { tween = cast event.target; }
 		catch (e:Error) { }
 		
-		if (tween != null && tween.isComplete)
-			add(tween.nextTween);
+		if (tween != null){
+			if (tween.isComplete) {
+				var nextTween = Reflect.getProperty(tween, "nextTween");
+				trace("nextTween = " + nextTween);
+				if (nextTween != null) add(cast nextTween);
+			}
+		}
 	}
 	
 	/** The total life time of the juggler (in seconds). */
