@@ -404,7 +404,7 @@ class DisplayObject extends EventDispatcher
 	/** Indicates if an object occupies any visible area. This is the case when its 'alpha',
 	 *  'scaleX' and 'scaleY' values are not zero, its 'visible' property is enabled, and
 	 *  if it is not currently used as a mask for another display object. */
-	public function get_hasVisibleArea():Bool
+	private function get_hasVisibleArea():Bool
 	{
 		return mAlpha != 0.0 && mVisible && !mIsMask && mScaleX != 0.0 && mScaleY != 0.0;
 	}
@@ -683,7 +683,7 @@ class DisplayObject extends EventDispatcher
 	 *  properties.</p>
 	 * 
 	 *  <p>CAUTION: not a copy, but the actual object!</p> */
-	public function get_transformationMatrix():Matrix
+	private function get_transformationMatrix():Matrix
 	{
 		if (mOrientationChanged)
 		{
@@ -734,7 +734,7 @@ class DisplayObject extends EventDispatcher
 		return mTransformationMatrix; 
 	}
 
-	public function set_transformationMatrix(matrix:Matrix):Matrix
+	private function set_transformationMatrix(matrix:Matrix):Matrix
 	{
 		var PI_Q:Float = Math.PI / 4.0;
 		
@@ -775,7 +775,7 @@ class DisplayObject extends EventDispatcher
 	 *  matrix. Only the 'Sprite3D' class supports real 3D transformations.</p>
 	 *
 	 *  <p>CAUTION: not a copy, but the actual object!</p> */
-	public function get_transformationMatrix3D():Matrix3D
+	private function get_transformationMatrix3D():Matrix3D
 	{
 		// this method needs to be overriden in 3D-supporting subclasses (like Sprite3D).
 
@@ -786,12 +786,12 @@ class DisplayObject extends EventDispatcher
 	}
 
 	/** Indicates if this object or any of its parents is a 'Sprite3D' object. */
-	public function get_is3D():Bool { return mIs3D; }
+	private function get_is3D():Bool { return mIs3D; }
 
 	/** Indicates if the mouse cursor should transform into a hand while it's over the sprite. 
 	 *  @default false */
-	public function get_useHandCursor():Bool { return mUseHandCursor; }
-	public function set_useHandCursor(value:Bool):Bool
+	private function get_useHandCursor():Bool { return mUseHandCursor; }
+	private function set_useHandCursor(value:Bool):Bool
 	{
 		if (value == mUseHandCursor) return value;
 		mUseHandCursor = value;
@@ -810,7 +810,7 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The bounds of the object relative to the local coordinates of the parent. */
-	public function get_bounds():Rectangle
+	private function get_bounds():Rectangle
 	{
 		return getBounds(mParent);
 	}
@@ -818,8 +818,8 @@ class DisplayObject extends EventDispatcher
 	/** The width of the object in pixels.
 	 *  Note that for objects in a 3D space (connected to a Sprite3D), this value might not
 	 *  be accurate until the object is part of the display list. */
-	public function get_width():Float { return getBounds(mParent, sHelperRect).width; }
-	public function set_width(value:Float):Float
+	private function get_width():Float { return getBounds(mParent, sHelperRect).width; }
+	private function set_width(value:Float):Float
 	{
 		// this method calls 'this.scaleX' instead of changing mScaleX directly.
 		// that way, subclasses reacting on size changes need to override only the scaleX method.
@@ -833,8 +833,8 @@ class DisplayObject extends EventDispatcher
 	/** The height of the object in pixels.
 	 *  Note that for objects in a 3D space (connected to a Sprite3D), this value might not
 	 *  be accurate until the object is part of the display list. */
-	public function get_height():Float { return getBounds(mParent, sHelperRect).height; }
-	public function set_height(value:Float):Float
+	private function get_height():Float { return getBounds(mParent, sHelperRect).height; }
+	private function set_height(value:Float):Float
 	{
 		scaleY = 1.0;
 		var actualHeight:Float = height;
@@ -843,8 +843,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The x coordinate of the object relative to the local coordinates of the parent. */
-	public function get_x():Float { return mX; }
-	public function set_x(value:Float):Float 
+	private function get_x():Float { return mX; }
+	private function set_x(value:Float):Float 
 	{ 
 		if (mX != value)
 		{
@@ -855,8 +855,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The y coordinate of the object relative to the local coordinates of the parent. */
-	public function get_y():Float { return mY; }
-	public function set_y(value:Float):Float 
+	private function get_y():Float { return mY; }
+	private function set_y(value:Float):Float 
 	{
 		if (mY != value)
 		{
@@ -867,8 +867,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The x coordinate of the object's origin in its own coordinate space (default: 0). */
-	public function get_pivotX():Float { return mPivotX; }
-	public function set_pivotX(value:Float):Float 
+	private function get_pivotX():Float { return mPivotX; }
+	private function set_pivotX(value:Float):Float 
 	{
 		if (mPivotX != value)
 		{
@@ -879,8 +879,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The y coordinate of the object's origin in its own coordinate space (default: 0). */
-	public function get_pivotY():Float { return mPivotY; }
-	public function set_pivotY(value:Float):Float 
+	private function get_pivotY():Float { return mPivotY; }
+	private function set_pivotY(value:Float):Float 
 	{ 
 		if (mPivotY != value)
 		{
@@ -891,8 +891,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The horizontal scale factor. '1' means no scale, negative values flip the object. */
-	public function get_scaleX():Float { return mScaleX; }
-	public function set_scaleX(value:Float):Float 
+	private function get_scaleX():Float { return mScaleX; }
+	private function set_scaleX(value:Float):Float 
 	{ 
 		if (mScaleX != value)
 		{
@@ -903,8 +903,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The vertical scale factor. '1' means no scale, negative values flip the object. */
-	public function get_scaleY():Float { return mScaleY; }
-	public function set_scaleY(value:Float):Float 
+	private function get_scaleY():Float { return mScaleY; }
+	private function set_scaleY(value:Float):Float 
 	{ 
 		if (mScaleY != value)
 		{
@@ -915,8 +915,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The horizontal skew angle in radians. */
-	public function get_skewX():Float { return mSkewX; }
-	public function set_skewX(value:Float):Float 
+	private function get_skewX():Float { return mSkewX; }
+	private function set_skewX(value:Float):Float 
 	{
 		value = MathUtil.normalizeAngle(value);
 		
@@ -929,8 +929,8 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The vertical skew angle in radians. */
-	public function get_skewY():Float { return mSkewY; }
-	public function set_skewY(value:Float):Float 
+	private function get_skewY():Float { return mSkewY; }
+	private function set_skewY(value:Float):Float 
 	{
 		value = MathUtil.normalizeAngle(value);
 		
@@ -944,8 +944,8 @@ class DisplayObject extends EventDispatcher
 	
 	/** The rotation of the object in radians. (In Starling, all angles are measured 
 	 *  in radians.) */
-	public function get_rotation():Float { return mRotation; }
-	public function set_rotation(value:Float):Float 
+	private function get_rotation():Float { return mRotation; }
+	private function set_rotation(value:Float):Float 
 	{
 		value = MathUtil.normalizeAngle(value);
 
@@ -958,24 +958,24 @@ class DisplayObject extends EventDispatcher
 	}
 	
 	/** The opacity of the object. 0 = transparent, 1 = opaque. */
-	public function get_alpha():Float { return mAlpha; }
-	public function set_alpha(value:Float):Float 
+	private function get_alpha():Float { return mAlpha; }
+	private function set_alpha(value:Float):Float 
 	{ 
 		mAlpha = value < 0.0 ? 0.0 : (value > 1.0 ? 1.0 : value); 
 		return value;
 	}
 	
 	/** The visibility of the object. An invisible object will be untouchable. */
-	public function get_visible():Bool { return mVisible; }
-	public function set_visible(value:Bool):Bool
+	private function get_visible():Bool { return mVisible; }
+	private function set_visible(value:Bool):Bool
 	{
 		mVisible = value;
 		return value;
 	}
 	
 	/** Indicates if this object (and its children) will receive touch events. */
-	public function get_touchable():Bool { return mTouchable; }
-	public function set_touchable(value:Bool):Bool
+	private function get_touchable():Bool { return mTouchable; }
+	private function set_touchable(value:Bool):Bool
 	{
 		mTouchable = value;
 		return value;
@@ -984,8 +984,8 @@ class DisplayObject extends EventDispatcher
 	/** The blend mode determines how the object is blended with the objects underneath. 
 	 *   @default auto
 	 *   @see starling.display.BlendMode */ 
-	public function get_blendMode():String { return mBlendMode; }
-	public function set_blendMode(value:String):String
+	private function get_blendMode():String { return mBlendMode; }
+	private function set_blendMode(value:String):String
 	{
 		mBlendMode = value;
 		return value;
@@ -993,8 +993,8 @@ class DisplayObject extends EventDispatcher
 	
 	/** The name of the display object (default: null). Used by 'getChildByName()' of 
 	 *  display object containers. */
-	public function get_name():String { return mName; }
-	public function set_name(value:String):String
+	private function get_name():String { return mName; }
+	private function set_name(value:String):String
 	{
 		mName = value;
 		return value;
@@ -1006,8 +1006,8 @@ class DisplayObject extends EventDispatcher
 	 *  performance reasons). Furthermore, when you set this property to 'null' or
 	 *  assign a different filter, the previous filter is NOT disposed automatically
 	 *  (since you might want to reuse it). */
-	public function get_filter():FragmentFilter { return mFilter; }
-	public function set_filter(value:FragmentFilter):FragmentFilter
+	private function get_filter():FragmentFilter { return mFilter; }
+	private function set_filter(value:FragmentFilter):FragmentFilter
 	{
 		mFilter = value;
 		return value;
@@ -1033,8 +1033,8 @@ class DisplayObject extends EventDispatcher
 	 *  @see Canvas
 	 *  @default null
 	 */
-	public function get_mask():DisplayObject { return mMask; }
-	public function set_mask(value:DisplayObject):DisplayObject
+	private function get_mask():DisplayObject { return mMask; }
+	private function set_mask(value:DisplayObject):DisplayObject
 	{
 		if (mMask != value)
 		{
@@ -1047,10 +1047,10 @@ class DisplayObject extends EventDispatcher
 	}
 
 	/** The display object container that contains this display object. */
-	public function get_parent():DisplayObjectContainer { return mParent; }
+	private function get_parent():DisplayObjectContainer { return mParent; }
 	
 	/** The topmost object in the display tree the object is part of. */
-	public function get_base():DisplayObject
+	private function get_base():DisplayObject
 	{
 		var currentObject:DisplayObject = this;
 		while (currentObject.mParent != null) {
@@ -1063,7 +1063,7 @@ class DisplayObject extends EventDispatcher
 	/** The root object the display object is connected to (i.e. an instance of the class 
 	 *  that was passed to the Starling constructor), or null if the object is not connected
 	 *  to the stage. */
-	public function get_root():DisplayObject
+	private function get_root():DisplayObject
 	{
 		var currentObject:DisplayObject = this;
 		while (currentObject.mParent != null)
@@ -1077,7 +1077,7 @@ class DisplayObject extends EventDispatcher
 	
 	/** The stage the display object is connected to, or null if it is not connected 
 	 *  to the stage. */
-	public function get_stage():Stage
+	private function get_stage():Stage
 	{
 		if (base == null) {
 			return null;

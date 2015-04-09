@@ -683,28 +683,28 @@ class QuadBatch extends DisplayObject
 	// properties
 	
 	/** Returns the number of quads that have been added to the batch. */
-	public function get_numQuads():Int { return mNumQuads; }
+	private function get_numQuads():Int { return mNumQuads; }
 	
 	/** Indicates if any vertices have a non-white color or are not fully opaque. */
-	public function get_tinted():Bool { return mTinted; }
+	private function get_tinted():Bool { return mTinted; }
 	
 	/** The texture that is used for rendering, or null for pure quads. Note that this is the
 	 *  texture instance of the first added quad; subsequently added quads may use a different
 	 *  instance, as long as the base texture is the same. */ 
-	public function get_texture():Texture { return mTexture; }
+	private function get_texture():Texture { return mTexture; }
 	
 	/** The TextureSmoothing used for rendering. */
-	public function get_smoothing():String { return mSmoothing; }
+	private function get_smoothing():String { return mSmoothing; }
 	
 	/** Indicates if the rgb values are stored premultiplied with the alpha value. */
-	public function get_premultipliedAlpha():Bool { return mVertexData.premultipliedAlpha; }
+	private function get_premultipliedAlpha():Bool { return mVertexData.premultipliedAlpha; }
 	
 	/** Indicates if the batch itself should be batched on rendering. This makes sense only
 	 *  if it contains only a small number of quads (we recommend no more than 16). Otherwise,
 	 *  the CPU costs will exceed any gains you get from avoiding the additional draw call.
 	 *  @default false */
-	public function get_batchable():Bool { return mBatchable; }
-	public function set_batchable(value:Bool):Bool
+	private function get_batchable():Bool { return mBatchable; }
+	private function set_batchable(value:Bool):Bool
 	{
 		mBatchable = value;
 		return value;
@@ -714,8 +714,8 @@ class QuadBatch extends DisplayObject
 	 *  If you add more quads than what fits into the current capacity, the QuadBatch is
 	 *  expanded automatically. However, if you know beforehand how many vertices you need,
 	 *  you can manually set the right capacity with this method. */
-	public function get_capacity():Int { return cast mVertexData.numVertices / 4; }
-	public function set_capacity(value:Int):Int
+	private function get_capacity():Int { return cast mVertexData.numVertices / 4; }
+	private function set_capacity(value:Int):Int
 	{
 		var oldCapacity:Int = capacity;
 		

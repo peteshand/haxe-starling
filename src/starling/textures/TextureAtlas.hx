@@ -229,7 +229,7 @@ class TextureAtlas
 	}
 	
 	/** The base texture that makes up the atlas. */
-	public function get_texture():Texture { return mAtlasTexture; }
+	private function get_texture():Texture { return mAtlasTexture; }
 	
 	// utility methods
 

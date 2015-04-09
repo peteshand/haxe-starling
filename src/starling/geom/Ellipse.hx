@@ -67,17 +67,17 @@ class Ellipse extends ImmutablePolygon
 		return a * a + b * b <= 1;
 	}
 
-	override public function get_area():Float
+	override private function get_area():Float
 	{
 		return Math.PI * mRadiusX * mRadiusY;
 	}
 
-	override public function get_isSimple():Bool
+	override private function get_isSimple():Bool
 	{
 		return true;
 	}
 
-	override public function get_isConvex():Bool
+	override private function get_isConvex():Bool
 	{
 		return true;
 	}

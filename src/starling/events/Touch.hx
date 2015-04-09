@@ -274,7 +274,7 @@ class Touch
 	
 	/** @private */
 	@:allow(TouchProcessor)
-	public function get_bubbleChain():Vector<EventDispatcher>
+	private function get_bubbleChain():Vector<EventDispatcher>
 	{
 		return mBubbleChain.concat(new Vector<EventDispatcher>());
 	}

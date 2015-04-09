@@ -490,7 +490,7 @@ class VertexData
 	// properties
 	
 	/** Indicates if any vertices have a non-white color or are not fully opaque. */
-	public function get_tinted():Bool
+	private function get_tinted():Bool
 	{
 		var offset:Int = VertexData.COLOR_OFFSET;
 		
@@ -537,16 +537,16 @@ class VertexData
    /** Indicates if the rgb values are stored premultiplied with the alpha value.
 	*  If you change this value, the color data is updated accordingly. If you don't want
 	*  that, use the 'setPremultipliedAlpha' method instead. */
-	public function get_premultipliedAlpha():Bool { return mPremultipliedAlpha; }
-	public function set_premultipliedAlpha(value:Bool):Bool
+	private function get_premultipliedAlpha():Bool { return mPremultipliedAlpha; }
+	private function set_premultipliedAlpha(value:Bool):Bool
 	{
 		setPremultipliedAlpha(value);
 		return value;
 	}
 	
 	/** The total number of vertices. */
-	public function get_numVertices():Int { return mNumVertices; }
-	public function set_numVertices(value:Int):Int
+	private function get_numVertices():Int { return mNumVertices; }
+	private function set_numVertices(value:Int):Int
 	{
 		mRawData.fixed = false;
 		
@@ -583,9 +583,9 @@ class VertexData
 	}
 	
 	/** The raw vertex data; not a copy! */
-	public function get_rawData():Vector<Float> { return mRawData; }
+	private function get_rawData():Vector<Float> { return mRawData; }
 	
-	public function set_rawData(value:Vector<Float>):Vector<Float>
+	private function set_rawData(value:Vector<Float>):Vector<Float>
 	{
 		mRawData = value;
 		return value;

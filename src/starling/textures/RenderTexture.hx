@@ -338,13 +338,13 @@ class RenderTexture extends SubTexture
 	private function get_isDoubleBuffered():Bool { return mBufferTexture != null; }
 
 	/** Indicates if the texture is persistent over multiple draw calls. */
-	public function get_isPersistent():Bool { return mIsPersistent; }
+	private function get_isPersistent():Bool { return mIsPersistent; }
 	
 	/** @inheritDoc */
-	public override function get_base():TextureBase { return mActiveTexture.base; }
+	private override function get_base():TextureBase { return mActiveTexture.base; }
 	
 	/** @inheritDoc */
-	public override function get_root():ConcreteTexture { return mActiveTexture.root; }
+	private override function get_root():ConcreteTexture { return mActiveTexture.root; }
 }
 
 typedef RenderFunction = Dynamic;

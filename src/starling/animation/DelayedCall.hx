@@ -97,21 +97,21 @@ class DelayedCall extends EventDispatcher implements IAnimatable
 	}
 	
 	/** Indicates if enough time has passed, and the call has already been executed. */
-	public function get_isComplete():Bool 
+	private function get_isComplete():Bool 
 	{ 
 		return mRepeatCount == 1 && mCurrentTime >= mTotalTime; 
 	}
 	
 	/** The time for which calls will be delayed (in seconds). */
-	public function get_totalTime():Float { return mTotalTime; }
+	private function get_totalTime():Float { return mTotalTime; }
 	
 	/** The time that has already passed (in seconds). */
-	public function get_currentTime():Float { return mCurrentTime; }
+	private function get_currentTime():Float { return mCurrentTime; }
 	
 	/** The number of times the call will be repeated. 
 	 *  Set to '0' to repeat indefinitely. @default 1 */
-	public function get_repeatCount():Int { return mRepeatCount; }
-	public function set_repeatCount(value:Int):Int
+	private function get_repeatCount():Int { return mRepeatCount; }
+	private function set_repeatCount(value:Int):Int
 	{
 		mRepeatCount = value;
 		return value;

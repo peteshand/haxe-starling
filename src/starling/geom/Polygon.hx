@@ -382,7 +382,7 @@ class Polygon
 
 	/** Indicates if the polygon's line segments are not self-intersecting.
 	 *  Beware: this is a brute-force implementation with <code>O(n^2)</code>. */
-	public function get_isSimple():Bool
+	private function get_isSimple():Bool
 	{
 		var numCoords:Int = cast mCoords.length / 2;
 		if (numCoords <= 6) return true;
@@ -414,7 +414,7 @@ class Polygon
 
 	/** Indicates if the polygon is convex. In a convex polygon, the vector between any two
 	 *  points inside the polygon lies inside it, as well. */
-	public function get_isConvex():Bool
+	private function get_isConvex():Bool
 	{
 		var numCoords:Int = cast (mCoords.length / 2);
 
@@ -437,7 +437,7 @@ class Polygon
 	}
 
 	/** Calculates the total area of the polygon. */
-	public function get_area():Float
+	private function get_area():Float
 	{
 		var area:Float = 0;
 		var numCoords:Int = cast(mCoords.length / 2);
@@ -458,12 +458,12 @@ class Polygon
 	/** Returns the total number of vertices spawning up the polygon. Assigning a value
 	 *  that's smaller than the current number of vertices will crop the path; a bigger
 	 *  value will fill up the path with zeros. */
-	public function get_numVertices():Int
+	private function get_numVertices():Int
 	{
 		return cast mCoords.length / 2;
 	}
 
-	public function set_numVertices(value:Int):Int
+	private function set_numVertices(value:Int):Int
 	{
 		var oldLength:Int = numVertices;
 		mCoords.length = value * 2;

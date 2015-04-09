@@ -180,22 +180,22 @@ class SubTexture extends Texture
 	}
 	
 	/** The texture which the SubTexture is based on. */
-	public function get_parent():Texture { return mParent; }
+	private function get_parent():Texture { return mParent; }
 	
 	/** Indicates if the parent texture is disposed when this object is disposed. */
-	public function get_ownsParent():Bool { return mOwnsParent; }
+	private function get_ownsParent():Bool { return mOwnsParent; }
 	
 	/** If true, the SubTexture will show the parent region rotated by 90 degrees (CCW). */
-	public function get_rotated():Bool { return mRotated; }
+	private function get_rotated():Bool { return mRotated; }
 
 	/** The region of the parent texture that the SubTexture is showing (in points).
 	 *
 	 *  <p>CAUTION: not a copy, but the actual object! Do not modify!</p> */
-	public function get_region():Rectangle { return mRegion; }
+	private function get_region():Rectangle { return mRegion; }
 
 	/** The clipping rectangle, which is the region provided on initialization 
 	 *  scaled into [0.0, 1.0]. */
-	public function get_clipping():Rectangle
+	private function get_clipping():Rectangle
 	{
 		var topLeft:Point = new Point();
 		var bottomRight:Point = new Point();
@@ -214,41 +214,41 @@ class SubTexture extends Texture
 	 *  space of the parent texture (used internally by the "adjust..."-methods).
 	 *
 	 *  <p>CAUTION: not a copy, but the actual object! Do not modify!</p> */
-	public function get_transformationMatrix():Matrix { return mTransformationMatrix; }
+	private function get_transformationMatrix():Matrix { return mTransformationMatrix; }
 	
 	/** @inheritDoc */
-	public override function get_base():TextureBase { return mParent.base; }
+	private override function get_base():TextureBase { return mParent.base; }
 	
 	/** @inheritDoc */
-	public override function get_root():ConcreteTexture { return mParent.root; }
+	private override function get_root():ConcreteTexture { return mParent.root; }
 	
 	/** @inheritDoc */
-	public override function get_format():Context3DTextureFormat { return mParent.format; }
+	private override function get_format():Context3DTextureFormat { return mParent.format; }
 	
 	/** @inheritDoc */
-	public override function get_width():Float { return mWidth; }
+	private override function get_width():Float { return mWidth; }
 	
 	/** @inheritDoc */
-	public override function get_height():Float { return mHeight; }
+	private override function get_height():Float { return mHeight; }
 	
 	/** @inheritDoc */
-	public override function get_nativeWidth():Float { return mWidth * scale; }
+	private override function get_nativeWidth():Float { return mWidth * scale; }
 	
 	/** @inheritDoc */
-	public override function get_nativeHeight():Float { return mHeight * scale; }
+	private override function get_nativeHeight():Float { return mHeight * scale; }
 	
 	/** @inheritDoc */
-	public override function get_mipMapping():Bool { return mParent.mipMapping; }
+	private override function get_mipMapping():Bool { return mParent.mipMapping; }
 	
 	/** @inheritDoc */
-	public override function get_premultipliedAlpha():Bool { return mParent.premultipliedAlpha; }
+	private override function get_premultipliedAlpha():Bool { return mParent.premultipliedAlpha; }
 	
 	/** @inheritDoc */
-	public override function get_scale():Float { return mParent.scale; }
+	private override function get_scale():Float { return mParent.scale; }
 	
 	/** @inheritDoc */
-	public override function get_repeat():Bool { return mParent.repeat; }
+	private override function get_repeat():Bool { return mParent.repeat; }
 	
 	/** @inheritDoc */
-	public override function get_frame():Rectangle { return mFrame; }
+	private override function get_frame():Rectangle { return mFrame; }
 }

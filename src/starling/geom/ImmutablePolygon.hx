@@ -34,7 +34,7 @@ class ImmutablePolygon extends Polygon
 		else super.reverse();
 	}
 
-	override public function set_numVertices(value:Int):Int
+	override private function set_numVertices(value:Int):Int
 	{
 		if (mFrozen) throw getImmutableError();
 		else super.reverse();

@@ -190,14 +190,14 @@ class TouchEvent extends Event
 	// properties
 	
 	/** The time the event occurred (in seconds since application launch). */
-	public function get_timestamp():Float { return mTimestamp; }
+	private function get_timestamp():Float { return mTimestamp; }
 	
 	/** All touches that are currently available. */
-	public function get_touches():Vector<Touch> { return (cast data).concat(); }
+	private function get_touches():Vector<Touch> { return (cast data).concat(); }
 	
 	/** Indicates if the shift key was pressed when the event occurred. */
-	public function get_shiftKey():Bool { return mShiftKey; }
+	private function get_shiftKey():Bool { return mShiftKey; }
 	
 	/** Indicates if the ctrl key was pressed when the event occurred. (Mac OS: Cmd or Ctrl) */
-	public function get_ctrlKey():Bool { return mCtrlKey; }
+	private function get_ctrlKey():Bool { return mCtrlKey; }
 }

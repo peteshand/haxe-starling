@@ -296,14 +296,14 @@ class ConcreteTexture extends Texture
 	// properties
 	
 	/** Indicates if the base texture was optimized for being used in a render texture. */
-	public function get_optimizedForRenderTexture():Bool { return mOptimizedForRenderTexture; }
+	private function get_optimizedForRenderTexture():Bool { return mOptimizedForRenderTexture; }
 	
 	/** If Starling's "handleLostContext" setting is enabled, the function that you provide
 	 *  here will be called after a context loss. On execution, a new base texture will
 	 *  already have been created; however, it will be empty. Call one of the "upload..."
 	 *  methods from within the callbacks to restore the actual texture data. */
-	public function get_onRestore():ConcreteTextureFunction { return mOnRestore; }
-	public function set_onRestore(value:ConcreteTextureFunction):ConcreteTextureFunction
+	private function get_onRestore():ConcreteTextureFunction { return mOnRestore; }
+	private function set_onRestore(value:ConcreteTextureFunction):ConcreteTextureFunction
 	{
 		Starling.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		
@@ -317,37 +317,37 @@ class ConcreteTexture extends Texture
 	}
 	
 	/** @inheritDoc */
-	public override function get_base():TextureBase { return mBase; }
+	private override function get_base():TextureBase { return mBase; }
 	
 	/** @inheritDoc */
-	public override function get_root():ConcreteTexture { return this; }
+	private override function get_root():ConcreteTexture { return this; }
 	
 	/** @inheritDoc */
-	public override function get_format():Context3DTextureFormat { return mFormat; }
+	private override function get_format():Context3DTextureFormat { return mFormat; }
 	
 	/** @inheritDoc */
-	public override function get_width():Float  { return mWidth / mScale;  }
+	private override function get_width():Float  { return mWidth / mScale;  }
 	
 	/** @inheritDoc */
-	public override function get_height():Float { return mHeight / mScale; }
+	private override function get_height():Float { return mHeight / mScale; }
 	
 	/** @inheritDoc */
-	public override function get_nativeWidth():Float { return mWidth; }
+	private override function get_nativeWidth():Float { return mWidth; }
 	
 	/** @inheritDoc */
-	public override function get_nativeHeight():Float { return mHeight; }
+	private override function get_nativeHeight():Float { return mHeight; }
 	
 	/** The scale factor, which influences width and height properties. */
-	public override function get_scale():Float { return mScale; }
+	private override function get_scale():Float { return mScale; }
 	
 	/** @inheritDoc */
-	public override function get_mipMapping():Bool { return mMipMapping; }
+	private override function get_mipMapping():Bool { return mMipMapping; }
 	
 	/** @inheritDoc */
-	public override function get_premultipliedAlpha():Bool { return mPremultipliedAlpha; }
+	private override function get_premultipliedAlpha():Bool { return mPremultipliedAlpha; }
 	
 	/** @inheritDoc */
-	public override function get_repeat():Bool { return mRepeat; }
+	private override function get_repeat():Bool { return mRepeat; }
 }
 
 typedef ConcreteTextureFunction = Dynamic;

@@ -149,13 +149,13 @@ class Quad extends DisplayObject
 	}
 	
 	/** Returns the color of the quad, or of vertex 0 if vertices have different colors. */
-	public function get_color():UInt 
+	private function get_color():UInt 
 	{ 
 		return mVertexData.getColor(0); 
 	}
 	
 	/** Sets the colors of all vertices to a certain value. */
-	public function set_color(value:UInt):UInt 
+	private function set_color(value:UInt):UInt 
 	{
 		mVertexData.setUniformColor(value);
 		onVertexDataChanged();
@@ -166,7 +166,7 @@ class Quad extends DisplayObject
 	}
 	
 	/** @inheritDoc **/
-	public override function set_alpha(value:Float):Float
+	private override function set_alpha(value:Float):Float
 	{
 		super.alpha = value;
 		
@@ -196,9 +196,9 @@ class Quad extends DisplayObject
 	}
 	
 	/** Returns true if the quad (or any of its vertices) is non-white or non-opaque. */
-	public function get_tinted():Bool { return mTinted; }
+	private function get_tinted():Bool { return mTinted; }
 	
 	/** Indicates if the rgb values are stored premultiplied with the alpha value; this can
 	 *  affect the rendering. (Most developers don't have to care, though.) */
-	public function get_premultipliedAlpha():Bool { return mVertexData.premultipliedAlpha; }
+	private function get_premultipliedAlpha():Bool { return mVertexData.premultipliedAlpha; }
 }

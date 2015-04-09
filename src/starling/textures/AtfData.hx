@@ -94,20 +94,20 @@ class AtfData
 	}
 
 	/** The texture format. @see flash.display3D.textures.Context3DTextureFormat */
-	public function get_format():Dynamic { return mFormat; }
+	private function get_format():Dynamic { return mFormat; }
 
 	/** The width of the texture in pixels. */
-	public function get_width():Int { return mWidth; }
+	private function get_width():Int { return mWidth; }
 
 	/** The height of the texture in pixels. */
-	public function get_height():Int { return mHeight; }
+	private function get_height():Int { return mHeight; }
 
 	/** The number of encoded textures. '1' means that there are no mip maps. */
-	public function get_numTextures():Int { return mNumTextures; }
+	private function get_numTextures():Int { return mNumTextures; }
 
 	/** Indicates if the ATF data encodes a cube map. Not supported by Starling! */
-	public function get_isCubeMap():Bool { return mIsCubeMap; }
+	private function get_isCubeMap():Bool { return mIsCubeMap; }
 
 	/** The actual byte data, including header. */
-	public function get_data():ByteArray { return mData; }
+	private function get_data():ByteArray { return mData; }
 }
