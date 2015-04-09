@@ -551,7 +551,7 @@ class VertexData
 		mRawData.fixed = false;
 		
 		#if js
-			trace("OPTIMIZE");
+			//OPTIMIZE;
 			// js hack to init values to 0
 			var currentLength:Int = 0;
 			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;

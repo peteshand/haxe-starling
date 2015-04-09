@@ -527,7 +527,11 @@ class Tween extends EventDispatcher implements IAnimatable
 	
 	/** Another tween that will be started (i.e. added to the same juggler) as soon as 
 	 *  this tween is completed. */
-	private function get_nextTween():Tween { return mNextTween; }
+	private function get_nextTween():Tween
+	{
+		return mNextTween;
+	}
+	
 	private function set_nextTween(value:Tween):Tween
 	{
 		mNextTween = value;

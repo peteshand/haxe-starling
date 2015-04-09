@@ -65,10 +65,23 @@ class DelayedCall extends EventDispatcher implements IAnimatable
 			mCurrentTime = mTotalTime;
 		
 		if (previousTime < mTotalTime && mCurrentTime >= mTotalTime)
-		{                
+		{
+			var maxNumArgs = mArgs.length;
+			trace("mArgs = " + mArgs);
 			if (mRepeatCount == 0 || mRepeatCount > 1)
 			{
-				mCall(mArgs); //mCall.apply(null, mArgs);
+				switch (maxNumArgs)
+				{
+					case 0:  mCall();
+					case 1:  mCall(mArgs[0]);
+					case 2:  mCall(mArgs[0], mArgs[1]);
+					case 3:  mCall(mArgs[0], mArgs[1], mArgs[2]);
+					case 4:  mCall(mArgs[0], mArgs[1], mArgs[2], mArgs[3]);
+					case 5:  mCall(mArgs[0], mArgs[1], mArgs[2], mArgs[3], mArgs[4]);
+					case 6:  mCall(mArgs[0], mArgs[1], mArgs[2], mArgs[3], mArgs[4], mArgs[5]);
+					case 7:  mCall(mArgs[0], mArgs[1], mArgs[2], mArgs[3], mArgs[4], mArgs[5], mArgs[6]);
+					//default: mCall.apply(null, mArgs.slice(0, maxNumArgs));
+				}
 				
 				if (mRepeatCount > 0) mRepeatCount -= 1;
 				mCurrentTime = 0;
@@ -83,7 +96,19 @@ class DelayedCall extends EventDispatcher implements IAnimatable
 				// in the callback, people might want to call "reset" and re-add it to the
 				// juggler; so this event has to be dispatched *before* executing 'call'.
 				dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
-				call(args); //call.apply(null, args);
+				
+				switch (maxNumArgs)
+				{
+					case 0:  call();
+					case 1:  call(args[0]);
+					case 2:  call(args[0], args[1]);
+					case 3:  call(args[0], args[1], args[2]);
+					case 4:  call(args[0], args[1], args[2], args[3]);
+					case 5:  call(args[0], args[1], args[2], args[3], args[4]);
+					case 6:  call(args[0], args[1], args[2], args[3], args[4], args[5]);
+					case 7:  call(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+					//default: call.apply(null, args.slice(0, maxNumArgs));
+				}
 			}
 		}
 	}
@@ -141,4 +166,4 @@ class DelayedCall extends EventDispatcher implements IAnimatable
 	}
 }
 
-typedef Function = Dynamic -> Void;
+typedef Function = Dynamic;

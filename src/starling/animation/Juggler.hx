@@ -323,7 +323,6 @@ class Juggler implements IAnimatable
 		if (tween != null){
 			if (tween.isComplete) {
 				var nextTween = Reflect.getProperty(tween, "nextTween");
-				trace("nextTween = " + nextTween);
 				if (nextTween != null) add(cast nextTween);
 			}
 		}
