@@ -108,24 +108,24 @@ class StatsDisplay extends Sprite
 	}
 	
 	/** The number of Stage3D draw calls per second. */
-	public function get_drawCount():Int { return mDrawCount; }
-	public function set_drawCount(value:Int):Int
+	private function get_drawCount():Int { return mDrawCount; }
+	private function set_drawCount(value:Int):Int
 	{
 		mDrawCount = value;
 		return value;
 	}
 	
 	/** The current frames per second (updated twice per second). */
-	public function get_fps():Float { return mFps; }
-	public function set_fps(value:Float):Float
+	private function get_fps():Float { return mFps; }
+	private function set_fps(value:Float):Float
 	{
 		mFps = value;
 		return value;
 	}
 	
 	/** The currently required system memory in MB. */
-	public function get_memory():Float { return mMemory; }
-	public function set_memory(value:Float):Float
+	private function get_memory():Float { return mMemory; }
+	private function set_memory(value:Float):Float
 	{
 		mMemory = value;
 		return value;

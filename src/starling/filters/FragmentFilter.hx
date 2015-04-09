@@ -591,14 +591,14 @@ class FragmentFilter
 	// properties
 	
 	/** Indicates if the filter is cached (via the "cache" method). */
-	public function get_isCached():Bool { return (mCache != null) || mCacheRequested; }
+	private function get_isCached():Bool { return (mCache != null) || mCacheRequested; }
 	
 	/** The resolution of the filter texture. "1" means stage resolution, "0.5" half the
 	 *  stage resolution. A lower resolution saves memory and execution time (depending on 
 	 *  the GPU), but results in a lower output quality. Values greater than 1 are allowed;
 	 *  such values might make sense for a cached filter when it is scaled up. @default 1 */
-	public function get_resolution():Float { return mResolution; }
-	public function set_resolution(value:Float):Float 
+	private function get_resolution():Float { return mResolution; }
+	private function set_resolution(value:Float):Float 
 	{
 		if (value <= 0) throw new ArgumentError("Resolution must be > 0");
 		else mResolution = value;
@@ -607,24 +607,24 @@ class FragmentFilter
 	
 	/** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
 	 *  class. @default "replace" */
-	public function get_mode():String { return mMode; }
-	public function set_mode(value:String):String
+	private function get_mode():String { return mMode; }
+	private function set_mode(value:String):String
 	{
 		mMode = value;
 		return value;
 	}
 	
 	/** Use the x-offset to move the filter output to the right or left. */
-	public function get_offsetX():Float { return mOffsetX; }
-	public function set_offsetX(value:Float):Float
+	private function get_offsetX():Float { return mOffsetX; }
+	private function set_offsetX(value:Float):Float
 	{
 		mOffsetX = value;
 		return value;
 	}
 	
 	/** Use the y-offset to move the filter output to the top or bottom. */
-	public function get_offsetY():Float { return mOffsetY; }
-	public function set_offsetY(value:Float):Float
+	private function get_offsetY():Float { return mOffsetY; }
+	private function set_offsetY(value:Float):Float
 	{
 		mOffsetY = value;
 		return value;

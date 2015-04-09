@@ -380,17 +380,17 @@ class Tween extends EventDispatcher implements IAnimatable
 	}
 	
 	/** Indicates if the tween is finished. */
-	public function get_isComplete():Bool 
+	private function get_isComplete():Bool 
 	{ 
 		return mCurrentTime >= mTotalTime && mRepeatCount == 1; 
 	}        
 	
 	/** The target object that is animated. */
-	public function get_target():Dynamic { return mTarget; }
+	private function get_target():Dynamic { return mTarget; }
 	
 	/** The transition method used for the animation. @see Transitions */
-	public function get_transition():String { return mTransitionName; }
-	public function set_transition(value:String):String 
+	private function get_transition():String { return mTransitionName; }
+	private function set_transition(value:String):String 
 	{ 
 		mTransitionName = value;
 		mTransitionFunc = Transitions.getTransition(value);
@@ -401,8 +401,8 @@ class Tween extends EventDispatcher implements IAnimatable
 	}
 	
 	/** The actual transition function used for the animation. */
-	public function get_transitionFunc():TweenFunction { return mTransitionFunc; }
-	public function set_transitionFunc(value:TweenFunction):TweenFunction
+	private function get_transitionFunc():TweenFunction { return mTransitionFunc; }
+	private function set_transitionFunc(value:TweenFunction):TweenFunction
 	{
 		mTransitionName = "custom";
 		mTransitionFunc = value;
@@ -410,17 +410,17 @@ class Tween extends EventDispatcher implements IAnimatable
 	}
 	
 	/** The total time the tween will take per repetition (in seconds). */
-	public function get_totalTime():Float { return mTotalTime; }
+	private function get_totalTime():Float { return mTotalTime; }
 	
 	/** The time that has passed since the tween was created (in seconds). */
-	public function get_currentTime():Float { return mCurrentTime; }
+	private function get_currentTime():Float { return mCurrentTime; }
 	
 	/** The current progress between 0 and 1, as calculated by the transition function. */
-	public function get_progress():Float { return mProgress; } 
+	private function get_progress():Float { return mProgress; } 
 	
 	/** The delay before the tween is started (in seconds). @default 0 */
-	public function get_delay():Float { return mDelay; }
-	public function set_delay(value:Float):Float 
+	private function get_delay():Float { return mDelay; }
+	private function set_delay(value:Float):Float 
 	{ 
 		mCurrentTime = mCurrentTime + mDelay - value;
 		mDelay = value;
@@ -429,16 +429,16 @@ class Tween extends EventDispatcher implements IAnimatable
 	
 	/** The number of times the tween will be executed. 
 	 *  Set to '0' to tween indefinitely. @default 1 */
-	public function get_repeatCount():Int { return mRepeatCount; }
-	public function set_repeatCount(value:Int):Int
+	private function get_repeatCount():Int { return mRepeatCount; }
+	private function set_repeatCount(value:Int):Int
 	{
 		mRepeatCount = value;
 		return value;
 	}
 	
 	/** The amount of time to wait between repeat cycles (in seconds). @default 0 */
-	public function get_repeatDelay():Float { return mRepeatDelay; }
-	public function set_repeatDelay(value:Float):Float
+	private function get_repeatDelay():Float { return mRepeatDelay; }
+	private function set_repeatDelay(value:Float):Float
 	{
 		mRepeatDelay = value;
 		return value;
@@ -446,31 +446,31 @@ class Tween extends EventDispatcher implements IAnimatable
 	
 	/** Indicates if the tween should be reversed when it is repeating. If enabled, 
 	 *  every second repetition will be reversed. @default false */
-	public function get_reverse():Bool { return mReverse; }
-	public function set_reverse(value:Bool):Bool
+	private function get_reverse():Bool { return mReverse; }
+	private function set_reverse(value:Bool):Bool
 	{
 		mReverse = value;
 		return value;
 	}
 	
 	/** Indicates if the numeric values should be cast to Integers. @default false */
-	public function get_roundToInt():Bool { return mRoundToInt; }
-	public function set_roundToInt(value:Bool):Bool {
+	private function get_roundToInt():Bool { return mRoundToInt; }
+	private function set_roundToInt(value:Bool):Bool {
 		mRoundToInt = value;
 		return value;        
 	}
 	
 	/** A function that will be called when the tween starts (after a possible delay). */
-	public function get_onStart():TweenFunction { return mOnStart; }
-	public function set_onStart(value:TweenFunction):TweenFunction
+	private function get_onStart():TweenFunction { return mOnStart; }
+	private function set_onStart(value:TweenFunction):TweenFunction
 	{
 		mOnStart = value;
 		return value;
 	}
 	
 	/** A function that will be called each time the tween is advanced. */
-	public function get_onUpdate():TweenFunction { return mOnUpdate; }
-	public function set_onUpdate(value:TweenFunction):TweenFunction
+	private function get_onUpdate():TweenFunction { return mOnUpdate; }
+	private function set_onUpdate(value:TweenFunction):TweenFunction
 	{
 		mOnUpdate = value;
 		return value;
@@ -478,48 +478,48 @@ class Tween extends EventDispatcher implements IAnimatable
 	
 	/** A function that will be called each time the tween finishes one repetition
 	 *  (except the last, which will trigger 'onComplete'). */
-	public function get_onRepeat():TweenFunction { return mOnRepeat; }
-	public function set_onRepeat(value:TweenFunction):TweenFunction
+	private function get_onRepeat():TweenFunction { return mOnRepeat; }
+	private function set_onRepeat(value:TweenFunction):TweenFunction
 	{
 		mOnRepeat = value;
 		return value;
 	}
 	
 	/** A function that will be called when the tween is complete. */
-	public function get_onComplete():TweenFunction { return mOnComplete; }
-	public function set_onComplete(value:TweenFunction):TweenFunction
+	private function get_onComplete():TweenFunction { return mOnComplete; }
+	private function set_onComplete(value:TweenFunction):TweenFunction
 	{
 		mOnComplete = value;
 		return value;
 	}
 	
 	/** The arguments that will be passed to the 'onStart' function. */
-	public function get_onStartArgs():Vector<Dynamic> { return mOnStartArgs; }
-	public function set_onStartArgs(value:Vector<Dynamic>):Vector<Dynamic>
+	private function get_onStartArgs():Vector<Dynamic> { return mOnStartArgs; }
+	private function set_onStartArgs(value:Vector<Dynamic>):Vector<Dynamic>
 	{
 		mOnStartArgs = value;
 		return value;
 	}
 	
 	/** The arguments that will be passed to the 'onUpdate' function. */
-	public function get_onUpdateArgs():Vector<Dynamic> { return mOnUpdateArgs; }
-	public function set_onUpdateArgs(value:Vector<Dynamic>):Vector<Dynamic>
+	private function get_onUpdateArgs():Vector<Dynamic> { return mOnUpdateArgs; }
+	private function set_onUpdateArgs(value:Vector<Dynamic>):Vector<Dynamic>
 	{
 		mOnUpdateArgs = value;
 		return value;
 	}
 	
 	/** The arguments that will be passed to the 'onRepeat' function. */
-	public function get_onRepeatArgs():Vector<Dynamic> { return mOnRepeatArgs; }
-	public function set_onRepeatArgs(value:Vector<Dynamic>):Vector<Dynamic>
+	private function get_onRepeatArgs():Vector<Dynamic> { return mOnRepeatArgs; }
+	private function set_onRepeatArgs(value:Vector<Dynamic>):Vector<Dynamic>
 	{
 		mOnRepeatArgs = value;
 		return value;
 	}
 	
 	/** The arguments that will be passed to the 'onComplete' function. */
-	public function get_onCompleteArgs():Vector<Dynamic> { return mOnCompleteArgs; }
-	public function set_onCompleteArgs(value:Vector<Dynamic>):Vector<Dynamic>
+	private function get_onCompleteArgs():Vector<Dynamic> { return mOnCompleteArgs; }
+	private function set_onCompleteArgs(value:Vector<Dynamic>):Vector<Dynamic>
 	{
 		mOnCompleteArgs = value;
 		return value;
@@ -527,8 +527,8 @@ class Tween extends EventDispatcher implements IAnimatable
 	
 	/** Another tween that will be started (i.e. added to the same juggler) as soon as 
 	 *  this tween is completed. */
-	public function get_nextTween():Tween { return mNextTween; }
-	public function set_nextTween(value:Tween):Tween
+	private function get_nextTween():Tween { return mNextTween; }
+	private function set_nextTween(value:Tween):Tween
 	{
 		mNextTween = value;
 		return value;

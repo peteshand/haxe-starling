@@ -125,51 +125,72 @@ class BitmapFont
 	
 	private function parseFontXml(fontXml:Xml):Void
 	{
-		trace("FIX");
-		/*var scale:Float = mTexture.scale;
+		var scale:Float = mTexture.scale;
 		var frame:Rectangle = mTexture.frame;
-		var frameX:Float = frame ? frame.x : 0;
-		var frameY:Float = frame ? frame.y : 0;
+		var frameX:Float = frame != null ? frame.x : 0;
+		var frameY:Float = frame != null ? frame.y : 0;
 		
-		mName = StarlingUtils.cleanMasterString(fontXml.info.@face);
-		mSize = parseFloat(fontXml.info.@size) / scale;
-		mLineHeight = parseFloat(fontXml.common.@lineHeight) / scale;
-		mBaseline = parseFloat(fontXml.common.@base) / scale;
-		
-		if (fontXml.info.@smooth.toString() == "0")
-			smoothing = TextureSmoothing.NONE;
-		
-		if (mSize <= 0)
-		{
-			trace("[Starling] Warning: invalid font size in '" + mName + "' font.");
-			mSize = (mSize == 0.0 ? 16.0 : mSize * -1.0);
+		for (font in fontXml.elementsNamed("font")) {
+			if (font.nodeType == Xml.Element ) {
+				for (info in font.elementsNamed("info")) {
+					if (info.nodeType == Xml.Element ) {
+						mName = info.get("face");
+						mSize = Std.parseFloat(info.get("size")) / scale;
+						if (info.get("smooth") == "0") smoothing = TextureSmoothing.NONE;
+						if (mSize <= 0)
+						{
+							trace("[Starling] Warning: invalid font size in '" + mName + "' font.");
+							mSize = (mSize == 0.0 ? 16.0 : mSize * -1.0);
+						}
+					}
+				}
+				for (common in font.elementsNamed("common")) {
+					if (common.nodeType == Xml.Element ) {
+						mLineHeight = Std.parseFloat(common.get("mLineHeight")) / scale;
+						mBaseline = Std.parseFloat(common.get("mBaseline")) / scale;
+					}
+				}
+				for (chars in font.elementsNamed("chars")) {
+					if (chars.nodeType == Xml.Element ) {
+						for (char in chars.elementsNamed("char")) {
+							if (char.nodeType == Xml.Element ) {
+								
+								var id:Int = Std.parseInt(char.get("id"));
+								
+								var xOffset:Float  = Std.parseFloat(char.get("xoffset"))  / scale;
+								var yOffset:Float  = Std.parseFloat(char.get("yoffset"))  / scale;
+								var xAdvance:Float = Std.parseFloat(char.get("xadvance")) / scale;
+								
+								var region:Rectangle = new Rectangle();
+								region.x = Std.parseFloat(char.get("x")) / scale + frameX;
+								region.y = Std.parseFloat(char.get("y")) / scale + frameY;
+								region.width  = Std.parseFloat(char.get("width"))  / scale;
+								region.height = Std.parseFloat(char.get("height")) / scale;
+								
+								var texture:Texture = Texture.fromTexture(mTexture, region);
+								var bitmapChar:BitmapChar = new BitmapChar(id, texture, xOffset, yOffset, xAdvance); 
+								addChar(id, bitmapChar);
+							}
+						}
+					}
+				}
+				for (kernings in font.elementsNamed("kernings")) {
+					if (kernings.nodeType == Xml.Element ) {
+						for (kerning in kernings.elementsNamed("kerning")) {
+							if (kerning.nodeType == Xml.Element ) {
+								
+								var first:Int  = Std.parseInt(kerning.get("first"));
+								var second:Int = Std.parseInt(kerning.get("second"));
+								var amount:Float = Std.parseFloat(kerning.get("amount")) / scale;
+								if (mChars.exists(second)) {
+									getChar(second).addKerning(first, amount);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		
-		for each (var charElement:Xml in fontXml.chars.char)
-		{
-			var id:Int = parseInt(charElement.@id);
-			var xOffset:Float  = parseFloat(charElement.@xoffset)  / scale;
-			var yOffset:Float  = parseFloat(charElement.@yoffset)  / scale;
-			var xAdvance:Float = parseFloat(charElement.@xadvance) / scale;
-			
-			var region:Rectangle = new Rectangle();
-			region.x = parseFloat(charElement.@x) / scale + frameX;
-			region.y = parseFloat(charElement.@y) / scale + frameY;
-			region.width  = parseFloat(charElement.@width)  / scale;
-			region.height = parseFloat(charElement.@height) / scale;
-			
-			var texture:Texture = Texture.fromTexture(mTexture, region);
-			var bitmapChar:BitmapChar = new BitmapChar(id, texture, xOffset, yOffset, xAdvance); 
-			addChar(id, bitmapChar);
-		}
-		
-		for each (var kerningElement:Xml in fontXml.kernings.kerning)
-		{
-			var first:Int  = parseInt(kerningElement.@first);
-			var second:Int = parseInt(kerningElement.@second);
-			var amount:Float = parseFloat(kerningElement.@amount) / scale;
-			if (second in mChars) getChar(second).addKerning(first, amount);
-		}*/
 	}
 	
 	/** Returns a single bitmap char with a certain character ID. */
@@ -441,22 +462,22 @@ class BitmapFont
 	}
 	
 	/** The name of the font as it was parsed from the font file. */
-	public function get_name():String { return mName; }
+	private function get_name():String { return mName; }
 	
 	/** The native size of the font. */
-	public function get_size():Float { return mSize; }
+	private function get_size():Float { return mSize; }
 	
 	/** The height of one line in points. */
-	public function get_lineHeight():Float { return mLineHeight; }
-	public function set_lineHeight(value:Float):Float
+	private function get_lineHeight():Float { return mLineHeight; }
+	private function set_lineHeight(value:Float):Float
 	{
 		mLineHeight = value;
 		return value;
 	}
 	
 	/** The smoothing filter that is used for the texture. */ 
-	public function get_smoothing():String { return mHelperImage.smoothing; }
-	public function set_smoothing(value:String):String
+	private function get_smoothing():String { return mHelperImage.smoothing; }
+	private function set_smoothing(value:String):String
 	{
 		mHelperImage.smoothing = value;
 		return value; 
@@ -464,8 +485,8 @@ class BitmapFont
 	
 	/** The baseline of the font. This property does not affect text rendering;
 	 *  it's just an information that may be useful for exact text placement. */
-	public function get_baseline():Float { return mBaseline; }
-	public function set_baseline(value:Float):Float
+	private function get_baseline():Float { return mBaseline; }
+	private function set_baseline(value:Float):Float
 	{
 		mBaseline = value;
 		return value;
@@ -473,8 +494,8 @@ class BitmapFont
 	
 	/** An offset that moves any generated text along the x-axis (in points).
 	 *  Useful to make up for incorrect font data. @default 0. */ 
-	public function get_offsetX():Float { return mOffsetX; }
-	public function set_offsetX(value:Float):Float
+	private function get_offsetX():Float { return mOffsetX; }
+	private function set_offsetX(value:Float):Float
 	{
 		mOffsetX = value;
 		return value;
@@ -482,15 +503,15 @@ class BitmapFont
 	
 	/** An offset that moves any generated text along the y-axis (in points).
 	 *  Useful to make up for incorrect font data. @default 0. */
-	public function get_offsetY():Float { return mOffsetY; }
-	public function set_offsetY(value:Float):Float
+	private function get_offsetY():Float { return mOffsetY; }
+	private function set_offsetY(value:Float):Float
 	{
 		mOffsetY = value;
 		return value;
 	}
 
 	/** The underlying texture that contains all the chars. */
-	public function get_texture():Texture { return mTexture; }
+	private function get_texture():Texture { return mTexture; }
 }
 
 

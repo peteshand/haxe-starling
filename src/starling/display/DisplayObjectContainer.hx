@@ -425,14 +425,14 @@ class DisplayObjectContainer extends DisplayObject
 	}
 	
 	/** The number of children of this container. */
-	public function get_numChildren():Int { return mChildren.length; }
+	private function get_numChildren():Int { return mChildren.length; }
 	
 	/** If a container is a 'touchGroup', it will act as a single touchable object.
 	 *  Touch events will have the container as target, not the touched child.
 	 *  (Similar to 'mouseChildren' in the classic display list, but with inverted logic.)
 	 *  @default false */
-	public function get_touchGroup():Bool { return mTouchGroup; }
-	public function set_touchGroup(value:Bool):Bool
+	private function get_touchGroup():Bool { return mTouchGroup; }
+	private function set_touchGroup(value:Bool):Bool
 	{
 		mTouchGroup = value;
 		return value;

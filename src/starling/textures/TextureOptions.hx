@@ -52,8 +52,8 @@ class TextureOptions
 
 	/** The scale factor, which influences width and height properties. If you pass '-1',
 	 *  the current global content scale factor will be used. */
-	public function get_scale():Float { return mScale; }
-	public function set_scale(value:Float):Float
+	private function get_scale():Float { return mScale; }
+	private function set_scale(value:Float):Float
 	{
 		mScale = value > 0 ? value : Starling.ContentScaleFactor;
 		return value;
@@ -62,24 +62,24 @@ class TextureOptions
 	/** The <code>Context3DTextureFormat</code> of the underlying texture data. Only used
 	 *  for textures that are created from Bitmaps; the format of ATF files is set when they
 	 *  are created. */
-	public function get_format():Context3DTextureFormat { return mFormat; }
-	public function set_format(value:Context3DTextureFormat):Context3DTextureFormat
+	private function get_format():Context3DTextureFormat { return mFormat; }
+	private function set_format(value:Context3DTextureFormat):Context3DTextureFormat
 	{
 		mFormat = value;
 		return value;
 	}
 	
 	/** Indicates if the texture contains mip maps. */ 
-	public function get_mipMapping():Bool { return mMipMapping; }
-	public function set_mipMapping(value:Bool):Bool
+	private function get_mipMapping():Bool { return mMipMapping; }
+	private function set_mipMapping(value:Bool):Bool
 	{
 		mMipMapping = value;
 		return value;
 	}
 	
 	/** Indicates if the texture will be used as render target. */
-	public function get_optimizeForRenderToTexture():Bool { return mOptimizeForRenderToTexture; }
-	public function set_optimizeForRenderToTexture(value:Bool):Bool
+	private function get_optimizeForRenderToTexture():Bool { return mOptimizeForRenderToTexture; }
+	private function set_optimizeForRenderToTexture(value:Bool):Bool
 	{
 		mOptimizeForRenderToTexture = value;
 		return value;
@@ -88,8 +88,8 @@ class TextureOptions
 	/** Indicates if the texture should repeat like a wallpaper or stretch the outermost pixels.
 	 *  Note: this only works in textures with sidelengths that are powers of two and 
 	 *  that are not loaded from a texture atlas (i.e. no subtextures). @default false */
-	public function get_repeat():Bool { return mRepeat; }
-	public function set_repeat(value:Bool):Bool
+	private function get_repeat():Bool { return mRepeat; }
+	private function set_repeat(value:Bool):Bool
 	{
 		mRepeat = value;
 		return value;
@@ -103,8 +103,8 @@ class TextureOptions
 	 *  <p>This is the expected function definition: 
 	 *  <code>function(texture:Texture):Void;</code></p> 
 	 */
-	public function get_onReady():Function { return mOnReady; }
-	public function set_onReady(value:Function):Function
+	private function get_onReady():Function { return mOnReady; }
+	private function set_onReady(value:Function):Function
 	{
 		mOnReady = value;
 		return value;

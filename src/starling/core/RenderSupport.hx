@@ -269,7 +269,7 @@ class RenderSupport
 	
 	/** Calculates the product of modelview and projection matrix. 
 	 *  CAUTION: Use with care! Each call returns the same instance. */
-	public function get_mvpMatrix():Matrix
+	private function get_mvpMatrix():Matrix
 	{
 		mMvpMatrix.copyFrom(mModelViewMatrix);
 		mMvpMatrix.concat(mProjectionMatrix);
@@ -278,11 +278,11 @@ class RenderSupport
 	
 	/** Returns the current modelview matrix.
 	 *  CAUTION: Use with care! Each call returns the same instance. */
-	public function get_modelViewMatrix():Matrix { return mModelViewMatrix; }
+	private function get_modelViewMatrix():Matrix { return mModelViewMatrix; }
 	
 	/** Returns the current projection matrix.
 	 *  CAUTION: Use with care! Each call returns the same instance. */
-	public function get_projectionMatrix():Matrix { return mProjectionMatrix; }
+	private function get_projectionMatrix():Matrix { return mProjectionMatrix; }
 	public function  set_projectionMatrix(value:Matrix):Matrix 
 	{
 		mProjectionMatrix.copyFrom(value);
@@ -320,7 +320,7 @@ class RenderSupport
 	/** Calculates the product of modelview and projection matrix and stores it in a 3D matrix.
 	 *  Different to 'mvpMatrix', this also takes 3D transformations into account. 
 	 *  CAUTION: Use with care! Each call returns the same instance. */
-	public function get_mvpMatrix3D():Matrix3D
+	private function get_mvpMatrix3D():Matrix3D
 	{
 		if (mMatrixStack3DSize == 0)
 		{
@@ -338,8 +338,8 @@ class RenderSupport
 	
 	/** Returns the current 3D projection matrix.
 	 *  CAUTION: Use with care! Each call returns the same instance. */
-	public function get_projectionMatrix3D():Matrix3D { return mProjectionMatrix3D; }
-	public function set_projectionMatrix3D(value:Matrix3D):Matrix3D
+	private function get_projectionMatrix3D():Matrix3D { return mProjectionMatrix3D; }
+	private function set_projectionMatrix3D(value:Matrix3D):Matrix3D
 	{
 		mProjectionMatrix3D.copyFrom(value);
 		return value;
@@ -355,8 +355,8 @@ class RenderSupport
 	
 	/** The blend mode to be used on rendering. To apply the factor, you have to manually call
 	 *  'applyBlendMode' (because the actual blend factors depend on the PMA mode). */
-	public function get_blendMode():String { return mBlendMode; }
-	public function set_blendMode(value:String):String
+	private function get_blendMode():String { return mBlendMode; }
+	private function set_blendMode(value:String):String
 	{
 		if (value != BlendMode.AUTO) mBlendMode = value;
 		return value;
@@ -366,8 +366,8 @@ class RenderSupport
 	
 	/** The texture that is currently being rendered into, or 'null' to render into the 
 	 *  back buffer. If you set a new target, it is immediately activated. */
-	public function get_renderTarget():Texture { return mRenderTarget; }
-	public function set_renderTarget(target:Texture):Texture 
+	private function get_renderTarget():Texture { return mRenderTarget; }
+	private function set_renderTarget(target:Texture):Texture 
 	{
 		setRenderTarget(target);
 		return target;
@@ -731,5 +731,5 @@ class RenderSupport
 	public function raiseDrawCount(value:UInt=1):Void { mDrawCount += value; }
 	
 	/** Indicates the number of stage3D draw calls. */
-	public function get_drawCount():Int { return mDrawCount; }
+	private function get_drawCount():Int { return mDrawCount; }
 }

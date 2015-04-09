@@ -31,7 +31,7 @@ class KeyboardEvent extends Event
 	
 	private var mCharCode:UInt;
 	private var mKeyCode:UInt;
-	private var mKeyLocation:UInt;
+	private var mKeyLocation:KeyLocation;
 	private var mAltKey:Bool;
 	private var mCtrlKey:Bool;
 	private var mShiftKey:Bool;
@@ -39,13 +39,13 @@ class KeyboardEvent extends Event
 	
 	public var charCode(get, null):UInt;
 	public var keyCode(get, null):UInt;
-	public var keyLocation(get, null):UInt;
+	public var keyLocation(get, null):KeyLocation;
 	public var altKey(get, null):Bool;
 	public var ctrlKey(get, null):Bool;
 	public var shiftKey(get, null):Bool;
 	
 	/** Creates a new KeyboardEvent. */
-	public function new(type:String, charCode:UInt=0, keyCode:UInt=0, keyLocation:UInt=0, ctrlKey:Bool=false, altKey:Bool=false, shiftKey:Bool=false)
+	public function new(type:String, charCode:UInt=0, keyCode:UInt=0, keyLocation:KeyLocation, ctrlKey:Bool=false, altKey:Bool=false, shiftKey:Bool=false)
 	{
 		super(type, false, keyCode);
 		mCharCode = charCode;
@@ -71,23 +71,23 @@ class KeyboardEvent extends Event
 	// properties
 	
 	/** Contains the character code of the key. */
-	public function get_charCode():UInt { return mCharCode; }
+	private function get_charCode():UInt { return mCharCode; }
 	
 	/** The key code of the key. */
-	public function get_keyCode():UInt { return mKeyCode; }
+	private function get_keyCode():UInt { return mKeyCode; }
 	
 	/** Indicates the location of the key on the keyboard. This is useful for differentiating 
 	 *  keys that appear more than once on a keyboard. @see Keylocation */ 
-	public function get_keyLocation():UInt { return mKeyLocation; }
+	private function get_keyLocation():KeyLocation { return mKeyLocation; }
 	
 	/** Indicates whether the Alt key is active on Windows or Linux; 
 	 *  indicates whether the Option key is active on Mac OS. */
-	public function get_altKey():Bool { return mAltKey; }
+	private function get_altKey():Bool { return mAltKey; }
 	
 	/** Indicates whether the Ctrl key is active on Windows or Linux; 
 	 *  indicates whether either the Ctrl or the Command key is active on Mac OS. */
-	public function get_ctrlKey():Bool { return mCtrlKey; }
+	private function get_ctrlKey():Bool { return mCtrlKey; }
 	
 	/** Indicates whether the Shift key modifier is active (true) or inactive (false). */
-	public function get_shiftKey():Bool { return mShiftKey; }
+	private function get_shiftKey():Bool { return mShiftKey; }
 }

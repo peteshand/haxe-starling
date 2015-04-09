@@ -288,8 +288,8 @@ class DisplacementMapFilter extends FragmentFilter
 
 	/** Describes which color channel to use in the map image to displace the x result. 
 	 *  Possible values are constants from the BitmapDataChannel class. */
-	public function get_componentX():UInt { return mComponentX; }
-	public function set_componentX(value:UInt):UInt
+	private function get_componentX():UInt { return mComponentX; }
+	private function set_componentX(value:UInt):UInt
 	{
 		mComponentX = value;
 		return value;
@@ -297,32 +297,32 @@ class DisplacementMapFilter extends FragmentFilter
 
 	/** Describes which color channel to use in the map image to displace the y result. 
 	 *  Possible values are constants from the BitmapDataChannel class. */
-	public function get_componentY():UInt { return mComponentY; }
-	public function set_componentY(value:UInt):UInt
+	private function get_componentY():UInt { return mComponentY; }
+	private function set_componentY(value:UInt):UInt
 	{
 		mComponentY = value;
 		return value;
 	}
 
 	/** The multiplier used to scale the x displacement result from the map calculation. */
-	public function get_scaleX():Float { return mScaleX; }
-	public function set_scaleX(value:Float):Float
+	private function get_scaleX():Float { return mScaleX; }
+	private function set_scaleX(value:Float):Float
 	{
 		mScaleX = value;
 		return value;
 	}
 
 	/** The multiplier used to scale the y displacement result from the map calculation. */
-	public function get_scaleY():Float { return mScaleY; }
-	public function set_scaleY(value:Float):Float
+	private function get_scaleY():Float { return mScaleY; }
+	private function set_scaleY(value:Float):Float
 	{
 		mScaleY = value;
 		return value;
 	}
 	
 	/** The texture that will be used to calculate displacement. */
-	public function get_mapTexture():Texture { return mMapTexture; }
-	public function set_mapTexture(value:Texture):Texture
+	private function get_mapTexture():Texture { return mMapTexture; }
+	private function set_mapTexture(value:Texture):Texture
 	{
 		if (mMapTexture != value)
 		{
@@ -334,8 +334,8 @@ class DisplacementMapFilter extends FragmentFilter
 	
 	/** A value that contains the offset of the upper-left corner of the target display 
 	 *  object from the upper-left corner of the map image. */   
-	public function get_mapPoint():Point { return mMapPoint; }
-	public function set_mapPoint(value:Point):Point
+	private function get_mapPoint():Point { return mMapPoint; }
+	private function set_mapPoint(value:Point):Point
 	{
 		if (value != null) mMapPoint.setTo(value.x, value.y);
 		else mMapPoint.setTo(0, 0);
@@ -344,8 +344,8 @@ class DisplacementMapFilter extends FragmentFilter
 	
 	/** Indicates how the pixels at the edge of the input image (the filtered object) will
 	 *  be wrapped at the edge. */
-	public function get_repeat():Bool { return mRepeat; }
-	public function set_repeat(value:Bool):Bool 
+	private function get_repeat():Bool { return mRepeat; }
+	private function set_repeat(value:Bool):Bool 
 	{ 
 		if (mRepeat != value)
 		{

@@ -764,20 +764,33 @@ class AssetManager extends EventDispatcher
 			}
 			else if (rootNode == "font")
 			{
-				trace("FIX");
-				/*name = getName(xml.pages.page.@file.toString());
+				name = "";
+				for (font in xml.elementsNamed("font")) {
+					if (font.nodeType == Xml.Element ) {
+						for (pages in font.elementsNamed("pages")) {
+							if (pages.nodeType == Xml.Element ) {
+								for (page in pages.elementsNamed("page")) {
+									if (page.nodeType == Xml.Element ) {
+										name = page.get("file").split(".")[0];
+									}
+								}
+							}
+						}
+					}
+				}
+				
 				texture = getTexture(name);
 				
-				if (texture)
+				if (texture != null)
 				{
 					log("Adding bitmap font '" + name + "'");
 					TextField.registerBitmapFont(new BitmapFont(texture, xml), name);
 					removeTexture(name, false);
 					
 					if (mKeepFontXmls) addXml(name, xml);
-					else System.disposeXML(xml);
+					//else System.disposeXML(xml);
 				}
-				else log("Cannot create bitmap font: texture '" + name + "' is missing.");*/
+				else log("Cannot create bitmap font: texture '" + name + "' is missing.");
 			}
 			else
 				throw new Error("Xml contents not recognized: " + rootNode);
@@ -1392,25 +1405,25 @@ class AssetManager extends EventDispatcher
 	private function get_queue():Array<Dynamic> { return mQueue; }
 	
 	/** Returns the number of raw assets that have been enqueued, but not yet loaded. */
-	public function get_numQueuedAssets():Int { return mQueue.length; }
+	private function get_numQueuedAssets():Int { return mQueue.length; }
 	
 	/** When activated, the class will trace information about added/enqueued assets.
 	 *  @default true */
-	public function get_verbose():Bool { return mVerbose; }
-	public function set_verbose(value:Bool):Bool
+	private function get_verbose():Bool { return mVerbose; }
+	private function set_verbose(value:Bool):Bool
 	{
 		mVerbose = value;
 		return value;
 	}
 	
 	/** Indicates if a queue is currently being loaded. */
-	public function get_isLoading():Bool { return mNumLoadingQueues > 0; }
+	private function get_isLoading():Bool { return mNumLoadingQueues > 0; }
 
 	/** For bitmap textures, this flag indicates if mip maps should be generated when they 
 	 *  are loaded; for ATF textures, it indicates if mip maps are valid and should be
 	 *  used. @default false */
-	public function get_useMipMaps():Bool { return mDefaultTextureOptions.mipMapping; }
-	public function set_useMipMaps(value:Bool):Bool
+	private function get_useMipMaps():Bool { return mDefaultTextureOptions.mipMapping; }
+	private function set_useMipMaps(value:Bool):Bool
 	{
 		mDefaultTextureOptions.mipMapping = value;
 		return value;
@@ -1418,8 +1431,8 @@ class AssetManager extends EventDispatcher
 	
 	/** Textures that are created from Bitmaps or ATF files will have the repeat setting
 	 *  assigned here. @default false */
-	public function get_textureRepeat():Bool { return mDefaultTextureOptions.repeat; }
-	public function set_textureRepeat(value:Bool):Bool
+	private function get_textureRepeat():Bool { return mDefaultTextureOptions.repeat; }
+	private function set_textureRepeat(value:Bool):Bool
 	{
 		mDefaultTextureOptions.repeat = value;
 		return value;
@@ -1427,8 +1440,8 @@ class AssetManager extends EventDispatcher
 
 	/** Textures that are created from Bitmaps or ATF files will have the scale factor 
 	 *  assigned here. @default 1 */
-	public function get_scaleFactor():Float { return mDefaultTextureOptions.scale; }
-	public function set_scaleFactor(value:Float):Float
+	private function get_scaleFactor():Float { return mDefaultTextureOptions.scale; }
+	private function set_scaleFactor(value:Float):Float
 	{
 		mDefaultTextureOptions.scale = value;
 		return value;
@@ -1436,8 +1449,8 @@ class AssetManager extends EventDispatcher
 
 	/** Textures that are created from Bitmaps will be uploaded to the GPU with the
 	 *  <code>Context3DTextureFormat</code> assigned to this property. @default "bgra" */
-	public function get_textureFormat():Context3DTextureFormat { return mDefaultTextureOptions.format; }
-	public function set_textureFormat(value:Context3DTextureFormat):Context3DTextureFormat
+	private function get_textureFormat():Context3DTextureFormat { return mDefaultTextureOptions.format; }
+	private function set_textureFormat(value:Context3DTextureFormat):Context3DTextureFormat
 	{
 		mDefaultTextureOptions.format = value;
 		return value;
@@ -1446,8 +1459,8 @@ class AssetManager extends EventDispatcher
 	/** Specifies whether a check should be made for the existence of a URL policy file before
 	 *  loading an object from a remote server. More information about this topic can be found 
 	 *  in the 'flash.system.LoaderContext' documentation. @default false */
-	public function get_checkPolicyFile():Bool { return mCheckPolicyFile; }
-	public function set_checkPolicyFile(value:Bool):Bool
+	private function get_checkPolicyFile():Bool { return mCheckPolicyFile; }
+	private function set_checkPolicyFile(value:Bool):Bool
 	{
 		mCheckPolicyFile = value;
 		return value;
@@ -1456,8 +1469,8 @@ class AssetManager extends EventDispatcher
 	/** Indicates if atlas Xml data should be stored for access via the 'getXml' method.
 	 *  If true, you can access an Xml under the same name as the atlas.
 	 *  If false, XMLs will be disposed when the atlas was created. @default false. */
-	public function get_keepAtlasXmls():Bool { return mKeepAtlasXmls; }
-	public function set_keepAtlasXmls(value:Bool):Bool
+	private function get_keepAtlasXmls():Bool { return mKeepAtlasXmls; }
+	private function set_keepAtlasXmls(value:Bool):Bool
 	{
 		mKeepAtlasXmls = value;
 		return value;
@@ -1466,8 +1479,8 @@ class AssetManager extends EventDispatcher
 	/** Indicates if bitmap font Xml data should be stored for access via the 'getXml' method.
 	 *  If true, you can access an Xml under the same name as the bitmap font.
 	 *  If false, XMLs will be disposed when the font was created. @default false. */
-	public function get_keepFontXmls():Bool { return mKeepFontXmls; }
-	public function set_keepFontXmls(value:Bool):Bool
+	private function get_keepFontXmls():Bool { return mKeepFontXmls; }
+	private function set_keepFontXmls(value:Bool):Bool
 	{
 		mKeepFontXmls = value;
 		return value;
@@ -1475,8 +1488,8 @@ class AssetManager extends EventDispatcher
 
 	/** The maximum number of parallel connections that are spawned when loading the queue.
 	 *  More connections can reduce loading times, but require more memory. @default 3. */
-	public function get_numConnections():Int { return mNumConnections; }
-	public function set_numConnections(value:Int):Int
+	private function get_numConnections():Int { return mNumConnections; }
+	private function set_numConnections(value:Int):Int
 	{
 		mNumConnections = value;
 		return value;

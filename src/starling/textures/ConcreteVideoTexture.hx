@@ -43,25 +43,25 @@ class ConcreteVideoTexture extends ConcreteTexture
 	}
 
 	/** The actual width of the video in pixels. */
-	override public function get_nativeWidth():Float
+	override private function get_nativeWidth():Float
 	{
 		return Reflect.getProperty(base, "videoWidth");
 	}
 
 	/** The actual height of the video in pixels. */
-	override public function get_nativeHeight():Float
+	override private function get_nativeHeight():Float
 	{
 		return Reflect.getProperty(base, "videoHeight");
 	}
 
 	/** inheritDoc */
-	override public function get_width():Float
+	override private function get_width():Float
 	{
 		return nativeWidth / scale;
 	}
 
 	/** inheritDoc */
-	override public function get_height():Float
+	override private function get_height():Float
 	{
 		return nativeHeight / scale;
 	}

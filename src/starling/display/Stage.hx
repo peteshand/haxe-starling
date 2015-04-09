@@ -217,78 +217,78 @@ class Stage extends DisplayObjectContainer
 	// properties
 	
 	/** @private */
-	public override function set_width(value:Float):Float 
+	private override function set_width(value:Float):Float 
 	{ 
 		throw new IllegalOperationError("Cannot set width of stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_height(value:Float):Float
+	private override function set_height(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot set height of stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_x(value:Float):Float
+	private override function set_x(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot set x-coordinate of stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_y(value:Float):Float
+	private override function set_y(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot set y-coordinate of stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_scaleX(value:Float):Float
+	private override function set_scaleX(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot scale stage");
 		return value;
 	}
 
 	/** @private */
-	public override function set_scaleY(value:Float):Float
+	private override function set_scaleY(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot scale stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_rotation(value:Float):Float
+	private override function set_rotation(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot rotate stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_skewX(value:Float):Float
+	private override function set_skewX(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot skew stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_skewY(value:Float):Float
+	private override function set_skewY(value:Float):Float
 	{
 		throw new IllegalOperationError("Cannot skew stage");
 		return value;
 	}
 	
 	/** @private */
-	public override function set_filter(value:FragmentFilter):FragmentFilter
+	private override function set_filter(value:FragmentFilter):FragmentFilter
 	{
 		throw new IllegalOperationError("Cannot add filter to stage. Add it to 'root' instead!");
 		return value;
 	}
 	
 	/** The background color of the stage. */
-	public function get_color():UInt { return mColor; }
-	public function set_color(value:UInt):UInt
+	private function get_color():UInt { return mColor; }
+	private function set_color(value:UInt):UInt
 	{
 		mColor = value;
 		return value;
@@ -296,8 +296,8 @@ class Stage extends DisplayObjectContainer
 	
 	/** The width of the stage coordinate system. Change it to scale its contents relative
 	 *  to the <code>viewPort</code> property of the Starling object. */ 
-	public function get_stageWidth():Int { return mWidth; }
-	public function set_stageWidth(value:Int):Int
+	private function get_stageWidth():Int { return mWidth; }
+	private function set_stageWidth(value:Int):Int
 	{
 		mWidth = value;
 		return value;
@@ -305,8 +305,8 @@ class Stage extends DisplayObjectContainer
 	
 	/** The height of the stage coordinate system. Change it to scale its contents relative
 	 *  to the <code>viewPort</code> property of the Starling object. */
-	public function get_stageHeight():Int { return mHeight; }
-	public function set_stageHeight(value:Int):Int
+	private function get_stageHeight():Int { return mHeight; }
+	private function set_stageHeight(value:Int):Int
 	{
 		mHeight = value;
 		return value;
@@ -314,12 +314,12 @@ class Stage extends DisplayObjectContainer
 
 	/** The distance between the stage and the camera. Changing this value will update the
 	 *  field of view accordingly. */
-	public function get_focalLength():Float
+	private function get_focalLength():Float
 	{
 		return mWidth / (2 * Math.tan(mFieldOfView/2));
 	}
 
-	public function set_focalLength(value:Float):Float
+	private function set_focalLength(value:Float):Float
 	{
 		mFieldOfView = 2 * Math.atan(stageWidth / (2 * value));
 		return value;
@@ -335,8 +335,8 @@ class Stage extends DisplayObjectContainer
 	 *
 	 *  @default 1.0
 	 */
-	public function get_fieldOfView():Float { return mFieldOfView; }
-	public function set_fieldOfView(value:Float):Float
+	private function get_fieldOfView():Float { return mFieldOfView; }
+	private function set_fieldOfView(value:Float):Float
 	{
 		mFieldOfView = value;
 		return value;
@@ -346,8 +346,8 @@ class Stage extends DisplayObjectContainer
 	 *  stage. Use this property to change the center of projection, i.e. the vanishing
 	 *  point for 3D display objects. <p>CAUTION: not a copy, but the actual object!</p>
 	 */
-	public function get_projectionOffset():Point { return mProjectionOffset; }
-	public function set_projectionOffset(value:Point):Point
+	private function get_projectionOffset():Point { return mProjectionOffset; }
+	private function set_projectionOffset(value:Point):Point
 	{
 		mProjectionOffset.setTo(value.x, value.y);
 		return value;
@@ -360,7 +360,7 @@ class Stage extends DisplayObjectContainer
 	 *
 	 *  <p>CAUTION: not a copy, but the actual object!</p>
 	 */
-	public function get_cameraPosition():Vector3D
+	private function get_cameraPosition():Vector3D
 	{
 		return getCameraPosition(null, mCameraPosition);
 	}

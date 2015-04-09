@@ -106,9 +106,9 @@ class TouchMarker extends Sprite
 	private function get_realMarker():Image { return cast getChildAt(0); }
 	private function get_mockMarker():Image { return cast getChildAt(1); }
 	
-	public function get_realX():Float { return realMarker.x; }
-	public function get_realY():Float { return realMarker.y; }
+	private function get_realX():Float { return realMarker.x; }
+	private function get_realY():Float { return realMarker.y; }
 	
-	public function get_mockX():Float { return mockMarker.x; }
-	public function get_mockY():Float { return mockMarker.y; }
+	private function get_mockX():Float { return mockMarker.x; }
+	private function get_mockY():Float { return mockMarker.y; }
 }

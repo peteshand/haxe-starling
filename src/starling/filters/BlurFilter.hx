@@ -297,8 +297,8 @@ class BlurFilter extends FragmentFilter
 	
 	/** The blur factor in x-direction (stage coordinates). 
 	 *  The number of required passes will be <code>Math.ceil(value)</code>. */
-	public function get_blurX():Float { return mBlurX; }
-	public function set_blurX(value:Float):Float 
+	private function get_blurX():Float { return mBlurX; }
+	private function set_blurX(value:Float):Float 
 	{ 
 		mBlurX = value; 
 		updateMarginsAndPasses(); 
@@ -307,8 +307,8 @@ class BlurFilter extends FragmentFilter
 	
 	/** The blur factor in y-direction (stage coordinates). 
 	 *  The number of required passes will be <code>Math.ceil(value)</code>. */
-	public function get_blurY():Float { return mBlurY; }
-	public function set_blurY(value:Float):Float 
+	private function get_blurY():Float { return mBlurY; }
+	private function set_blurY(value:Float):Float 
 	{ 
 		mBlurY = value; 
 		updateMarginsAndPasses();

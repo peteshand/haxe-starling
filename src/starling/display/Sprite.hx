@@ -126,7 +126,7 @@ class Sprite extends DisplayObjectContainer
 	}
 	
 	/** Indicates if the sprite was flattened. */
-	public function get_isFlattened():Bool 
+	private function get_isFlattened():Bool 
 	{ 
 		return (mFlattenedContents != null) || mFlattenRequested; 
 	}
@@ -135,8 +135,8 @@ class Sprite extends DisplayObjectContainer
 	 *  Only pixels within that rectangle will be drawn. 
 	 *  <strong>Note:</strong> clipping rectangles are axis aligned with the screen, so they
 	 *  will not be rotated or skewed if the Sprite is. */
-	public function get_clipRect():Rectangle { return mClipRect; }
-	public function set_clipRect(value:Rectangle):Rectangle 
+	private function get_clipRect():Rectangle { return mClipRect; }
+	private function set_clipRect(value:Rectangle):Rectangle 
 	{
 		if (mClipRect != null && value != null) mClipRect.copyFrom(value);
 		else mClipRect = (value != null ? value.clone() : null);

@@ -220,7 +220,7 @@ class Sprite3D extends DisplayObjectContainer
 	/** The 2D transformation matrix of the object relative to its parent — if it can be
 	 *  represented in such a matrix (the values of 'z', 'rotationX/Y', and 'pivotZ' are
 	 *  zero). Otherwise, the identity matrix. CAUTION: not a copy, but the actual object! */
-	public override function get_transformationMatrix():Matrix
+	private override function get_transformationMatrix():Matrix
 	{
 		if (mTransformationChanged)
 		{
@@ -231,7 +231,7 @@ class Sprite3D extends DisplayObjectContainer
 		return mTransformationMatrix;
 	}
 
-	public override function set_transformationMatrix(value:Matrix):Matrix
+	private override function set_transformationMatrix(value:Matrix):Matrix
 	{
 		super.transformationMatrix = value;
 		mRotationX = mRotationY = mPivotZ = mZ = 0;
@@ -241,7 +241,7 @@ class Sprite3D extends DisplayObjectContainer
 
 	/**  The 3D transformation matrix of the object relative to its parent.
 	 *   CAUTION: not a copy, but the actual object! */
-	public override function get_transformationMatrix3D():Matrix3D
+	private override function get_transformationMatrix3D():Matrix3D
 	{
 		if (mTransformationChanged)
 		{
@@ -253,7 +253,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @inheritDoc */
-	public override function set_x(value:Float):Float
+	private override function set_x(value:Float):Float
 	{
 		super.x = value;
 		mTransformationChanged = true;
@@ -261,7 +261,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @inheritDoc */
-	public override function set_y(value:Float):Float
+	private override function set_y(value:Float):Float
 	{
 		super.y = value;
 		mTransformationChanged = true;
@@ -271,8 +271,8 @@ class Sprite3D extends DisplayObjectContainer
 	/** The z coordinate of the object relative to the local coordinates of the parent.
 	 *  The z-axis points away from the camera, i.e. positive z-values will move the object further
 	 *  away from the viewer. */
-	public function get_z():Float { return mZ; }
-	public function set_z(value:Float):Float
+	private function get_z():Float { return mZ; }
+	private function set_z(value:Float):Float
 	{
 		mZ = value;
 		mTransformationChanged = true;
@@ -280,7 +280,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @inheritDoc */
-	public override function set_pivotX(value:Float):Float
+	private override function set_pivotX(value:Float):Float
 	{
 		super.pivotX = value;
 		mTransformationChanged = true;
@@ -288,7 +288,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @inheritDoc */
-	public override function set_pivotY(value:Float):Float
+	private override function set_pivotY(value:Float):Float
 	{
 		 super.pivotY = value;
 		 mTransformationChanged = true;
@@ -296,8 +296,8 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** The z coordinate of the object's origin in its own coordinate space (default: 0). */
-	public function get_pivotZ():Float { return mPivotZ; }
-	public function set_pivotZ(value:Float):Float
+	private function get_pivotZ():Float { return mPivotZ; }
+	private function set_pivotZ(value:Float):Float
 	{
 		mPivotZ = value;
 		mTransformationChanged = true;
@@ -305,7 +305,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @inheritDoc */
-	public override function set_scaleX(value:Float):Float
+	private override function set_scaleX(value:Float):Float
 	{
 		super.scaleX = value;
 		mTransformationChanged = true;
@@ -313,7 +313,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @inheritDoc */
-	public override function set_scaleY(value:Float):Float
+	private override function set_scaleY(value:Float):Float
 	{
 		super.scaleY = value;
 		mTransformationChanged = true;
@@ -321,8 +321,8 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** The depth scale factor. '1' means no scale, negative values flip the object. */
-	public function get_scaleZ():Float { return mScaleZ; }
-	public function set_scaleZ(value:Float):Float
+	private function get_scaleZ():Float { return mScaleZ; }
+	private function set_scaleZ(value:Float):Float
 	{
 		mScaleZ = value;
 		mTransformationChanged = true;
@@ -330,7 +330,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @private */
-	public override function set_skewX(value:Float):Float
+	private override function set_skewX(value:Float):Float
 	{
 		throw new Error("3D objects do not support skewing");
 
@@ -340,7 +340,7 @@ class Sprite3D extends DisplayObjectContainer
 	}
 
 	/** @private */
-	public override function set_skewY(value:Float):Float
+	private override function set_skewY(value:Float):Float
 	{
 		throw new Error("3D objects do not support skewing");
 
@@ -351,7 +351,7 @@ class Sprite3D extends DisplayObjectContainer
 
 	/** The rotation of the object about the z axis, in radians.
 	 *  (In Starling, all angles are measured in radians.) */
-	public override function set_rotation(value:Float):Float
+	private override function set_rotation(value:Float):Float
 	{
 		super.rotation = value;
 		mTransformationChanged = true;
@@ -360,8 +360,8 @@ class Sprite3D extends DisplayObjectContainer
 
 	/** The rotation of the object about the x axis, in radians.
 	 *  (In Starling, all angles are measured in radians.) */
-	public function get_rotationX():Float { return mRotationX; }
-	public function set_rotationX(value:Float):Float
+	private function get_rotationX():Float { return mRotationX; }
+	private function set_rotationX(value:Float):Float
 	{
 		mRotationX = MathUtil.normalizeAngle(value);
 		mTransformationChanged = true;
@@ -370,8 +370,8 @@ class Sprite3D extends DisplayObjectContainer
 
 	/** The rotation of the object about the y axis, in radians.
 	 *  (In Starling, all angles are measured in radians.) */
-	public function get_rotationY():Float { return mRotationY; }
-	public function set_rotationY(value:Float):Float
+	private function get_rotationY():Float { return mRotationY; }
+	private function set_rotationY(value:Float):Float
 	{
 		mRotationY = MathUtil.normalizeAngle(value);
 		mTransformationChanged = true;
@@ -380,8 +380,8 @@ class Sprite3D extends DisplayObjectContainer
 
 	/** The rotation of the object about the z axis, in radians.
 	 *  (In Starling, all angles are measured in radians.) */
-	public function get_rotationZ():Float { return rotation; }
-	public function set_rotationZ(value:Float):Float
+	private function get_rotationZ():Float { return rotation; }
+	private function set_rotationZ(value:Float):Float
 	{
 		rotation = value;
 		return value;
