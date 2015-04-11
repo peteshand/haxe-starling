@@ -104,7 +104,7 @@ class EventDispatcher
 	{
 		var bubbles:Bool = event.bubbles;
 		
-		trace("CHECK"); // (event.type in mEventListeners) == Reflect.hasField(mEventListeners, event.type)
+		//trace("CHECK"); // (event.type in mEventListeners) == Reflect.hasField(mEventListeners, event.type)
 		
 		if (mEventListeners == null) {
 			return;

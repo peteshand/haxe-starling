@@ -57,11 +57,10 @@ class ConcreteTexture extends Texture
 	
 	/** Creates a ConcreteTexture object from a TextureBase, storing information about size,
 	 *  mip-mapping, and if the channels contain premultiplied alpha values. */
-	public function new(base:TextureBase, format:Context3DTextureFormat, width:Int, height:Int, 
-									mipMapping:Bool, premultipliedAlpha:Bool,
-									optimizedForRenderTexture:Bool=false,
-									scale:Float=1, repeat:Bool=false)
+	public function new(base:TextureBase, format:Context3DTextureFormat, width:Int, height:Int, mipMapping:Bool, premultipliedAlpha:Bool, optimizedForRenderTexture:Bool=false, scale:Float=1, repeat:Bool=false)
 	{
+		
+		
 		super();
 		mScale = scale <= 0 ? 1.0 : scale;
 		mBase = base;
@@ -69,6 +68,9 @@ class ConcreteTexture extends Texture
 		mWidth = width;
 		mHeight = height;
 		mMipMapping = mipMapping;
+		#if js // premultipliedAlpha = true currently doesn't work for alpha gradients on js target
+			premultipliedAlpha = false;
+		#end
 		mPremultipliedAlpha = premultipliedAlpha;
 		mOptimizedForRenderTexture = optimizedForRenderTexture;
 		mRepeat = repeat;

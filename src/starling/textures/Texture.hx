@@ -269,16 +269,10 @@ class Texture
 	 *                  quality).
 	 *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
 	 */
-	public static function fromBitmapData(data:BitmapData, generateMipMaps:Bool=true,
-										  optimizeForRenderToTexture:Bool=false,
-										  scale:Float=1, format:Context3DTextureFormat=null,
-										  repeat:Bool=false):Texture
+	public static function fromBitmapData(data:BitmapData, generateMipMaps:Bool=true, optimizeForRenderToTexture:Bool=false, scale:Float=1, format:Context3DTextureFormat=null, repeat:Bool=false):Texture
 	{
 		if (format == null) format = Context3DTextureFormat.BGRA;
-		var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true,
-											generateMipMaps, optimizeForRenderToTexture, scale,
-											format, repeat);
-
+		var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true, generateMipMaps, optimizeForRenderToTexture, scale, format, repeat);
 		texture.root.uploadBitmapData(data);
 		texture.root.onRestore = function():Void
 		{

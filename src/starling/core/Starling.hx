@@ -43,6 +43,7 @@ import openfl.ui.Mouse;
 import openfl.ui.Multitouch;
 import openfl.ui.MultitouchInputMode;
 import openfl.utils.ByteArray;
+import starling.events.EnterFrameEvent;
 import starling.utils.StarlingUtils;
 
 import starling.events.KeyboardEvent;

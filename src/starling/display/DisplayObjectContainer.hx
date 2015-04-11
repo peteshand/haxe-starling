@@ -138,17 +138,15 @@ class DisplayObjectContainer extends DisplayObject
 				
 				if (stage != null)
 				{
-					child.dispatchEventWith(Event.ADDED_TO_STAGE);
-					
-					/*var container:DisplayObjectContainer = cast child;
-					if (container != null) {
-						trace("CHECK");
-						container.dispatchEventWith(Event.ADDED_TO_STAGE); //container.broadcastEventWith(Event.ADDED_TO_STAGE);
-					}
-					else {
-						child.dispatchEventWith(Event.ADDED_TO_STAGE);
-					}*/
+					var isDisplayObjectContainer:Bool = Std.is(child, DisplayObjectContainer);
+					if (isDisplayObjectContainer)
+                    {
+                        var container:DisplayObjectContainer = cast(child, DisplayObjectContainer);
+						container.broadcastEventWith(Event.ADDED_TO_STAGE);
+                    }
+                    else child.dispatchEventWith(Event.ADDED_TO_STAGE);
 				}
+				
 			}
 			
 			return child;
@@ -179,9 +177,17 @@ class DisplayObjectContainer extends DisplayObject
 			
 			if (stage != null)
 			{
-				var container:DisplayObjectContainer = cast child;
-				if (container != null) container.broadcastEventWith(Event.REMOVED_FROM_STAGE);
-				else           child.dispatchEventWith(Event.REMOVED_FROM_STAGE);
+				var container:DisplayObjectContainer = null;
+				try { container = cast child; }
+				catch (e:Error) { }
+				
+				//if (container != null) {
+					//trace("container = " + container);
+					//trace("container.broadcastEventWith = " + container.broadcastEventWith);
+					
+					//container.broadcastEventWith(Event.REMOVED_FROM_STAGE);
+				//}
+				/*else*/ child.dispatchEventWith(Event.REMOVED_FROM_STAGE);
 			}
 			
 			child.setParent(null);
@@ -405,12 +411,16 @@ class DisplayObjectContainer extends DisplayObject
 		// And since another listener could call this method internally, we have to take 
 		// care that the static helper vector does not get currupted.
 		
+		//trace("sBroadcastListeners.length = " + sBroadcastListeners.length);
 		var fromIndex:Int = sBroadcastListeners.length;
-		getChildEventListeners(this, event.type, sBroadcastListeners);
+		sBroadcastListeners = getChildEventListeners(this, event.type, sBroadcastListeners);
 		var toIndex:Int = sBroadcastListeners.length;
+		//trace("sBroadcastListeners.length = " + sBroadcastListeners.length);
 		
-		for (i in fromIndex...toIndex)
+		for (i in fromIndex...toIndex) {
+			//trace(sBroadcastListeners[i]);
 			sBroadcastListeners[i].dispatchEvent(event);
+		}
 		
 		sBroadcastListeners.length = fromIndex;
 	}
@@ -489,12 +499,15 @@ class DisplayObjectContainer extends DisplayObject
 	
 	/** @private */
 	/*internal*/
-	function getChildEventListeners(object:DisplayObject, eventType:String, 
-											 listeners:Array<DisplayObject>):Void
+	function getChildEventListeners(object:DisplayObject, eventType:String, listeners:Array<DisplayObject>):Array<DisplayObject>
 	{
-		var container:DisplayObjectContainer = null;
+		
+		/*var container:DisplayObjectContainer = null;
 		try { container = cast object; }
-		catch (e:Error) { }
+		catch (e:Error) { }*/
+		var isDisplayObjectContainer:Bool = Std.is(object, DisplayObjectContainer);
+		//trace("isDisplayObjectContainer = " + isDisplayObjectContainer);
+		var container:DisplayObjectContainer = isDisplayObjectContainer ? cast(object, DisplayObjectContainer) : null;
 		
 		if (object.hasEventListener(eventType))
 			listeners[listeners.length] = object; // avoiding 'push'                
@@ -506,8 +519,12 @@ class DisplayObjectContainer extends DisplayObject
 			if (children != null) numChildren = children.length;
 			
 			for (i in 0...numChildren)
-				getChildEventListeners(children[i], eventType, listeners);
+				listeners = getChildEventListeners(children[i], eventType, listeners);
+			
+			//trace("listeners.length = " + listeners.length + " numChildren = " + numChildren);
 		}
+		
+		return listeners;
 	}
 }
 
