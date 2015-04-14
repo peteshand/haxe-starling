@@ -164,7 +164,7 @@ class TouchEvent extends Event
 	public function dispatch(chain:Vector<EventDispatcher>):Void
 	{
 		//trace("CHECK");
-		if (chain != null && cast chain.length)
+		if (chain != null && cast(chain.length))
 		{
 			var chainLength:Int = bubbles ? chain.length : 1;
 			var previousTarget:EventDispatcher = target;

@@ -56,8 +56,7 @@ class Quad extends DisplayObject
 	/** Creates a quad with a certain size and color. The last parameter controls if the 
 	 *  alpha value should be premultiplied into the color values on rendering, which can
 	 *  influence blending output. You can use the default value in most cases.  */
-	public function new(width:Float, height:Float, color:UInt=0xffffff,
-						 premultipliedAlpha:Bool=true)
+	public function new(width:Float, height:Float, color:UInt=0xffffff, premultipliedAlpha:Bool=true)
 	{
 		super();
 		if (width == 0.0 || height == 0.0)

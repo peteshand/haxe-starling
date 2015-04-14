@@ -130,7 +130,7 @@ class MovieClip extends Image implements IAnimatable
 		mDurations.insert(frameID, duration); // mDurations.splice(frameID, 0, duration);
 		
 		if (frameID > 0 && frameID == numFrames) 
-			mStartTimes[frameID] = mStartTimes[cast (frameID-1)] + mDurations[cast (frameID-1)];
+			mStartTimes[frameID] = mStartTimes[Std.int(frameID-1)] + mDurations[Std.int(frameID-1)];
 		else
 			updateStartTimes();
 	}
@@ -223,7 +223,7 @@ class MovieClip extends Image implements IAnimatable
 		mStartTimes[0] = 0;
 		
 		for (i in 1...numFrames)
-			mStartTimes[i] = mStartTimes[cast(i-1)] + mDurations[cast(i-1)];
+			mStartTimes[i] = mStartTimes[Std.int(i-1)] + mDurations[Std.int(i-1)];
 	}
 	
 	// IAnimatable
@@ -301,7 +301,7 @@ class MovieClip extends Image implements IAnimatable
 	private function get_totalTime():Float 
 	{
 		var numFrames:Int = mTextures.length;
-		return mStartTimes[cast (numFrames-1)] + mDurations[cast (numFrames-1)];
+		return mStartTimes[Std.int(numFrames-1)] + mDurations[Std.int(numFrames-1)];
 	}
 	
 	/** The time that has passed since the clip was started (each loop starts at zero). */

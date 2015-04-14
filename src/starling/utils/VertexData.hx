@@ -89,8 +89,7 @@ class VertexData
 		
 		var clone:VertexData = new VertexData(0, mPremultipliedAlpha);
 		clone.mNumVertices = numVertices;
-		clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX,
-									 numVertices * VertexData.ELEMENTS_PER_VERTEX);
+		clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX, numVertices * VertexData.ELEMENTS_PER_VERTEX);
 		clone.mRawData.fixed = true;
 		return clone;
 	}
@@ -112,7 +111,8 @@ class VertexData
 			numVertices = mNumVertices - vertexID;
 		}
 		
-		var x:Float, y:Float;
+		var x:Float;
+		var y:Float;
 		var targetRawData:Vector<Float> = targetData.mRawData;
 		var targetIndex:Int = targetVertexID * VertexData.ELEMENTS_PER_VERTEX;
 		var sourceIndex:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX;
@@ -122,23 +122,23 @@ class VertexData
 		{
 			while (sourceIndex < sourceEnd)
 			{
-				x = mRawData[cast(sourceIndex++)];
-				y = mRawData[cast(sourceIndex++)];
+				x = mRawData[sourceIndex++];
+				y = mRawData[sourceIndex++];
 				
-				targetRawData[cast(targetIndex++)] = matrix.a * x + matrix.c * y + matrix.tx;
-				targetRawData[cast(targetIndex++)] = matrix.d * y + matrix.b * x + matrix.ty;
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
+				targetRawData[targetIndex++] = matrix.a * x + matrix.c * y + matrix.tx;
+				targetRawData[targetIndex++] = matrix.d * y + matrix.b * x + matrix.ty;
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
 			}
 		}
 		else
 		{
 			while (sourceIndex < sourceEnd)
-				targetRawData[cast(targetIndex++)] = mRawData[cast(sourceIndex++)];
+				targetRawData[targetIndex++] = mRawData[sourceIndex++];
 		}
 	}
 	
@@ -152,7 +152,7 @@ class VertexData
 		var rawDataLength:Int = rawData.length;
 		
 		for (i in 0...rawDataLength)
-			mRawData[cast(targetIndex++)] = rawData[i];
+			mRawData[targetIndex++] = rawData[i];
 		
 		mNumVertices += data.numVertices;
 		mRawData.fixed = true;
@@ -165,7 +165,7 @@ class VertexData
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.POSITION_OFFSET;
 		mRawData[offset] = x;
-		mRawData[cast(offset+1)] = y;
+		mRawData[offset+1] = y;
 	}
 	
 	/** Returns the position of a vertex. */
@@ -173,7 +173,7 @@ class VertexData
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.POSITION_OFFSET;
 		position.x = mRawData[offset];
-		position.y = mRawData[cast(offset+1)];
+		position.y = mRawData[offset+1];
 	}
 	
 	/** Updates the RGB color and alpha value of a vertex in one step. */
@@ -186,35 +186,35 @@ class VertexData
 		var multiplier:Float = mPremultipliedAlpha ? alpha : 1.0;
 		
 		mRawData[offset]        = ((color >> 16) & 0xff) / 255.0 * multiplier;
-		mRawData[cast(offset+1)] = ((color >>  8) & 0xff) / 255.0 * multiplier;
-		mRawData[cast(offset+2)] = ( color        & 0xff) / 255.0 * multiplier;
-		mRawData[cast(offset+3)] = alpha;
+		mRawData[Std.int(offset+1)] = ((color >>  8) & 0xff) / 255.0 * multiplier;
+		mRawData[Std.int(offset+2)] = ( color        & 0xff) / 255.0 * multiplier;
+		mRawData[Std.int(offset+3)] = alpha;
 	}
 	
 	/** Updates the RGB color values of a vertex (alpha is not changed). */
 	public function setColor(vertexID:Int, color:UInt):Void
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET;
-		var multiplier:Float = mPremultipliedAlpha ? mRawData[cast(offset+3)] : 1.0;
+		var multiplier:Float = mPremultipliedAlpha ? mRawData[Std.int(offset+3)] : 1.0;
 		mRawData[offset]        = ((color >> 16) & 0xff) / 255.0 * multiplier;
-		mRawData[cast(offset+1)] = ((color >>  8) & 0xff) / 255.0 * multiplier;
-		mRawData[cast(offset+2)] = ( color        & 0xff) / 255.0 * multiplier;
+		mRawData[Std.int(offset+1)] = ((color >>  8) & 0xff) / 255.0 * multiplier;
+		mRawData[Std.int(offset+2)] = ( color        & 0xff) / 255.0 * multiplier;
 	}
 	
 	/** Returns the RGB color of a vertex (no alpha). */
 	public function getColor(vertexID:Int):UInt
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET;
-		var divisor:Float = mPremultipliedAlpha ? mRawData[cast(offset+3)] : 1.0;
+		var divisor:Float = mPremultipliedAlpha ? mRawData[Std.int(offset+3)] : 1.0;
 		
 		if (divisor == 0) return 0;
 		else
 		{
 			var red:Float   = mRawData[offset]        / divisor;
-			var green:Float = mRawData[cast(offset+1)] / divisor;
-			var blue:Float  = mRawData[cast(offset+2)] / divisor;
+			var green:Float = mRawData[Std.int(offset+1)] / divisor;
+			var blue:Float  = mRawData[Std.int(offset+2)] / divisor;
 			
-			return (cast(red*255) << 16) | (cast(green*255) << 8) | cast(blue*255);
+			return (Std.int(red*255) << 16) | (Std.int(green*255) << 8) | Std.int(blue*255);
 		}
 	}
 	
@@ -224,7 +224,7 @@ class VertexData
 		if (mPremultipliedAlpha)
 			setColorAndAlpha(vertexID, getColor(vertexID), alpha);
 		else
-			mRawData[cast(vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET + 3)] = alpha;
+			mRawData[Std.int(vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET + 3)] = alpha;
 	}
 	
 	/** Returns the alpha value of a vertex in the range 0-1. */
@@ -240,7 +240,7 @@ class VertexData
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.TEXCOORD_OFFSET;
 		
 		mRawData[offset]        = u;
-		mRawData[cast(offset + 1)] = v;
+		mRawData[Std.int(offset + 1)] = v;
 	}
 	
 	/** Returns the texture coordinates of a vertex in the range 0-1. */
@@ -248,8 +248,8 @@ class VertexData
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.TEXCOORD_OFFSET;
 		
-		texCoords.x = cast mRawData[offset];
-		texCoords.y = cast mRawData[cast(offset + 1)];
+		texCoords.x = Std.int(mRawData[offset]);
+		texCoords.y = Std.int(mRawData[Std.int(offset + 1)]);
 		
 		#if js
 		untyped __js__('if ("undefined" === typeof texCoords.x) texCoords.x = 0;');
@@ -268,7 +268,7 @@ class VertexData
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.POSITION_OFFSET;
 		mRawData[offset]        += deltaX;
-		mRawData[cast(offset+1)] += deltaY;
+		mRawData[Std.int(offset+1)] += deltaY;
 	}
 
 	/** Transforms the position of subsequent vertices by multiplication with a 
@@ -281,10 +281,10 @@ class VertexData
 		for (i in 0...numVertices)
 		{
 			x = mRawData[offset];
-			y = mRawData[cast(offset+1)];
+			y = mRawData[Std.int(offset+1)];
 			
 			mRawData[offset]        = matrix.a * x + matrix.c * y + matrix.tx;
-			mRawData[cast(offset+1)] = matrix.d * y + matrix.b * x + matrix.ty;
+			mRawData[Std.int(offset+1)] = matrix.d * y + matrix.b * x + matrix.ty;
 			
 			offset += VertexData.ELEMENTS_PER_VERTEX;
 		}
@@ -322,7 +322,7 @@ class VertexData
 		{
 			var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET + 3;
 			for (i in 0...numVertices)
-				mRawData[cast(offset + i*VertexData.ELEMENTS_PER_VERTEX)] *= factor;
+				mRawData[Std.int(offset + i*VertexData.ELEMENTS_PER_VERTEX)] *= factor;
 		}
 	}
 	
@@ -362,7 +362,7 @@ class VertexData
 				for (i in 0...numVertices)
 				{
 					x = mRawData[offset];
-					y = mRawData[cast(offset+1)];
+					y = mRawData[Std.int(offset+1)];
 					offset += VertexData.ELEMENTS_PER_VERTEX;
 					
 					if (minX > x) minX = x;
@@ -376,7 +376,7 @@ class VertexData
 				for (i in 0...numVertices)
 				{
 					x = mRawData[offset];
-					y = mRawData[cast(offset+1)];
+					y = mRawData[Std.int(offset+1)];
 					offset += VertexData.ELEMENTS_PER_VERTEX;
 					
 					MatrixUtil.transformCoords(transformationMatrix, x, y, sHelperPoint);
@@ -431,7 +431,7 @@ class VertexData
 			for (i in 0...numVertices)
 			{
 				x = mRawData[offset];
-				y = mRawData[cast(offset+1)];
+				y = mRawData[Std.int(offset+1)];
 				offset += VertexData.ELEMENTS_PER_VERTEX;
 
 				if (transformationMatrix != null)
@@ -497,7 +497,7 @@ class VertexData
 		for (i in 0...mNumVertices)
 		{
 			for (j in 0...4)
-				if (mRawData[cast(offset+j)] != 1.0) return true;
+				if (mRawData[Std.int(offset+j)] != 1.0) return true;
 
 			offset += VertexData.ELEMENTS_PER_VERTEX;
 		}
@@ -518,15 +518,15 @@ class VertexData
 			for (j in VertexData.COLOR_OFFSET...dataLength)
 			{
 				var i = j * VertexData.ELEMENTS_PER_VERTEX;
-				var alpha:Float = mRawData[cast(i+3)];
+				var alpha:Float = mRawData[Std.int(i+3)];
 				var divisor:Float = mPremultipliedAlpha ? alpha : 1.0;
 				var multiplier:Float = value ? alpha : 1.0;
 				
 				if (divisor != 0)
 				{
 					mRawData[i]        = mRawData[i]        / divisor * multiplier;
-					mRawData[cast(i+1)] = mRawData[cast(i+1)] / divisor * multiplier;
-					mRawData[cast(i+2)] = mRawData[cast(i+2)] / divisor * multiplier;
+					mRawData[Std.int(i+1)] = mRawData[Std.int(i+1)] / divisor * multiplier;
+					mRawData[Std.int(i+2)] = mRawData[Std.int(i+2)] / divisor * multiplier;
 				}
 			}
 		}
@@ -551,7 +551,7 @@ class VertexData
 		mRawData.fixed = false;
 		
 		#if js
-			trace("OPTIMIZE");
+			//OPTIMIZE;
 			// js hack to init values to 0
 			var currentLength:Int = 0;
 			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
@@ -566,7 +566,7 @@ class VertexData
 		#end
 		
 		
-		var startIndex:Int = mNumVertices * VertexData.ELEMENTS_PER_VERTEX + VertexData.COLOR_OFFSET + 3;
+		var startIndex:Int = (mNumVertices * VertexData.ELEMENTS_PER_VERTEX) + VertexData.COLOR_OFFSET + 3;
 		var endIndex:Int = mRawData.length;
 		
 		var i = startIndex;

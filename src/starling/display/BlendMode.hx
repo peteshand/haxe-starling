@@ -37,7 +37,7 @@ import starling.errors.AbstractClassError;
  */
 class BlendMode
 {
-	private static var sBlendFactors(get, null):Array<Dynamic>;
+	private static var sBlendFactors(get, null):Array<Map<String, BlendFactor>>;
 	
 	// predifined modes
 	
@@ -68,11 +68,38 @@ class BlendMode
 	
 	/** Draws under/below existing objects; useful especially on RenderTextures. */
 	public static var BELOW:String = "below";
+	static private var _sBlendFactors:Array<Map<String, BlendFactor>>;
+	static private var lastModeName:String;
+	static private var lastModeFactors:Array<Context3DBlendFactor>;
 	
 
-	static function get_sBlendFactors():Array<Dynamic>
+	static function get_sBlendFactors():Array<Map<String, BlendFactor>>
 	{
-		var vec = new Array<Dynamic>();
+		if (_sBlendFactors == null){
+			_sBlendFactors = new Array<Map<String, BlendFactor>>();
+			
+			var map1:Map<String, BlendFactor> = new Map<String, BlendFactor>();
+			map1.set("none", new BlendFactor("none", [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ]));
+			map1.set("normal", new BlendFactor("normal", [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ]));
+			map1.set("add", new BlendFactor("add", [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]));
+			map1.set("multiply", new BlendFactor("multiply", [ Context3DBlendFactor.DESTINATION_COLOR, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ]));
+			map1.set("screen", new BlendFactor("screen", [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE ]));
+			map1.set("erase", new BlendFactor("erase", [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ]));
+			map1.set("below", new BlendFactor("below", [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]));
+			_sBlendFactors.push(map1);
+			
+			var map2:Map<String, BlendFactor> = new Map<String, BlendFactor>();
+			map2.set("none", new BlendFactor("none", [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ]));
+			map2.set("normal", new BlendFactor("normal", [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ]));
+			map2.set("add", new BlendFactor("add", [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE ]));
+			map2.set("multiply", new BlendFactor("multiply", [ Context3DBlendFactor.DESTINATION_COLOR, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ]));
+			map2.set("screen", new BlendFactor("screen", [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR ]));
+			map2.set("erase", new BlendFactor("erase", [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ]));
+			map2.set("below", new BlendFactor("below", [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]));
+			_sBlendFactors.push(map2);
+		}
+		
+		/*var vec = new Array<Dynamic>();
 		vec.push({ 
 			"none"     : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ZERO ],
 			"normal"   : [ Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
@@ -91,8 +118,8 @@ class BlendMode
 			"screen"   : [ Context3DBlendFactor.ONE, Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR ],
 			"erase"    : [ Context3DBlendFactor.ZERO, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA ],
 			"below"    : [ Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA, Context3DBlendFactor.DESTINATION_ALPHA ]
-		});
-		return vec;
+		});*/
+		return _sBlendFactors;
 	}
 	
 	// accessing modes
@@ -103,12 +130,19 @@ class BlendMode
 	{
 		//trace("CHECK");
 		
-		var vec:Array<Dynamic> = BlendMode.sBlendFactors;
+		var vec:Array<Map<String, BlendFactor>> = BlendMode.sBlendFactors;
 		var modeIndex:Int = 0;//
 		if (premultipliedAlpha == true) modeIndex = 1;//cast(premultipliedAlpha, Int);
-		var modes:Dynamic = vec[modeIndex];
+		var modes:Map<String, BlendFactor> = vec[modeIndex];
 		
-		var returnVal:Array<Dynamic> = Reflect.getProperty(modes, mode);
+		
+		if (lastModeName != mode) {
+			lastModeFactors = modes.get(mode).factors;
+		}
+		lastModeName = mode;
+		
+		
+		var returnVal:Array<Context3DBlendFactor> = lastModeFactors;
 		if (returnVal == null) throw new ArgumentError("Invalid blend mode");
 		return returnVal;
 		
@@ -125,12 +159,10 @@ class BlendMode
 	public static function register(name:String, sourceFactor:String, destFactor:String,
 									premultipliedAlpha:Bool=true):Void
 	{
-		var vec:Array<Dynamic> = BlendMode.sBlendFactors;
+		var vec:Array<Map<String, BlendFactor>> = BlendMode.sBlendFactors;
 		var modeIndex:Int = cast(premultipliedAlpha);
-		var modes:Dynamic = vec[modeIndex];
-		//modes[name] = [sourceFactor, destFactor];
-		Reflect.setProperty(modes, name, [sourceFactor, destFactor]);
-		
+		var modes:Map<String, BlendFactor> = vec[modeIndex];
+		modes.get(name).factors = [cast(sourceFactor, Context3DBlendFactor), cast(destFactor,Context3DBlendFactor)];
 		
 		trace("CHECK");
 		//var otherModes:Dynamic = vec[cast(!premultipliedAlpha, Int)];

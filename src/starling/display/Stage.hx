@@ -104,7 +104,9 @@ class Stage extends DisplayObjectContainer
 	public function advanceTime(passedTime:Float):Void
 	{
 		mEnterFrameEvent.reset(Event.ENTER_FRAME, false, passedTime);
+		//trace("FIX broadcastEvent");
 		broadcastEvent(mEnterFrameEvent);
+		//dispatchEvent(mEnterFrameEvent);
 	}
 
 	/** Returns the object that is found topmost beneath a point in stage coordinates, or  
@@ -202,16 +204,20 @@ class Stage extends DisplayObjectContainer
 	
 	/** @private */
 	/*internal*/ 
-	public override function getChildEventListeners(object:DisplayObject, eventType:String, 
-													  listeners:Array<DisplayObject>):Void
+	private override function getChildEventListeners(object:DisplayObject, eventType:String, listeners:Array<DisplayObject>):Array<DisplayObject>
 	{
 		if (eventType == Event.ENTER_FRAME && object == this)
 		{
-			for (i in 0...mEnterFrameListeners.length)
-				listeners[listeners.length] = mEnterFrameListeners[i]; // avoiding 'push' 
+			var length:Int = mEnterFrameListeners.length;
+			for (i in 0 ... length) {
+                listeners[listeners.length] = mEnterFrameListeners[i]; // avoiding 'push' 
+			}
 		}
-		else
-			super.getChildEventListeners(object, eventType, listeners);
+		else {
+			listeners = super.getChildEventListeners(object, eventType, listeners);
+		}
+		
+		return listeners;
 	}
 	
 	// properties

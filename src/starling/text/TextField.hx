@@ -362,7 +362,7 @@ class TextField extends DisplayObjectContainer
 		var filterOffset:Point = calculateFilterOffset(sNativeTextField, hAlign, vAlign);
 		
 		// finally: draw text field to bitmap data
-		var bitmapData:BitmapData = new BitmapData(cast width, cast height, true, 0x0);
+		var bitmapData:BitmapData = new BitmapData(Std.int(width), Std.int(height), true, 0x0);
 		var drawMatrix:Matrix = new Matrix(1, 0, 0, 1,
 			filterOffset.x, filterOffset.y + cast(textOffsetY)-2);
 		var drawWithQualityFunc:DocFunction = Reflect.hasField(bitmapData, "drawWithQuality") ? Reflect.getProperty(bitmapData, "drawWithQuality") : null;
@@ -391,8 +391,8 @@ class TextField extends DisplayObjectContainer
 	private function autoScaleNativeTextField(textField:flash.text.TextField):Void
 	{
 		var size:Float   = cast(textField.defaultTextFormat.size);
-		var maxHeight:Int = cast (textField.height - 4);
-		var maxWidth:Int  = cast (textField.width  - 4);
+		var maxHeight:Int = Std.int (textField.height - 4);
+		var maxWidth:Int  = Std.int (textField.width  - 4);
 		
 		while (textField.textWidth > maxWidth || textField.textHeight > maxHeight)
 		{

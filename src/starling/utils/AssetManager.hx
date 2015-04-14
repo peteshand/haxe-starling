@@ -193,7 +193,7 @@ class AssetManager extends EventDispatcher
 	 *  texture atlases. */
 	public function getTexture(name:String):Texture
 	{
-		if (mTextures.exists(name)) return mTextures[name];
+		if (mTextures.exists(name)) return mTextures.get(name);
 		else
 		{
 			for (atlas in mAtlases)

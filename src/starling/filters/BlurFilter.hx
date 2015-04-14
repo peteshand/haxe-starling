@@ -190,7 +190,7 @@ class BlurFilter extends FragmentFilter
 		// vertex attribute 1:   texture coordinates (FLOAT_2)
 		// texture 0:            input texture
 		
-		updateParameters(pass, cast texture.nativeWidth, cast texture.nativeHeight);
+		updateParameters(pass, Std.int(texture.nativeWidth), Std.int(texture.nativeHeight));
 		
 		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,   4, cast mOffsets);
 		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, cast mWeights);

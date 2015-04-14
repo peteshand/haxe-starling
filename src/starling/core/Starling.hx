@@ -43,6 +43,7 @@ import openfl.ui.Mouse;
 import openfl.ui.Multitouch;
 import openfl.ui.MultitouchInputMode;
 import openfl.utils.ByteArray;
+import starling.events.EnterFrameEvent;
 import starling.utils.StarlingUtils;
 
 import starling.events.KeyboardEvent;
@@ -312,7 +313,7 @@ class Starling extends EventDispatcher
 		mViewPort = viewPort;
 		mPreviousViewPort = new Rectangle();
 		mStage3D = stage3D;
-		mStage = new Stage(cast viewPort.width, cast viewPort.height, stage.color);
+		mStage = new Stage(Std.int(viewPort.width), Std.int(viewPort.height), stage.color);
 		mNativeOverlay = new Sprite();
 		mNativeStage = stage;
 		mNativeStage.addChild(mNativeOverlay);
@@ -478,7 +479,7 @@ class Starling extends EventDispatcher
 		if (profiles.length != 0)
 		{
 			event.stopImmediatePropagation();
-			Timer.delay(requestNextProfile, 1); //Lib.setTimeout(requestNextProfile, 1);
+			Timer.delay(requestNextProfile, 1);
 		}
 		else onFinished();
 	}
@@ -509,7 +510,7 @@ class Starling extends EventDispatcher
 		
 		trace("[Starling] Initialization complete.");
 		trace("[Starling] Display Driver:", mContext.driverInfo);
-
+		
 		updateViewPort(true);
 		dispatchEventWith(Event.CONTEXT3D_CREATE, false, mContext);
 	}
@@ -584,6 +585,7 @@ class Starling extends EventDispatcher
 		if (mShareContext == false)
 			RenderSupport.Clear(mStage.color, 1.0);
 		
+		
 		mStage.render(mSupport, 1.0);
 		mSupport.finishQuadBatch();
 		
@@ -592,6 +594,7 @@ class Starling extends EventDispatcher
 		
 		if (mShareContext == false)
 			mContext.present();
+		
 	}
 	
 	private function updateViewPort(forceUpdate:Bool=false):Void
@@ -624,7 +627,7 @@ class Starling extends EventDispatcher
 				mStage3D.x = mClippedViewPort.x;
 				mStage3D.y = mClippedViewPort.y;
 				
-				configureBackBuffer(cast mClippedViewPort.width, cast mClippedViewPort.height,
+				configureBackBuffer(Std.int(mClippedViewPort.width), Std.int(mClippedViewPort.height),
 					mAntiAliasing, true, mSupportHighResolutions);
 				
 				if (mSupportHighResolutions && Reflect.hasField(mNativeStage, "contentsScaleFactor"))
@@ -646,10 +649,11 @@ class Starling extends EventDispatcher
 		if (enableDepthAndStencil && SystemUtil.supportsDepthAndStencil) enableDepthAndStencil = true;
 		else enableDepthAndStencil = false;
 		
-		var configureBackBuffer:StarlingFunction = mContext.configureBackBuffer;
-		var methodArgs:Array<Dynamic> = [width, height, antiAlias, enableDepthAndStencil];
-		if (configureBackBuffer.length > 4) methodArgs.push(wantsBestResolution);
-		configureBackBuffer.apply(mContext, methodArgs);
+		//var configureBackBuffer:StarlingFunction = mContext.configureBackBuffer;
+		//var methodArgs:Array<Dynamic> = [width, height, antiAlias, enableDepthAndStencil];
+		//if (configureBackBuffer.length > 4) methodArgs.push(wantsBestResolution);
+		//trace("configureBackBuffer = " + configureBackBuffer);
+		mContext.configureBackBuffer(width, height, antiAlias, enableDepthAndStencil);
 	}
 
 	private function updateNativeOverlay():Void
@@ -947,7 +951,7 @@ class Starling extends EventDispatcher
 		return programs.exists(name);// return name in programs;
 	}
 	
-	private function get_programs():Map<String, Program3D> { return cast contextData[PROGRAM_DATA_NAME]; }
+	private function get_programs():Map<String, Program3D> { return contextData.get(PROGRAM_DATA_NAME); }
 	
 	// properties
 	
@@ -967,20 +971,20 @@ class Starling extends EventDispatcher
 	 *  context loss. */
 	private function get_contextData():Map<String, Dynamic>
 	{
-		return cast sContextData[mStage3D];
+		return sContextData.get(mStage3D);
 	}
 	
 	/** Returns the current width of the back buffer. In most cases, this value is in pixels;
 	 *  however, if the app is running on an HiDPI display with an activated
 	 *  'supportHighResolutions' setting, you have to multiply with 'backBufferPixelsPerPoint'
 	 *  for the actual pixel count. */
-	private function get_backBufferWidth():Int { return cast mClippedViewPort.width; }
+	private function get_backBufferWidth():Int { return Std.int(mClippedViewPort.width); }
 
 	/** Returns the current height of the back buffer. In most cases, this value is in pixels;
 	 *  however, if the app is running on an HiDPI display with an activated
 	 *  'supportHighResolutions' setting, you have to multiply with 'backBufferPixelsPerPoint'
 	 *  for the actual pixel count.  */
-	private function get_backBufferHeight():Int { return cast mClippedViewPort.height; }
+	private function get_backBufferHeight():Int { return Std.int(mClippedViewPort.height); }
 
 	/** The number of pixel per point returned by the 'backBufferWidth/Height' properties.
 	 *  Except for desktop HiDPI displays with an activated 'supportHighResolutions' setting,
