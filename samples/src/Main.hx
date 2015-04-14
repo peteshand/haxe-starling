@@ -153,12 +153,12 @@ class Main extends Sprite
 	{
 		if (mouseOnStage) {
 			mStarling.start();
-			//this.graphics.clear();
+			this.graphics.clear();
 		}
 		else {
 			mStarling.stop();
-			//this.graphics.beginFill(0x000000, 0.8);
-			//this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+			this.graphics.beginFill(0x000000, 0.8);
+			this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
 		}
 	}
 }

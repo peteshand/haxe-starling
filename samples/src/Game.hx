@@ -70,7 +70,7 @@ class Game extends Sprite
 	{
 		sAssets = assets;
 		
-		this.stage.color = 0xFFFF0000;
+		//this.stage.color = 0xFFFF0000;
 		var texture:Texture = assets.getTexture('background');
 		addChild(new Image(texture));
 		showMainMenu();

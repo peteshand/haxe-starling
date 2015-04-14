@@ -21,9 +21,9 @@
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
-	<assets path="assets/audio" rename="assets/assets" />
-	<assets path="assets/fonts" rename="assets/assets" />
-	<assets path="assets/textures" rename="assets/assets" />
+	<assets path="assets/audio" rename="assets/audio" />
+	<assets path="assets/fonts" rename="assets/fonts" />
+	<assets path="assets/textures" rename="assets/textures" />
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->
