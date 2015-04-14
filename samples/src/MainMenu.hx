@@ -38,7 +38,8 @@ class MainMenu extends Sprite
 	private function init():Void
 	{
 		
-		
+		var logo:Image = new Image(Game.assets.getTexture("logo"));
+		addChild(logo);
 		
 		#if flash
 			var scenesToCreate:Array<Dynamic> = [
@@ -48,7 +49,7 @@ class MainMenu extends Sprite
 				["Animations", AnimationScene, true],
 				["Custom hit-test", CustomHitTestScene, true],
 				["Movie Clip", MovieScene, true],
-				["Filters", FilterScene, true],
+				["Filters", FilterScene, false],
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, true],
 				["Benchmark", BenchmarkScene, true],
@@ -56,7 +57,7 @@ class MainMenu extends Sprite
 				["Sprite 3D", Sprite3DScene, true]
 			];
 			
-			var logo:Image = new Image(Game.assets.getTexture("logo"));
+			
 			
 		#else
 			var scenesToCreate:Array<Dynamic> = [
@@ -74,11 +75,11 @@ class MainMenu extends Sprite
 				["Sprite 3D", Sprite3DScene, true]
 			];
 			
-			var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/jsHeader.png");
-			var logo:Image = new Image(Texture.fromBitmapData(bmd));
+			//var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/jsHeader.png");
+			//var logo:Image = new Image(Texture.fromBitmapData(bmd));
 		#end
 		
-		addChild(logo);
+		
 		
 		var buttonTexture:Texture = Game.assets.getTexture("button_medium");
 		

@@ -224,7 +224,7 @@ class DisplacementMapFilter extends FragmentFilter
 		// vertex attribute 1:   texture coordinates (FLOAT_2)
 		// texture 0:            input texture
 
-		updateParameters(cast texture.nativeWidth, cast texture.nativeHeight);
+		updateParameters(Std.int(texture.nativeWidth), Std.int(texture.nativeHeight));
 		
 		context.setVertexBufferAt(2, mMapTexCoordBuffer, 0, Context3DVertexBufferFormat.FLOAT_2);
 		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, sOneHalf);
@@ -261,8 +261,8 @@ class DisplacementMapFilter extends FragmentFilter
 		else if (mComponentY == BitmapDataChannel.BLUE)  columnY = 2;
 		else                                             columnY = 3;
 		
-		sMatrixData[cast(columnX * 4    )] = mScaleX * scale / textureWidth;
-		sMatrixData[cast(columnY * 4 + 1)] = mScaleY * scale / textureHeight;
+		sMatrixData[Std.int(columnX * 4    )] = mScaleX * scale / textureWidth;
+		sMatrixData[Std.int(columnY * 4 + 1)] = mScaleY * scale / textureHeight;
 		
 		sMatrix.copyRawDataFrom(sMatrixData);
 		

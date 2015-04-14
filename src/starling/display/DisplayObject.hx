@@ -948,7 +948,6 @@ class DisplayObject extends EventDispatcher
 	private function set_rotation(value:Float):Float 
 	{
 		value = MathUtil.normalizeAngle(value);
-
 		if (mRotation != value)
 		{            
 			mRotation = value;

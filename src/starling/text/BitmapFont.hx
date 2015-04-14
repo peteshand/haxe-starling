@@ -210,8 +210,11 @@ class BitmapFont
 	{
 		if (result == null) result = new Array<Int>();
 
-		for(key in mChars)
-			result[result.length] = cast(key);
+		var keys = mChars.keys();
+		for (k in keys) {
+			var key:Int = k;
+			result[result.length] = key;
+		}
 
 		return result;
 	}
@@ -428,8 +431,8 @@ class BitmapFont
 		var bottom:Float = currentY + mLineHeight;
 		var yOffset:Int = 0;
 		
-		if (vAlign == VAlign.BOTTOM)      yOffset =  cast (containerHeight - bottom);
-		else if (vAlign == VAlign.CENTER) yOffset = cast ((containerHeight - bottom) / 2);
+		if (vAlign == VAlign.BOTTOM)      yOffset =  Std.int (containerHeight - bottom);
+		else if (vAlign == VAlign.CENTER) yOffset = Std.int ((containerHeight - bottom) / 2);
 		
 		for (lineID in 0...numLines)
 		{
@@ -443,8 +446,8 @@ class BitmapFont
 			var right:Float = lastLocation.x - lastLocation.char.xOffset 
 											  + lastLocation.char.xAdvance;
 			
-			if (hAlign == HAlign.RIGHT)       xOffset = cast (containerWidth - right);
-			else if (hAlign == HAlign.CENTER) xOffset = cast ((containerWidth - right) / 2);
+			if (hAlign == HAlign.RIGHT)       xOffset = Std.int (containerWidth - right);
+			else if (hAlign == HAlign.CENTER) xOffset = Std.int ((containerWidth - right) / 2);
 			
 			for (c in 0...numChars)
 			{

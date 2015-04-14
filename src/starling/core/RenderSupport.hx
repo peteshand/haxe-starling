@@ -244,13 +244,13 @@ class RenderSupport
 		if (mMatrixStack.length < mMatrixStackSize + 1)
 			mMatrixStack.push(new Matrix());
 	
-		mMatrixStack[cast(mMatrixStackSize++, Int)].copyFrom(mModelViewMatrix);
+		mMatrixStack[Std.int(mMatrixStackSize++)].copyFrom(mModelViewMatrix);
 	}
 	
 	/** Restores the modelview matrix that was last pushed to the stack. */
 	public function popMatrix():Void
 	{
-		mModelViewMatrix.copyFrom(mMatrixStack[cast(--mMatrixStackSize, Int)]);
+		mModelViewMatrix.copyFrom(mMatrixStack[Std.int(--mMatrixStackSize)]);
 	}
 	
 	/** Empties the matrix stack, resets the modelview matrix to the identity matrix. */
@@ -308,13 +308,13 @@ class RenderSupport
 		if (mMatrixStack3D.length < mMatrixStack3DSize + 1)
 			mMatrixStack3D.push(new Matrix3D());
 		
-		mMatrixStack3D[cast(mMatrixStack3DSize++, Int)].copyFrom(mModelViewMatrix3D);
+		mMatrixStack3D[Std.int(mMatrixStack3DSize++)].copyFrom(mModelViewMatrix3D);
 	}
 	
 	/** Restores the 3D modelview matrix that was last pushed to the stack. */
 	public function popMatrix3D():Void
 	{
-		mModelViewMatrix3D.copyFrom(mMatrixStack3D[cast (--mMatrixStack3DSize, Int)]);
+		mModelViewMatrix3D.copyFrom(mMatrixStack3D[Std.int(--mMatrixStack3DSize)]);
 	}
 	
 	/** Calculates the product of modelview and projection matrix and stores it in a 3D matrix.
@@ -444,8 +444,8 @@ class RenderSupport
 			
 			if (mRenderTarget != null)
 			{
-				width  = cast mRenderTarget.root.nativeWidth;
-				height = cast mRenderTarget.root.nativeHeight;
+				width  = Std.int(mRenderTarget.root.nativeWidth);
+				height = Std.int(mRenderTarget.root.nativeHeight);
 			}
 			else
 			{
@@ -551,17 +551,14 @@ class RenderSupport
 	
 	/** Adds a quad to the current batch of unrendered quads. If there is a state change,
 	 *  all previous quads are rendered at once, and the batch is reset. */
-	public function batchQuad(quad:Quad, parentAlpha:Float, 
-							  texture:Texture=null, smoothing:String=null):Void
+	public function batchQuad(quad:Quad, parentAlpha:Float, texture:Texture=null, smoothing:String=null):Void
 	{
-		if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, 
-															smoothing, mBlendMode))
+		if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
 		{
 			finishQuadBatch();
 		}
 		
-		mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, 
-												  mModelViewMatrix, mBlendMode);
+		mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, mModelViewMatrix, mBlendMode);
 	}
 	
 	/** Adds a batch of quads to the current batch of unrendered quads. If there is a state 

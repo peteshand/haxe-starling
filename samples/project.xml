@@ -8,21 +8,22 @@
 	<!-- output -->
 	<app main="Main" file="OpenFLStarlingSamples" path="bin" />
 	
-	<window background="#000000" fps="60" />
+	<window background="#440000" fps="60" />
 	<window width="320" height="480" unless="mobile" />
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	
 	<!-- classpath, haxe libs -->
 	<source path="src" />
-	<source path="../openfl-starling/src" />
+	<source path="../src" />
 	
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
-	<assets path="assets/img" rename="img" />
-	<assets path="assets/assets" rename="assets" />
+	<assets path="assets/audio" rename="assets/assets" />
+	<assets path="assets/fonts" rename="assets/assets" />
+	<assets path="assets/textures" rename="assets/assets" />
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->

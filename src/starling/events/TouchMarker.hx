@@ -82,8 +82,8 @@ class TouchMarker extends Sprite
 	{
 		var scale:Float = Starling.ContentScaleFactor;
 		var radius:Float = 12 * scale;
-		var width:Int = cast (32 * scale);
-		var height:Int = cast (32 * scale);
+		var width:Int = Std.int (32 * scale);
+		var height:Int = Std.int (32 * scale);
 		var thickness:Float = 1.5 * scale;
 		var shape:Shape = new Shape();
 		

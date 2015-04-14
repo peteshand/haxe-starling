@@ -1,6 +1,7 @@
 package scenes;
 
 import flash.system.System;
+import starling.textures.Texture;
 
 import starling.core.Starling;
 import starling.display.Button;
@@ -22,6 +23,9 @@ class BenchmarkScene extends Scene
 	private var mFailCount:Int;
 	private var mWaitFrames:Int;
 	
+	private var activeChange:Int = 0;
+	private var texture:Texture;
+	
 	public function new()
 	{
 		super();
@@ -42,7 +46,16 @@ class BenchmarkScene extends Scene
 		mStarted = false;
 		mElapsed = 0.0;
 		
+		texture = Game.assets.getTexture("benchmark_object");
+		
 		addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+		
+		Main.mouseOnStageDispatcher.addEventListener(Event.CHANGE, OnActiveChange);
+	}
+	
+	private function OnActiveChange(e:Event):Void 
+	{
+		activeChange = 0;
 	}
 	
 	public override function dispose():Void
@@ -59,19 +72,22 @@ class BenchmarkScene extends Scene
 		mElapsed += event.passedTime;
 		mFrameCount++;
 		
+		activeChange++;
+		
 		if (mFrameCount % mWaitFrames == 0)
 		{
 			var fps:Float = mWaitFrames / mElapsed;
-			var targetFps:Int = cast Starling.current.nativeStage.frameRate;
+			var targetFps:Float = Starling.current.nativeStage.frameRate;
 			
 			if (Math.ceil(fps) >= targetFps)
 			{
 				mFailCount = 0;
-				addTestObjects();
+				if (activeChange > 10) 
+					addTestObjects();
 			}
 			else
 			{
-				mFailCount++;
+				if (activeChange > 10) mFailCount++;
 				
 				if (mFailCount > 20)
 					mWaitFrames = 5; // slow down creation process to be more exact
@@ -87,8 +103,9 @@ class BenchmarkScene extends Scene
 		var numObjects:Int = mContainer.numChildren;
 		var passedTime:Float = event.passedTime;
 		
+		var addAmount:Float = Math.PI / 2 * passedTime;
 		for (i in 0...numObjects)
-			mContainer.getChildAt(i).rotation += Math.PI / 2 * passedTime;
+			mContainer.children[i].rotation += addAmount;
 	}
 	
 	private function onStartButtonTriggered():Void
@@ -111,13 +128,14 @@ class BenchmarkScene extends Scene
 	private function addTestObjects():Void
 	{
 		var padding:Int = 15;
-		var numObjects:Int = mFailCount > 20 ? 2 : 10;
+		var numObjects:Int = mFailCount > 20 ? 10 : 20;
 		
 		for (i in 0...numObjects)
 		{
-			var egg:Image = new Image(Game.assets.getTexture("benchmark_object"));
+			var egg:Image = new Image(texture);
 			egg.x = padding + Math.random() * (Constants.GameWidth - 2 * padding);
 			egg.y = padding + Math.random() * (Constants.GameHeight - 2 * padding);
+			egg.touchable = false;
 			mContainer.addChild(egg);
 		}
 	}

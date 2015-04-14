@@ -279,7 +279,7 @@ class ConcreteTexture extends Texture
 		if (context == null) throw new MissingContextError();
 		
 		if (mPremultipliedAlpha && alpha < 1.0) {
-			color = Color.rgb(cast (Color.getRed(color) * alpha), cast (Color.getGreen(color) * alpha), cast (Color.getBlue(color) * alpha));
+			color = Color.rgb(Std.int(Color.getRed(color) * alpha), Std.int(Color.getGreen(color) * alpha), Std.int(Color.getBlue(color) * alpha));
 		}
 		
 		context.setRenderToTexture(mBase);

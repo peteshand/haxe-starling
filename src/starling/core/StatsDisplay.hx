@@ -82,7 +82,8 @@ class StatsDisplay extends Sprite
 		if (mTotalTime > UPDATE_INTERVAL)
 		{
 			update();
-			mFrameCount = cast mTotalTime = cast 0;
+			mFrameCount = 0;
+			mTotalTime = 0;
 		}
 	}
 	

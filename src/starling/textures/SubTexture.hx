@@ -142,7 +142,7 @@ class SubTexture extends Texture
 	public override function adjustTexCoords(texCoords:Array<Float>, startIndex:Int=0, stride:Int=0, count:Int=-1):Array<Float>
 	{
 		if (count < 0) {
-			count = cast ((texCoords.length - startIndex - 2) / (stride + 2) + 1);
+			count = Std.int((texCoords.length - startIndex - 2) / (stride + 2) + 1);
 		}
 		
 		var endIndex:Int = startIndex + count * (2 + stride);

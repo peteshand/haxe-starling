@@ -274,12 +274,12 @@ class ColorMatrixFilter extends FragmentFilter
 		{
 			for (x in 0...5)
 			{
-				sTmpMatrix1[cast(i+x)] = 
+				sTmpMatrix1[Std.int(i+x)] = 
 					matrix[i]        * mUserMatrix[x]           +
-					matrix[cast(i+1)] * mUserMatrix[cast(x +  5)] +
-					matrix[cast(i+2)] * mUserMatrix[cast(x + 10)] +
-					matrix[cast(i+3)] * mUserMatrix[cast(x + 15)] +
-					(x == 4 ? matrix[cast(i+4)] : 0);
+					matrix[Std.int(i+1)] * mUserMatrix[Std.int(x +  5)] +
+					matrix[Std.int(i+2)] * mUserMatrix[Std.int(x + 10)] +
+					matrix[Std.int(i+3)] * mUserMatrix[Std.int(x + 15)] +
+					(x == 4 ? matrix[Std.int(i+4)] : 0);
 			}
 			
 			i+=5;

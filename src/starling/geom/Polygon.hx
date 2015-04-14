@@ -62,7 +62,7 @@ class Polygon
 	public function reverse():Void
 	{
 		var numCoords:Int = mCoords.length;
-		var numVertices:Int = cast numCoords / 2;
+		var numVertices:Int = Std.int(numCoords / 2);
 		var tmp:Float;
 
 		var i = 0;
@@ -384,7 +384,7 @@ class Polygon
 	 *  Beware: this is a brute-force implementation with <code>O(n^2)</code>. */
 	private function get_isSimple():Bool
 	{
-		var numCoords:Int = cast mCoords.length / 2;
+		var numCoords:Int = Std.int(mCoords.length / 2);
 		if (numCoords <= 6) return true;
 
 		for (x in 0...numCoords)
@@ -394,7 +394,7 @@ class Polygon
 			var ay:Float = mCoords[ i + 1 ];
 			var bx:Float = mCoords[(i + 2) % numCoords];
 			var by:Float = mCoords[(i + 3) % numCoords];
-			var endJ:Int = cast ((i + numCoords - 2) / 2);
+			var endJ:Int = Std.int((i + numCoords - 2) / 2);
 
 			for (c in (i + 4)...endJ)
 			{
@@ -416,7 +416,7 @@ class Polygon
 	 *  points inside the polygon lies inside it, as well. */
 	private function get_isConvex():Bool
 	{
-		var numCoords:Int = cast (mCoords.length / 2);
+		var numCoords:Int = Std.int(mCoords.length / 2);
 
 		if (numCoords < 6) return true;
 		else
@@ -440,7 +440,7 @@ class Polygon
 	private function get_area():Float
 	{
 		var area:Float = 0;
-		var numCoords:Int = cast(mCoords.length / 2);
+		var numCoords:Int = Std.int(mCoords.length / 2);
 
 		if (numCoords >= 6)
 		{
@@ -460,7 +460,7 @@ class Polygon
 	 *  value will fill up the path with zeros. */
 	private function get_numVertices():Int
 	{
-		return cast mCoords.length / 2;
+		return Std.int(mCoords.length / 2);
 	}
 
 	private function set_numVertices(value:Int):Int

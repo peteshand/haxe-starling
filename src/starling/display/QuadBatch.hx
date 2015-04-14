@@ -224,8 +224,7 @@ class QuadBatch extends DisplayObject
 	/** Renders the current batch with custom settings for model-view-projection matrix, alpha 
 	 *  and blend mode. This makes it possible to render batches that are not part of the 
 	 *  display list. */ 
-	public function renderCustom(mvpMatrix:Matrix3D, parentAlpha:Float=1.0,
-								 blendMode:String=null):Void
+	public function renderCustom(mvpMatrix:Matrix3D, parentAlpha:Float=1.0, blendMode:String=null):Void
 	{
 		if (mNumQuads == 0) return;
 		if (mSyncRequired) syncBuffers();
@@ -240,7 +239,8 @@ class QuadBatch extends DisplayObject
 		RenderSupport.setBlendFactors(pma, blendMode != null ? blendMode : this.blendMode);
 		
 		context.setProgram(getProgram(tinted));
-		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, sRenderAlpha, 1);
+		if (mTexture == null || tinted)
+			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, sRenderAlpha, 1);
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, mvpMatrix, true);
 		context.setVertexBufferAt(0, mVertexBuffer, VertexData.POSITION_OFFSET, 
 								  Context3DVertexBufferFormat.FLOAT_2); 
@@ -356,8 +356,7 @@ class QuadBatch extends DisplayObject
 	 *  A state change occurs if the quad uses a different base texture, has a different 
 	 *  'tinted', 'smoothing', 'repeat' or 'blendMode' setting, or if the batch is full
 	 *  (one batch can contain up to 8192 quads). */
-	public function isStateChange(tinted:Bool, parentAlpha:Float, texture:Texture, 
-								  smoothing:String, blendMode:String, numQuads:Int=1):Bool
+	public function isStateChange(tinted:Bool, parentAlpha:Float, texture:Texture, smoothing:String, blendMode:String, numQuads:Int=1):Bool
 	{
 		if (mNumQuads == 0) return false;
 		else if (mNumQuads + numQuads > MAX_NUM_QUADS) return true; // maximum buffer size
@@ -442,7 +441,7 @@ class QuadBatch extends DisplayObject
 	{
 		var matrix:Matrix = quad.transformationMatrix;
 		var alpha:Float  = quad.alpha;
-		var vertexID:Int  = cast (quadID * 4);
+		var vertexID:Int  = Std.int(quadID * 4);
 
 		quad.copyVertexDataTransformedTo(mVertexData, vertexID, matrix);
 		if (alpha != 1.0) mVertexData.scaleAlpha(vertexID, alpha, 4);
@@ -475,10 +474,10 @@ class QuadBatch extends DisplayObject
 	/** @inheritDoc */
 	public override function render(support:RenderSupport, parentAlpha:Float):Void
 	{
-		#if flash
-		if (Math.isNaN(mNumQuads)) 
-		#else
+		#if js
 		if (mNumQuads != null)
+		#else
+		if (Math.isNaN(mNumQuads)) 
 		#end
 		{
 			if (mBatchable)
@@ -714,7 +713,7 @@ class QuadBatch extends DisplayObject
 	 *  If you add more quads than what fits into the current capacity, the QuadBatch is
 	 *  expanded automatically. However, if you know beforehand how many vertices you need,
 	 *  you can manually set the right capacity with this method. */
-	private function get_capacity():Int { return cast mVertexData.numVertices / 4; }
+	private function get_capacity():Int { return Std.int(mVertexData.numVertices / 4); }
 	private function set_capacity(value:Int):Int
 	{
 		var oldCapacity:Int = capacity;
@@ -730,12 +729,12 @@ class QuadBatch extends DisplayObject
 		
 		for (i in oldCapacity...value)
 		{
-			mIndexData[cast(i*6  )] = i*4;
-			mIndexData[cast(i*6+1)] = i*4 + 1;
-			mIndexData[cast(i*6+2)] = i*4 + 2;
-			mIndexData[cast(i*6+3)] = i*4 + 1;
-			mIndexData[cast(i*6+4)] = i*4 + 3;
-			mIndexData[cast(i*6+5)] = i*4 + 2;
+			mIndexData[Std.int(i*6  )] = i*4;
+			mIndexData[Std.int(i*6+1)] = i*4 + 1;
+			mIndexData[Std.int(i*6+2)] = i*4 + 2;
+			mIndexData[Std.int(i*6+3)] = i*4 + 1;
+			mIndexData[Std.int(i*6+4)] = i*4 + 3;
+			mIndexData[Std.int(i*6+5)] = i*4 + 2;
 		}
 		
 		destroyBuffers();

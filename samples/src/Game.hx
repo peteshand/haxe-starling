@@ -70,6 +70,7 @@ class Game extends Sprite
 	{
 		sAssets = assets;
 		
+		this.stage.color = 0xFFFF0000;
 		var texture:Texture = assets.getTexture('background');
 		addChild(new Image(texture));
 		showMainMenu();
@@ -81,6 +82,9 @@ class Game extends Sprite
 		
 		addEventListener(Event.TRIGGERED, onButtonTriggered);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
+		
+		trace("start");
+		
 	}
 	
 	private function showMainMenu():Void

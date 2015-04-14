@@ -262,10 +262,10 @@ class Tween extends EventDispatcher implements IAnimatable
 		}
 		
 		//trace("CHECK");
-		#if flash
-		if (Math.isNaN(carryOverTime)) 
-		#else
+		#if js
 		if (carryOverTime != null) // if (carryOverTime)
+		#else
+		if (Math.isNaN(carryOverTime)) 
 		#end
 		{
 			advanceTime(carryOverTime);

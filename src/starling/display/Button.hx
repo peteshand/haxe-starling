@@ -163,7 +163,8 @@ class Button extends DisplayObjectContainer
 		#if flash
 			var cursor:String = (mUseHandCursor && mEnabled && event.interactsWith(this)) ? 'button' : 'auto';
 			Mouse.cursor = cursor;
-		#else
+		#end
+		#if js
 			var cursor:String = (mUseHandCursor && mEnabled && event.interactsWith(this)) ? 'pointer' : 'auto';
 			Browser.document.getElementById("openfl-content").style.cursor = cursor;
 		#end

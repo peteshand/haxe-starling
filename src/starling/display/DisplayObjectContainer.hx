@@ -69,6 +69,7 @@ class DisplayObjectContainer extends DisplayObject
 	// members
 
 	private var mChildren:Array<DisplayObject>;
+	public var children(get, null):Array<DisplayObject>;
 	private var mTouchGroup:Bool;
 	
 	/** Helper objects. */
@@ -218,11 +219,9 @@ class DisplayObjectContainer extends DisplayObject
 	 *  '-1' will return the last child, '-2' the second to last child, etc. */
 	public function getChildAt(index:Int):DisplayObject
 	{
+		if (index < 0) index = numChildren + index;
 		var numChildren:Int = mChildren.length;
-
-		if (index < 0)
-			index = numChildren + index;
-
+			
 		if (index >= 0 && index < numChildren)
 			return mChildren[index];
 		else {
@@ -371,33 +370,53 @@ class DisplayObjectContainer extends DisplayObject
 	public override function render(support:RenderSupport, parentAlpha:Float):Void
 	{
 		var alpha:Float = parentAlpha * this.alpha;
-		var numChildren:Int = mChildren.length;
-		var blendMode:String = support.blendMode;
+        var numChildren:Int = mChildren.length;
+        var blendMode:String = support.blendMode;
 		
-		for (i in 0...numChildren)
+		var i:Int = 0;
+        for (i in 0 ... numChildren)
+        {
+            var child:DisplayObject = mChildren[i];
+            
+            if (child.hasVisibleArea)
+            {
+                var filter:FragmentFilter = child.filter;
+
+                support.pushMatrix();
+                support.transformMatrix(child);
+                support.blendMode = child.blendMode;
+                
+                if (filter != null) filter.render(child, support, alpha);
+                else        child.render(support, alpha);
+                
+                support.blendMode = blendMode;
+                support.popMatrix();
+            }
+        }
+		
+		/*for (child in mChildren)
 		{
-			var child:DisplayObject = mChildren[i];
-			
 			if (child.hasVisibleArea)
 			{
-				var filter:FragmentFilter = child.filter;
-				var mask:DisplayObject = child.mask;
-
+				var displayObject:DisplayObject = child;
+				var filter:FragmentFilter = displayObject.filter;
+				var mask:DisplayObject = displayObject.mask;
+				
 				support.pushMatrix();
-				support.transformMatrix(child);
-				support.blendMode = child.blendMode;
-
+				support.transformMatrix(displayObject);
+				support.blendMode = displayObject.blendMode;
+				
 				if (mask != null) support.pushMask(mask);
-
-				if (filter != null) filter.render(child, support, alpha);
-				else        child.render(support, alpha);
-
+				
+				if (filter != null) filter.render(displayObject, support, alpha);
+				else child.render(support, alpha);
+				
 				if (mask != null) support.popMask();
 				
 				support.blendMode = blendMode;
 				support.popMatrix();
 			}
-		}
+		}*/
 	}
 	
 	/** Dispatches an event on all children (recursively). The event must not bubble. */
@@ -525,6 +544,11 @@ class DisplayObjectContainer extends DisplayObject
 		}
 		
 		return listeners;
+	}
+	
+	function get_children():Array<DisplayObject> 
+	{
+		return mChildren;
 	}
 }
 

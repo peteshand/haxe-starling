@@ -468,7 +468,7 @@ class FragmentFilter
 			resultRect.inflate(marginX, marginY);
 			
 			// To fit into a POT-texture, we extend it towards the right and bottom.
-			var minSize:Int = cast (MIN_TEXTURE_SIZE / scale);
+			var minSize:Int = Std.int(MIN_TEXTURE_SIZE / scale);
 			var minWidth:Float  = resultRect.width  > minSize ? resultRect.width  : minSize;
 			var minHeight:Float = resultRect.height > minSize ? resultRect.height : minSize;
 			resultPotRect.setTo(

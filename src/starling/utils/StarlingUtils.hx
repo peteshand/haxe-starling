@@ -96,7 +96,7 @@ class StarlingUtils
 		var c3 = ((cast number) & (cast number - 1)) == 0;
 		
         if (c1 && c2 && c3) // see: http://goo.gl/D9kPj
-            return cast number;
+            return Std.int(number);
         else
         {
             var result:Int = 1;

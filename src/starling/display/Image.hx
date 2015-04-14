@@ -49,15 +49,11 @@ class Image extends Quad
 	public var texture(get, set):Texture;
 	public var smoothing(get, set):String;
 	
-	private var random:Int = 0;
-	
 	/** Creates a quad with a texture mapped onto it. */
 	public function new(texture:Texture)
 	{
 		if (texture != null)
 		{
-			random = cast Math.random() * 200000;
-			
 			var frame:Rectangle = texture.frame;
 			var width:Float  = (frame != null) ? frame.width  : texture.width;
 			var height:Float = (frame != null) ? frame.height : texture.height;
@@ -144,9 +140,7 @@ class Image extends Quad
 	/** Transforms the vertex positions of the raw vertex data by a certain matrix
 	 *  and copies the result to another VertexData instance.
 	 *  The texture coordinates are already in the format required for rendering. */
-	public override function copyVertexDataTransformedTo(targetData:VertexData,
-														 targetVertexID:Int=0,
-														 matrix:Matrix=null):Void
+	public override function copyVertexDataTransformedTo(targetData:VertexData, targetVertexID:Int=0, matrix:Matrix=null):Void
 	{
 		if (mVertexDataCacheInvalid)
 		{

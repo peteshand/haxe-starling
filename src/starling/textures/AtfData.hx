@@ -88,7 +88,7 @@ class AtfData
 			var charCodeStr:String = cast data.readByte();
 			charCodeStr += cast data.readByte();
 			charCodeStr += cast data.readByte();
-			var signature:String = String.fromCharCode(cast charCodeStr);
+			var signature:String = String.fromCharCode(Std.parseInt(charCodeStr));
 			return signature == "ATF";
 		}
 	}
