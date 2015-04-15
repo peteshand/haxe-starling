@@ -17,7 +17,6 @@ class MovieScene extends Scene
 		super();
 		
 		var frames:Vector<Texture> = Game.assets.getTextures("flight");
-		trace("frames = " + frames);
 		mMovie = new MovieClip(frames, 15);
 		
 		// add sounds
@@ -42,7 +41,6 @@ class MovieScene extends Scene
 	
 	private function onRemovedFromStage():Void
 	{
-		trace("onRemovedFromStage");
 		Starling.Juggler.remove(mMovie);
 	}
 	
@@ -51,7 +49,6 @@ class MovieScene extends Scene
 		if (mMovie != null) {
 			onRemovedFromStage();
 		}
-		trace("MovieScene dispose");
 		removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		super.dispose();
