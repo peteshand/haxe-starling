@@ -53,7 +53,7 @@ class MainMenu extends Sprite
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, true],
 				["Benchmark", BenchmarkScene, true],
-				["Masks", MaskScene, false],
+				["Masks", MaskScene, true],
 				["Sprite 3D", Sprite3DScene, true]
 			];
 			
@@ -88,7 +88,7 @@ class MainMenu extends Sprite
 		for (sceneToCreate in scenesToCreate)
 		{
 			var sceneTitle:String = sceneToCreate[0];
-			var sceneClass:Class<Dynamic>  = sceneToCreate[1];
+			//var sceneClass:Class<Dynamic>  = sceneToCreate[1];
 			var active:Bool = sceneToCreate[2];
 			
 			var button:Button = new Button(buttonTexture, sceneTitle);

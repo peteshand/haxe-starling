@@ -128,7 +128,7 @@ class BenchmarkScene extends Scene
 	private function addTestObjects():Void
 	{
 		var padding:Int = 15;
-		var numObjects:Int = mFailCount > 20 ? 10 : 20;
+		var numObjects:Int = mFailCount > 20 ? 10 : 100;
 		
 		for (i in 0...numObjects)
 		{
