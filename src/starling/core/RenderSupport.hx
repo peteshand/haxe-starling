@@ -646,6 +646,7 @@ class RenderSupport
 	public static function setBlendFactors(premultipliedAlpha:Bool, blendMode:String="normal"):Void
 	{
 		var blendFactors:Array<Dynamic> = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
+		//trace('setBlendFactors(${blendFactors[0]} ${blendFactors[1]}) with blendMode=$blendMode');
 		Starling.Context.setBlendFactors(blendFactors[0], blendFactors[1]);
 	}
 	
@@ -685,9 +686,9 @@ class RenderSupport
 		
 		
 		var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
-        var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
+		var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
 		
-        resultProgram.upload(vertexByteCode, fragmentByteCode);
+		resultProgram.upload(vertexByteCode, fragmentByteCode);
 		
 		return resultProgram;
 	}
