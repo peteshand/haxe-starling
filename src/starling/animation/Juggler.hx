@@ -107,15 +107,16 @@ class Juggler implements IAnimatable
 	{
 		if (target == null) return;
 		
-		for (j in 0...mObjects.length)
+		var i:Int = mObjects.length - 1;
+		while (i >= 0)
 		{
-			var i = j - (mObjects.length + 1);
 			var tween:Tween = cast mObjects[i];
 			if (tween != null && tween.target == target)
 			{
 				tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 				mObjects[i] = null;
 			}
+			--i;
 		}
 	}
 	
@@ -124,11 +125,12 @@ class Juggler implements IAnimatable
 	{
 		if (target == null) return false;
 		
-		for (j in 0...mObjects.length)
+		var i:Int = mObjects.length - 1;
+		while (i >= 0)
 		{
-			var i = j - (mObjects.length + 1);
 			var tween:Tween = cast mObjects[i];
 			if (tween != null && tween.target == target) return true;
+			--i;
 		}
 		
 		return false;
@@ -142,12 +144,13 @@ class Juggler implements IAnimatable
 		// vector is filled with 'null' values. They will be cleaned up on the next call
 		// to 'advanceTime'.
 		
-		for (j in 0...mObjects.length)
+		var i:Int = mObjects.length - 1;
+		while (i >= 0)
 		{
-			var i = j - (mObjects.length + 1);
 			var dispatcher:EventDispatcher = cast mObjects[i];
 			if (dispatcher != null) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 			mObjects[i] = null;
+			--i;
 		}
 	}
 	
