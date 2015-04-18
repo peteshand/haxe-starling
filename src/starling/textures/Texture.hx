@@ -272,7 +272,27 @@ class Texture
 	public static function fromBitmapData(data:BitmapData, generateMipMaps:Bool=true, optimizeForRenderToTexture:Bool=false, scale:Float=1, format:Context3DTextureFormat=null, repeat:Bool=false):Texture
 	{
 		if (format == null) format = Context3DTextureFormat.BGRA;
-		var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true, generateMipMaps, optimizeForRenderToTexture, scale, format, repeat);
+
+		// This value should be a constant true, since we're creating a texture
+		// from BitmapData, which is always premultipled per the spec. However,
+		// OpenFL BitmapData is -not- premultipled for now, and since that is
+		// a bug that must be fixed there, we'll work around it here until it's
+		// fixed. Just make sure that you use an OpenFL version that still has
+		// this bug. If you're using a fixed version, then please report this
+		// "fix" as an issue on github.
+		var colorsArePremultipliedWithAlpha:Bool;
+		#if flash
+			colorsArePremultipliedWithAlpha = true; // Correct
+		#else
+			colorsArePremultipliedWithAlpha = false; // Wrong
+		#end
+
+		var texture:Texture = Texture.empty(
+			data.width / scale, data.height / scale,
+			colorsArePremultipliedWithAlpha,
+			generateMipMaps,
+			optimizeForRenderToTexture,
+			scale, format, repeat);
 		texture.root.uploadBitmapData(data);
 		texture.root.onRestore = function():Void
 		{
@@ -473,7 +493,7 @@ class Texture
 		if (context == null) throw new MissingContextError();
 		
 		var origWidth:Int  = Std.int(width  * scale);
-        var origHeight:Int = Std.int(height * scale);
+		var origHeight:Int = Std.int(height * scale);
 		
 		var useRectTexture:Bool = !mipMapping && !repeat &&
 			Starling.current.profile != "baselineConstrained" &&

@@ -68,9 +68,6 @@ class ConcreteTexture extends Texture
 		mWidth = width;
 		mHeight = height;
 		mMipMapping = mipMapping;
-		#if js // premultipliedAlpha = true currently doesn't work for alpha gradients on js target
-			premultipliedAlpha = false;
-		#end
 		mPremultipliedAlpha = premultipliedAlpha;
 		mOptimizedForRenderTexture = optimizedForRenderTexture;
 		mRepeat = repeat;
