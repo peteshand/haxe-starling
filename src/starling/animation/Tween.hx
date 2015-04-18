@@ -227,7 +227,7 @@ class Tween extends EventDispatcher implements IAnimatable
 		mProgress = reversed ? mTransitionFunc(1.0 - ratio) : mTransitionFunc(ratio);
 
 		for (i in 0...numProperties)
-		{                
+		{
 			if (mStartValues[i] != mStartValues[i]) { // isNaN check - "isNaN" causes allocation! 
 				//mStartValues[i] = cast mTarget[mProperties[i]];
 				mStartValues[i] = cast Reflect.getProperty(mTarget, mProperties[i]);
