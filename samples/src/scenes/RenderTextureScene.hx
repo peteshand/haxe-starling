@@ -26,7 +26,7 @@ class RenderTextureScene extends Scene
 		super();
 		
 		mColors = new Map<Int, UInt>();
-		mRenderTexture = new RenderTexture(320, 435);
+		mRenderTexture = new RenderTexture(320, 480);
 		
 		mCanvas = new Image(mRenderTexture);
 		mCanvas.addEventListener(TouchEvent.TOUCH, onRenderTexTouch);
@@ -73,6 +73,9 @@ class RenderTextureScene extends Scene
 				var location:Point = touch.getLocation(mCanvas);
 				mBrush.x = location.x;
 				mBrush.y = location.y;
+				
+				trace("location.y = " + location.y);
+				
 				mBrush.color = mColors[touch.id];
 				//trace("mBrush.color = " + mBrush.color);
 				mBrush.rotation = Math.random() * Math.PI * 2.0;

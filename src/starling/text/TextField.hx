@@ -355,9 +355,6 @@ class TextField extends DisplayObjectContainer
 		else if (vAlign == VAlign.CENTER) textOffsetY = (height - textHeight) / 2.0;
 		else if (vAlign == VAlign.BOTTOM) textOffsetY =  height - textHeight - 2;
 		
-		trace("height = " + height);
-		trace("textHeight = " + textHeight);
-		
 		// if 'nativeFilters' are in use, the text field might grow beyond its bounds
 		var filterOffset:Point = calculateFilterOffset(sNativeTextField, hAlign, vAlign);
 		
@@ -454,7 +451,6 @@ class TextField extends DisplayObjectContainer
 	
 	private function createComposedContents():Void
 	{
-		trace("createComposedContents");
 		if (mImage != null) 
 		{
 			mImage.removeFromParent(true); 
@@ -472,7 +468,9 @@ class TextField extends DisplayObjectContainer
 			mQuadBatch.reset();
 		
 		var bitmapFont:BitmapFont = getBitmapFont(mFontName);
-		if (bitmapFont == null) throw new Error("Bitmap font not registered: " + mFontName);
+		if (bitmapFont == null) {
+			throw new Error("Bitmap font not registered: " + mFontName);
+		}
 		
 		var width:Float  = mHitArea.width;
 		var height:Float = mHitArea.height;
@@ -490,23 +488,21 @@ class TextField extends DisplayObjectContainer
 			vAlign = VAlign.TOP;
 		}
 		
-		bitmapFont.fillQuadBatch(mQuadBatch,
-			width, height, mText, mFontSize, mColor, hAlign, vAlign, mAutoScale, mKerning);
+		bitmapFont.fillQuadBatch(mQuadBatch, width, height, mText, mFontSize, mColor, hAlign, vAlign, mAutoScale, mKerning);
 		mQuadBatch.batchable = mBatchable;
 		
-		if (mAutoSize != TextFieldAutoSize.NONE)
+		if (mAutoSize == TextFieldAutoSize.NONE)
+		{
+			// hit area doesn't change, text bounds can be created on demand
+			mTextBounds = null;
+		}
+		else
 		{
 			mTextBounds = mQuadBatch.getBounds(mQuadBatch, mTextBounds);
-			
 			if (isHorizontalAutoSize)
 				mHitArea.width  = mTextBounds.x + mTextBounds.width;
 			if (isVerticalAutoSize)
 				mHitArea.height = mTextBounds.y + mTextBounds.height;
-		}
-		else
-		{
-			// hit area doesn't change, text bounds can be created on demand
-			mTextBounds = null;
 		}
 	}
 	

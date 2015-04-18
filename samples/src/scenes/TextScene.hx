@@ -51,7 +51,7 @@ class TextScene extends Scene
 		rightTF.border = true;
 		addChild(rightTF);
 		
-		#if flash
+		//#if flash
 		var fontTF:TextField = new TextField(300, 80,
 			"... or centered. Embedded fonts\nare detected automatically and\n" +
 			"<font color='#208080'>support</font> " +
@@ -79,15 +79,15 @@ class TextScene extends Scene
 		// After that, you can use them just like a conventional TrueType font.
 		
 		var bmpFontTF:TextField = new TextField(300, 150, 
-			"It is very easy to use Bitmap fonts,\nas well!", "Desyrel");
+			"It is very easy to\nuse Bitmap fonts,\nas well!", "Desyrel");
 		
 		trace("BitmapFont.NATIVE_SIZE; = " + BitmapFont.NATIVE_SIZE);
-		bmpFontTF.fontSize = 20;// BitmapFont.NATIVE_SIZE; // the native bitmap font size, no scaling
+		bmpFontTF.fontSize = BitmapFont.NATIVE_SIZE; // the native bitmap font size, no scaling
 		bmpFontTF.color = Color.WHITE; // use white to use the texture as it is (no tinting)
 		bmpFontTF.x = offset;
 		bmpFontTF.y = fontTF.y + fontTF.height + offset;
 		addChild(bmpFontTF);
-		#end
+		//#end
 		// A tip: you can add the font-texture to your standard texture atlas and reference 
 		// it from there. That way, you save texture space and avoid another texture-switch.
 	}
