@@ -494,13 +494,10 @@ class RenderSupport
 			Context3DCompareMode.EQUAL, 
 			Context3DStencilAction.INCREMENT_SATURATE
 		);
-
+		
 		drawMask(mask);
-
+		
 		context.setStencilReferenceValue(mMasks.length);
-		//triangleFace:String="frontAndBack", compareMode:String="always", actionOnBothPass:String="keep", actionOnDepthFail:String="keep", actionOnDepthPassStencilFail:String="keep"
-		
-		
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,

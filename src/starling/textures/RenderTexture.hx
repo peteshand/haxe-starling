@@ -214,12 +214,12 @@ class RenderTexture extends SubTexture
 			BlendMode.NORMAL : object.blendMode;
 
 		if (matrix != null) mSupport.prependMatrix(matrix);
-		else        mSupport.transformMatrix(object);
+		else mSupport.transformMatrix(object);
 
-		if (mask != null)   mSupport.pushMask(mask);
+		if (mask != null) mSupport.pushMask(mask);
 
 		if (filter != null) filter.render(object, mSupport, alpha);
-		else        object.render(mSupport, alpha);
+		else object.render(mSupport, alpha);
 
 		if (mask != null)   mSupport.popMask();
 	}

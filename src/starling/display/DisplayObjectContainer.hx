@@ -381,11 +381,14 @@ class DisplayObjectContainer extends DisplayObject
             if (child.hasVisibleArea)
             {
                 var filter:FragmentFilter = child.filter;
+				var mask:DisplayObject = child.mask;
 				
                 support.pushMatrix();
                 support.transformMatrix(child);
                 support.blendMode = child.blendMode;
                 
+				if (mask != null) support.pushMask(mask);
+				
                 if (filter != null) {
 					filter.render(child, support, alpha);
 				}
@@ -393,10 +396,13 @@ class DisplayObjectContainer extends DisplayObject
 					child.render(support, alpha);
 				}
 				
+				if (mask != null) support.popMask();
+				
                 support.blendMode = blendMode;
                 support.popMatrix();
             }
         }
+		
 	}
 	
 	/** Dispatches an event on all children (recursively). The event must not bubble. */
