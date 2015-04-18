@@ -305,7 +305,7 @@ class TextField extends DisplayObjectContainer
 		if (hAlign == HAlign.LEFT) align = TextFormatAlign.LEFT;
 		else if (hAlign == HAlign.RIGHT) align = TextFormatAlign.RIGHT;
 		var textFormat:TextFormat = new TextFormat(mFontName, mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, align);
-		textFormat.kerning = mKerning;
+		textFormat.kerning = cast mKerning;
 		
 		sNativeTextField.defaultTextFormat = textFormat;
 		sNativeTextField.width = width;
