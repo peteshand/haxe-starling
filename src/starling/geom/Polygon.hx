@@ -254,16 +254,13 @@ class Polygon
 		var requiredTargetLength:Int = targetIndex + numVertices;
 		if (target.numVertices < requiredTargetLength)
 			target.numVertices = requiredTargetLength;
-
-		copyToVector(target.rawData,
-			targetIndex * VertexData.ELEMENTS_PER_VERTEX,
-			VertexData.ELEMENTS_PER_VERTEX - 2);
+		
+		target.rawData = copyToVector(target.rawData, targetIndex * VertexData.ELEMENTS_PER_VERTEX, VertexData.ELEMENTS_PER_VERTEX - 2);
 	}
 
 	/** Copies all vertices to a 'Vector', beginning at a certain target index and skipping
 	 *  'stride' coordinates between each 'x, y' pair. */
-	public function copyToVector(target:Array<Float>, targetIndex:Int=0,
-								 stride:Int=0):Void
+	public function copyToVector(target:Array<Float>, targetIndex:Int=0, stride:Int=0):Array<Float>
 	{
 		var numVertices:Int = this.numVertices;
 
@@ -273,6 +270,7 @@ class Polygon
 			target[targetIndex++] = mCoords[i * 2 + 1];
 			targetIndex += stride;
 		}
+		return target;
 	}
 
 	/** Creates a string that contains the values of all included points. */
