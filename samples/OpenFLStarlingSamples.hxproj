@@ -21,16 +21,16 @@
     <class path="C:\HaxeToolkit\haxe\lib\actuate\1,8,3" />
     <class path="src" />
     <class path="..\src" />
-    <class path="bin\flash\haxe" />
+    <class path="bin\windows\cpp\haxe" />
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="openfl=3.0.0-beta.3&#xA;lime=2.3.0&#xA;actuate=1.8.3&#xA;openfl-next&#xA;tools=2.3.0&#xA;no-compilation&#xA;openfl-flash&#xA;web" />
+    <option directives="openfl=3.0.0-beta.3&#xA;lime=2.3.0&#xA;actuate=1.8.3&#xA;openfl-next&#xA;tools=2.3.0&#xA;no-compilation&#xA;native&#xA;lime-native&#xA;openfl-native&#xA;windows&#xA;desktop" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="True" />
-    <option additional="-dce no&#xA;-swf-version 12&#xA;-debug " />
+    <option additional="--remap flash:openfl&#xA;-dce no&#xA;#--macro keep(&quot;Main&quot;)&#xA;-debug " />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
