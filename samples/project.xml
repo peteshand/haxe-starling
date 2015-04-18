@@ -8,7 +8,7 @@
 	<!-- output -->
 	<app main="Main" file="OpenFLStarlingSamples" path="bin" />
 	
-	<window background="#FFFFFF" fps="60" />
+	<window background="#000000" fps="60" />
 	<window width="320" height="480" unless="mobile" />
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	

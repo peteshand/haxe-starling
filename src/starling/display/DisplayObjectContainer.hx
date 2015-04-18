@@ -387,7 +387,9 @@ class DisplayObjectContainer extends DisplayObject
                 support.transformMatrix(child);
                 support.blendMode = child.blendMode;
                 
-				if (mask != null) support.pushMask(mask);
+				if (mask != null) {
+					support.pushMask(mask);
+				}
 				
                 if (filter != null) {
 					filter.render(child, support, alpha);

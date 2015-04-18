@@ -508,20 +508,20 @@ class RenderSupport
 	public function popMask():Void
 	{
 		var mask:DisplayObject = mMasks.pop();
-
+		
 		var context:Context3D = Starling.Context;
 		if (context == null) return;
-
+		
 		finishQuadBatch();
-
+		
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
 			Context3DStencilAction.DECREMENT_SATURATE
 		);
-
+		
 		drawMask(mask);
-
+		
 		context.setStencilReferenceValue(mMasks.length);
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
@@ -536,7 +536,7 @@ class RenderSupport
 
 		var stage:Stage = mask.stage;
 		if (stage != null) mask.getTransformationMatrix(stage, mModelViewMatrix);
-		else       transformMatrix(mask);
+		else transformMatrix(mask);
 
 		mask.render(this, 0.0);
 		finishQuadBatch();
