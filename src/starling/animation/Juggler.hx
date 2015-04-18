@@ -55,12 +55,26 @@ class Juggler implements IAnimatable
 	public var elapsedTime(get, null):Float;
 	private var objects(get, null):Array<IAnimatable>;
 	
+	private static var tweenSetters:Array<String> = null;
+
 	/** Create an empty juggler. */
 	public function new()
 	{
 		mElapsedTime = 0;
 		mObjects = new Vector<IAnimatable>();
 		mObjects.fixed = false;
+
+		if (tweenSetters == null) {
+			// Get all of the setters in the Tween class.
+			tweenSetters = new Array<String>();
+			for (field in Type.getInstanceFields(Tween)) {
+				if (field.indexOf("set_") == 0) {
+					tweenSetters.push(field.substr(4));
+				}
+			}
+			tweenSetters.sort(function(a, b) return Reflect.compare(a.toLowerCase(), b.toLowerCase()));
+			//trace(tweenSetters);
+		}
 	}
 
 	/** Adds an object to the juggler. */
@@ -232,31 +246,20 @@ class Juggler implements IAnimatable
 		if (target == null) throw new ArgumentError("target must not be null");
 
 		var tween:Tween = Tween.fromPool(target, time);
-		
+
 		var fields = Reflect.fields (properties);
 		for (property in fields)
 		{
 			var value:Dynamic = Reflect.getProperty(properties, property);
-			
-			trace("CHECK");
-			var hasProperty = Reflect.hasField(tween, property);
-			//trace("tween = " + tween);
-			
-			var propertyName = Tween.getPropertyName(property);
-			var targetHasProperty:Bool = target.hasOwnProperty(propertyName);
-			trace("hasProperty = " + hasProperty);
-			trace("targetHasProperty = " + targetHasProperty);
-			//trace("target = " + target);
-			
-			if (hasProperty) {// if (tween.hasOwnProperty(property))
-				Reflect.setProperty(tween, property, value);// tween[property] = value;
-			}
-			//else if (targetHasProperty){
+			if (tweenSetters.indexOf(property) >= 0) {
+				Reflect.setProperty(tween, property, value);
+			} else {
+				var currentValue:Dynamic = Reflect.getProperty(target, property);
+				if (currentValue == null) {
+					throw new ArgumentError("Invalid property: " + property);
+				}
 				tween.animate(property, cast value);
-			//}
-			//else {
-			//	throw new ArgumentError("Invalid property: " + property);
-			//}
+			}
 		}
 		
 		tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
