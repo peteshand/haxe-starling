@@ -8,7 +8,7 @@
 	<!-- output -->
 	<app main="Main" file="OpenFLStarlingSamples" path="bin" />
 	
-	<window background="#440000" fps="60" />
+	<window background="#FFFFFF" fps="60" />
 	<window width="320" height="480" unless="mobile" />
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	
@@ -16,6 +16,7 @@
 	<source path="src" />
 	<source path="../src" />
 	
+	<set name="lime-hybrid" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
 	
@@ -30,7 +31,7 @@
 	<haxeflag name="-dce no" /> 
 	
 	<!--<haxeflag name="-D -swf-version=24" if="flash" ></haxeflag>-->
-	<!--<haxeflag name="-D advanced-telemetry" if="flash" ></haxeflag>-->
+	<haxeflag name="-D advanced-telemetry" if="flash" ></haxeflag>
 	<!--<haxeflag name="--no-traces" if="flash" ></haxeflag>-->
 	<app swf-version="12"/>
 	

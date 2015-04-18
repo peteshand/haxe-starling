@@ -55,12 +55,26 @@ class Juggler implements IAnimatable
 	public var elapsedTime(get, null):Float;
 	private var objects(get, null):Array<IAnimatable>;
 	
+	private static var tweenSetters:Array<String> = null;
+
 	/** Create an empty juggler. */
 	public function new()
 	{
 		mElapsedTime = 0;
 		mObjects = new Vector<IAnimatable>();
 		mObjects.fixed = false;
+
+		if (tweenSetters == null) {
+			// Get all of the setters in the Tween class.
+			tweenSetters = new Array<String>();
+			for (field in Type.getInstanceFields(Tween)) {
+				if (field.indexOf("set_") == 0) {
+					tweenSetters.push(field.substr(4));
+				}
+			}
+			tweenSetters.sort(function(a, b) return Reflect.compare(a.toLowerCase(), b.toLowerCase()));
+			//trace(tweenSetters);
+		}
 	}
 
 	/** Adds an object to the juggler. */
@@ -107,15 +121,16 @@ class Juggler implements IAnimatable
 	{
 		if (target == null) return;
 		
-		for (j in 0...mObjects.length)
+		var i:Int = mObjects.length - 1;
+		while (i >= 0)
 		{
-			var i = j - (mObjects.length + 1);
 			var tween:Tween = cast mObjects[i];
 			if (tween != null && tween.target == target)
 			{
 				tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 				mObjects[i] = null;
 			}
+			--i;
 		}
 	}
 	
@@ -124,11 +139,12 @@ class Juggler implements IAnimatable
 	{
 		if (target == null) return false;
 		
-		for (j in 0...mObjects.length)
+		var i:Int = mObjects.length - 1;
+		while (i >= 0)
 		{
-			var i = j - (mObjects.length + 1);
 			var tween:Tween = cast mObjects[i];
 			if (tween != null && tween.target == target) return true;
+			--i;
 		}
 		
 		return false;
@@ -142,12 +158,13 @@ class Juggler implements IAnimatable
 		// vector is filled with 'null' values. They will be cleaned up on the next call
 		// to 'advanceTime'.
 		
-		for (j in 0...mObjects.length)
+		var i:Int = mObjects.length - 1;
+		while (i >= 0)
 		{
-			var i = j - (mObjects.length + 1);
 			var dispatcher:EventDispatcher = cast mObjects[i];
 			if (dispatcher != null) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 			mObjects[i] = null;
+			--i;
 		}
 	}
 	
@@ -229,31 +246,20 @@ class Juggler implements IAnimatable
 		if (target == null) throw new ArgumentError("target must not be null");
 
 		var tween:Tween = Tween.fromPool(target, time);
-		
+
 		var fields = Reflect.fields (properties);
 		for (property in fields)
 		{
 			var value:Dynamic = Reflect.getProperty(properties, property);
-			
-			trace("CHECK");
-			var hasProperty = Reflect.hasField(tween, property);
-			//trace("tween = " + tween);
-			
-			var propertyName = Tween.getPropertyName(property);
-			var targetHasProperty:Bool = target.hasOwnProperty(propertyName);
-			trace("hasProperty = " + hasProperty);
-			trace("targetHasProperty = " + targetHasProperty);
-			//trace("target = " + target);
-			
-			if (hasProperty) {// if (tween.hasOwnProperty(property))
-				Reflect.setProperty(tween, property, value);// tween[property] = value;
-			}
-			//else if (targetHasProperty){
+			if (tweenSetters.indexOf(property) >= 0) {
+				Reflect.setProperty(tween, property, value);
+			} else {
+				var currentValue:Dynamic = Reflect.getProperty(target, property);
+				if (currentValue == null) {
+					throw new ArgumentError("Invalid property: " + property);
+				}
 				tween.animate(property, cast value);
-			//}
-			//else {
-			//	throw new ArgumentError("Invalid property: " + property);
-			//}
+			}
 		}
 		
 		tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);

@@ -68,9 +68,6 @@ class ConcreteTexture extends Texture
 		mWidth = width;
 		mHeight = height;
 		mMipMapping = mipMapping;
-		#if js // premultipliedAlpha = true currently doesn't work for alpha gradients on js target
-			premultipliedAlpha = false;
-		#end
 		mPremultipliedAlpha = premultipliedAlpha;
 		mOptimizedForRenderTexture = optimizedForRenderTexture;
 		mRepeat = repeat;
@@ -217,8 +214,9 @@ class ConcreteTexture extends Texture
 			mTextureReadyCallback = onComplete;
 			
 			trace("CHECK");
-			if (Reflect.hasField(mBase, "attach" + type)) {
-				Reflect.callMethod(mBase, "attach" + type, [attachment]);
+			var attach = Reflect.field(mBase, "attach" + type);
+			if (attach != null) {
+				Reflect.callMethod(mBase, attach, [attachment]);
 			}
 			//mBase["attach" + type](attachment);
 			

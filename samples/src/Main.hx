@@ -62,9 +62,9 @@ class Main extends Sprite
 		// then run on a device with a different resolution; for that case, we zoom the
 		// viewPort to the optimal size for any display and load the optimal textures.
 		
-		var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/background.jpg");
+		/*var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/background.jpg");
 		var bm:Bitmap = new Bitmap(bmd);
-		addChild(bm);
+		addChild(bm);*/
 		
 		Starling.multitouchEnabled = true; // for Multitouch Scene
 		Starling.handleLostContext = true; // recommended everywhere when using AssetManager
@@ -117,7 +117,7 @@ class Main extends Sprite
 		assets.enqueueWithName(EmbeddedAssets.compressed_texture, "compressed_texture");
 		assets.enqueueWithName(EmbeddedAssets.desyrel, "desyrel");
 		assets.enqueueWithName(EmbeddedAssets.desyrel_fnt, "desyrel_fnt");
-		//assets.enqueueWithName(EmbeddedAssets.wing_flap, "wing_flap");
+		assets.enqueueWithName(EmbeddedAssets.wing_flap, "wing_flap");
 		
 		// Now, while the AssetManager now contains pointers to all the assets, it actually
 		// has not loaded them yet. This happens in the "loadQueue" method; and since this
@@ -153,12 +153,12 @@ class Main extends Sprite
 	{
 		if (mouseOnStage) {
 			mStarling.start();
-			//this.graphics.clear();
+			this.graphics.clear();
 		}
 		else {
 			mStarling.stop();
-			//this.graphics.beginFill(0x000000, 0.8);
-			//this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+			this.graphics.beginFill(0x000000, 0.8);
+			this.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
 		}
 	}
 }
