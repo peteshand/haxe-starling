@@ -12,6 +12,7 @@
 package starling.animation;
 
 import haxe.Constraints;
+import haxe.Constraints.Function;
 
 import openfl.errors.ArgumentError;
 import openfl.errors.Error;
@@ -224,19 +225,23 @@ class Tween extends EventDispatcher implements IAnimatable
 		var ratio:Float = mCurrentTime / mTotalTime;
 		var reversed:Bool = mReverse && (mCurrentCycle % 2 == 1);
 		var numProperties:Int = mStartValues.length;
-		mProgress = reversed ? mTransitionFunc(1.0 - ratio) : mTransitionFunc(ratio);
-
+		
+		
+		
+		
+		//mProgress = reversed ? mTransitionFunc(1.0 - ratio) : mTransitionFunc(ratio);
+		mProgress = reversed ? Reflect.callMethod(this, mTransitionFunc, [1.0 - ratio]) : Reflect.callMethod(this, mTransitionFunc, [ratio]);
+		
 		for (i in 0...numProperties)
 		{
 			if (mStartValues[i] != mStartValues[i]) { // isNaN check - "isNaN" causes allocation! 
-				//mStartValues[i] = cast mTarget[mProperties[i]];
 				mStartValues[i] = cast Reflect.getProperty(mTarget, mProperties[i]);
 				
 			}
-			var updateFunc:Function = cast mUpdateFuncs[i];
-			updateFunc(mProperties[i], mStartValues[i], mEndValues[i]);
+			updateFunc = cast mUpdateFuncs[i];
+			Reflect.callMethod(this, updateFunc, [mProperties[i], mStartValues[i], mEndValues[i]]);
 		}
-
+		
 		if (mOnUpdate != null) 
 			Reflect.callMethod(this, mOnUpdate, mOnUpdateArgs);
 		
@@ -543,6 +548,7 @@ class Tween extends EventDispatcher implements IAnimatable
 	// tween pooling
 	
 	private static var sTweenPool = new Vector<Tween>();
+	var updateFunc:Function;
 	
 	/** @private */
 	//starling_internal
@@ -565,3 +571,5 @@ class Tween extends EventDispatcher implements IAnimatable
 		sTweenPool.push(tween);
 	}
 }
+
+//typedef Function = Dynamic;
