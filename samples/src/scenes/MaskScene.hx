@@ -28,10 +28,10 @@ class MaskScene extends Scene
 		var stageWidth:Float  = Starling.current.stage.stageWidth;
 		var stageHeight:Float = Starling.current.stage.stageHeight;
 		
-		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0xFF0055);
+		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0x000000);
 		touchQuad.width = stageWidth;
 		touchQuad.height = stageHeight;
-		touchQuad.alpha = 0.5; // only used to get touch events
+		touchQuad.alpha = 0; // only used to get touch events
 		addChildAt(touchQuad, 0);
 		
 		var image:Image = new Image(Game.assets.getTexture("flight_00"));
@@ -52,7 +52,7 @@ class MaskScene extends Scene
 		mContents.addChild(maskText);
 		
 		mMaskDisplay = createCircle();
-		//mMaskDisplay.alpha = 0.1;
+		mMaskDisplay.alpha = 0.1;
 		mMaskDisplay.touchable = false;
 		addChild(mMaskDisplay);
 		
@@ -83,7 +83,7 @@ class MaskScene extends Scene
 	private function createCircle():Canvas
 	{
 		var circle:Canvas = new Canvas();
-		circle.beginFill(0xFFff0000);
+		circle.beginFill(0x000000);
 		circle.drawCircle(0, 0, 100);
 		circle.endFill();
 		return circle;

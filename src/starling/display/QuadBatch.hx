@@ -542,13 +542,8 @@ class QuadBatch extends DisplayObject
 		}
 	}
 
-	private static function compileObject(object:DisplayObject, 
-										  quadBatches:Array<QuadBatch>,
-										  quadBatchID:Int,
-										  transformationMatrix:Matrix,
-										  alpha:Float=1.0,
-										  blendMode:String=null,
-										  ignoreCurrentFilter:Bool=false):Int
+	private static function compileObject(object:DisplayObject, quadBatches:Array<QuadBatch>, quadBatchID:Int,
+		transformationMatrix:Matrix, alpha:Float=1.0, blendMode:String=null, ignoreCurrentFilter:Bool=false):Int
 	{
 		if (Std.is(object, Sprite3D))
 			throw new IllegalOperationError("Sprite3D objects cannot be flattened");
@@ -577,7 +572,7 @@ class QuadBatch extends DisplayObject
 		{
 			if (object.mask != null)
 				trace("[Starling] Masks are ignored on children of a flattened sprite.");
-
+				
 			if ((Std.is(object, Sprite)) && (cast(object, Sprite)).clipRect != null)
 				trace("[Starling] ClipRects are ignored on children of a flattened sprite.");
 		}

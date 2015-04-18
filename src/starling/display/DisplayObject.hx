@@ -1039,7 +1039,6 @@ class DisplayObject extends EventDispatcher
 		{
 			if (mMask != null) mMask.mIsMask = false;
 			if (value != null) value.mIsMask = true;
-
 			mMask = value;
 		}
 		return value;

@@ -368,7 +368,7 @@ class Starling extends EventDispatcher
 			if (!SystemUtil.supportsDepthAndStencil)
 				trace("[Starling] Mask support requires 'depthAndStencil' to be enabled" +
 					  " in the application descriptor.");
-
+					  
 			mShareContext = false;
 			requestContext3D(stage3D, renderMode, profile);
 		}
