@@ -263,12 +263,13 @@ class RenderTexture extends SubTexture
 		}
 		catch (e:Error)
 		{
-			mDrawing = false;
-			mSupport.finishQuadBatch();
-			mSupport.nextFrame();
-			mSupport.renderTarget = null;
-			mSupport.popClipRect();
 		}
+
+		mDrawing = false;
+		mSupport.finishQuadBatch();
+		mSupport.nextFrame();
+		mSupport.renderTarget = null;
+		mSupport.popClipRect();
 	}
 	
 	/** Clears the render texture with a certain color and alpha value. Call without any
@@ -313,9 +314,10 @@ class RenderTexture extends SubTexture
 				catch (e:Error)
 				{
 					support = false;
-					if (texture != null) texture.dispose();
-					if (buffer != null) buffer.dispose();
 				}
+
+				if (texture != null) texture.dispose();
+				if (buffer != null) buffer.dispose();
 			}
 			else
 			{
