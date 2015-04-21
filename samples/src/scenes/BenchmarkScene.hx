@@ -1,6 +1,7 @@
 package scenes;
 
 import flash.system.System;
+import sample.Main;
 import starling.textures.Texture;
 
 import starling.core.Starling;
@@ -50,7 +51,7 @@ class BenchmarkScene extends Scene
 		
 		addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		
-		Main.mouseOnStageDispatcher.addEventListener(Event.CHANGE, OnActiveChange);
+		sample.Main.mouseOnStageDispatcher.addEventListener(Event.CHANGE, OnActiveChange);
 	}
 	
 	private function OnActiveChange(e:Event):Void 

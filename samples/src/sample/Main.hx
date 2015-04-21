@@ -1,4 +1,4 @@
-package;
+package sample;
 
 import haxe.Timer;
 import openfl.display.BitmapData;

@@ -11,7 +11,7 @@
     <movie version="1" />
     <movie minorVersion="0" />
     <movie platform="Lime" />
-    <movie background="FFFFFF" />
+    <movie background="000000" />
     <movie preferredSDK=";3.1.3;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -21,16 +21,16 @@
     <class path="C:\HaxeToolkit\haxe\lib\actuate\1,8,3" />
     <class path="src" />
     <class path="..\src" />
-    <class path="bin\html5\haxe" />
+    <class path="bin\android\haxe" />
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="openfl=3.0.2&#xA;lime=2.3.2&#xA;actuate=1.8.3&#xA;dom&#xA;openfl-next&#xA;tools=2.3.2&#xA;no-compilation&#xA;openfl-html5&#xA;canvas&#xA;lime-html5&#xA;source-map-content&#xA;html5&#xA;web&#xA;html5" />
+    <option directives="openfl=3.0.2&#xA;lime=2.3.2&#xA;actuate=1.8.3&#xA;openfl-next&#xA;tools=2.3.2&#xA;no-compilation&#xA;native&#xA;lime-native&#xA;openfl-native&#xA;android&#xA;mobile&#xA;android&#xA;android-9" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="True" />
-    <option additional="--remap flash:openfl&#xA;-dce no&#xA;--macro allowPackage(&quot;flash&quot;)&#xA;-debug " />
+    <option additional="--remap flash:openfl&#xA;-dce no&#xA;#--macro keep(&quot;sample.Main&quot;)" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -39,6 +39,7 @@
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
     <compile path="src\Main.hx" />
+    <compile path="src\sample\Main.hx" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
