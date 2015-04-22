@@ -13,12 +13,15 @@ class Ellipse extends ImmutablePolygon
 
 	public function new(x:Float, y:Float, radiusX:Float, radiusY:Float, numSides:Int = -1)
 	{
+		trace("new Ellipse");
 		mX = x;
 		mY = y;
 		mRadiusX = radiusX;
 		mRadiusY = radiusY;
-
-		super(getVertices(numSides));
+		
+		var vertices:Array<Float> = getVertices(numSides);
+		trace("vertices = " + vertices);
+		super(vertices);
 	}
 
 	private function getVertices(numSides:Int):Array<Float>

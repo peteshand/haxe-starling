@@ -18,28 +18,30 @@ class MaskScene extends Scene
 	private var mContents:Sprite;
 	//private var mMask:Canvas;
 	private var mMaskDisplay:Canvas;
+	var flightImage:Image;
 	
-	public function MaskScene()
+	public function new()
 	{
+		super();
 		mContents = new Sprite();
 		addChild(mContents);
 		
 		var stageWidth:Float  = Starling.current.stage.stageWidth;
 		var stageHeight:Float = Starling.current.stage.stageHeight;
 		
-		var touchQuad:Quad = new Quad(stageWidth, stageHeight);
-		touchQuad.alpha = 0; // only used to get touch events
+		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0xFFFFFFFF);
+		touchQuad.alpha = 0.2; // only used to get touch events
 		addChildAt(touchQuad, 0);
 		
-		var image:Image = new Image(Game.assets.getTexture("flight_00"));
-		image.x = (stageWidth - image.width) / 2;
-		image.y = 80;
-		mContents.addChild(image);
+		flightImage = new Image(Game.assets.getTexture("flight_00"));
+		flightImage.x = (stageWidth - flightImage.width) / 2;
+		flightImage.y = 80;
+		mContents.addChild(flightImage);
 
 		// just to prove it works, use a filter on the image.
 		var cm:ColorMatrixFilter = new ColorMatrixFilter();
 		cm.adjustHue(-0.5);
-		image.filter = cm;
+		//flightImage.filter = cm;
 		
 		var maskText:TextField = new TextField(256, 128,
 			"Move the mouse (or a finger) over the screen to move the mask.");
@@ -48,13 +50,15 @@ class MaskScene extends Scene
 		maskText.fontSize = 20;
 		mContents.addChild(maskText);
 		
+		trace("MaskScene");
+		
 		mMaskDisplay = createCircle();
-		mMaskDisplay.alpha = 0.1;
+		//mMaskDisplay.alpha = 0.1;
 		mMaskDisplay.touchable = false;
 		addChild(mMaskDisplay);
-
+		
 		mMask = createCircle();
-		mContents.mask = mMask;
+		//mContents.mask = mMask;
 		
 		addEventListener(TouchEvent.TOUCH, onMaskTouch);
 	}
@@ -72,8 +76,8 @@ class MaskScene extends Scene
 		if (touch != null)
 		{
 			var localPos:Point = touch.getLocation(this);
-			mMask.x = mMaskDisplay.x = localPos.x;
-			mMask.y = mMaskDisplay.y = localPos.y;
+			mMask.x = mMaskDisplay.x = flightImage.x = localPos.x;
+			mMask.y = mMaskDisplay.y = flightImage.y = localPos.y;
 		}
 	}
 

@@ -51,18 +51,19 @@ class Canvas extends DisplayObject
 	private static var sRenderAlpha(get, set):Vector<Float>;
 
 	/** Creates a new (empty) Canvas. Call one or more of the 'draw' methods to add content. */
-	public function Canvas()
+	public function new()
 	{
+		super();
 		mPolygons   = new Array<Polygon>();
 		mVertexData = new VertexData(0);
 		mIndexData  = new Vector<UInt>();
 		mSyncRequired = false;
-
+		
 		mFillColor = 0xffffff;
 		mFillAlpha = 1.0;
-
+		
 		registerPrograms();
-
+		
 		// handle lost context
 		Starling.current.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 	}
@@ -134,27 +135,27 @@ class Canvas extends DisplayObject
 	{
 		if (mIndexData.length == 0) return;
 		if (mSyncRequired) syncBuffers();
-
+		
 		support.finishQuadBatch();
 		support.raiseDrawCount();
-
+		
 		sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = 1.0;
 		sRenderAlpha[3] = parentAlpha * this.alpha;
-
+		
 		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
-
+		
 		// apply the current blend mode
 		support.applyBlendMode(false);
-
+		
 		context.setProgram(Starling.current.getProgram(PROGRAM_NAME));
 		context.setVertexBufferAt(0, mVertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_2);
 		context.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
 		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderAlpha, 1);
-
+		
 		context.drawTriangles(mIndexBuffer, 0, cast mIndexData.length / 3);
-
+		
 		context.setVertexBufferAt(0, null);
 		context.setVertexBufferAt(1, null);
 	}
@@ -163,10 +164,10 @@ class Canvas extends DisplayObject
 	public override function getBounds(targetSpace:DisplayObject, resultRect:Rectangle=null):Rectangle
 	{
 		if (resultRect == null) resultRect = new Rectangle();
-
+		
 		var transformationMatrix:Matrix = targetSpace == this ?
 			null : getTransformationMatrix(targetSpace, sHelperMatrix);
-
+			
 		return mVertexData.getBounds(transformationMatrix, 0, -1, resultRect);
 	}
 
@@ -175,10 +176,10 @@ class Canvas extends DisplayObject
 	{
 		if (forTouch && (!visible || !touchable)) return null;
 		if (!hitTestMask(localPoint)) return null;
-
+		
 		for (i in  0...mPolygons.length)
 			if (mPolygons[i].containsPoint(localPoint)) return this;
-
+			
 		return null;
 	}
 
@@ -186,18 +187,18 @@ class Canvas extends DisplayObject
 	{
 		var oldNumVertices:Int = mVertexData.numVertices;
 		var oldNumIndices:Int = mIndexData.length;
-
+		
 		polygon.triangulate(mIndexData);
 		polygon.copyToVertexData(mVertexData, oldNumVertices);
-
+		
 		var newNumIndices:Int = mIndexData.length;
-
+		
 		// triangulation was done with vertex-indices of polygon only; now add correct offset.
 		for (i in oldNumIndices...newNumIndices)
 			mIndexData[i] += oldNumVertices;
-
+			
 		applyFillColor(oldNumVertices, polygon.numVertices);
-
+		
 		mPolygons[mPolygons.length] = polygon;
 		mSyncRequired = true;
 	}
@@ -227,19 +228,19 @@ class Canvas extends DisplayObject
 	private function syncBuffers():Void
 	{
 		destroyBuffers();
-
+		
 		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
-
+		
 		var numVertices:Float = mVertexData.numVertices;
 		var numIndices:Float  = mIndexData.length;
-
+		
 		mVertexBuffer = context.createVertexBuffer(cast numVertices, VertexData.ELEMENTS_PER_VERTEX);
 		mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, cast numVertices);
-
+		
 		mIndexBuffer = context.createIndexBuffer(cast numIndices);
 		mIndexBuffer.uploadFromVector(cast mIndexData, 0, cast numIndices);
-
+		
 		mSyncRequired = false;
 	}
 
@@ -247,7 +248,7 @@ class Canvas extends DisplayObject
 	{
 		if (mVertexBuffer != null) mVertexBuffer.dispose();
 		if (mIndexBuffer != null)  mIndexBuffer.dispose();
-
+		
 		mVertexBuffer = null;
 		mIndexBuffer  = null;
 		mSyncRequired = true;
