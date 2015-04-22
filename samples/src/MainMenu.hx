@@ -56,10 +56,7 @@ class MainMenu extends Sprite
 				["Masks", MaskScene, true],
 				["Sprite 3D", Sprite3DScene, true]
 			];
-			
-			
-			
-		#else
+		#elseif html5
 			var scenesToCreate:Array<Dynamic> = [
 				["Textures", TextureScene, true],
 				["Multitouch", TouchScene, true],
@@ -71,12 +68,24 @@ class MainMenu extends Sprite
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, false],
 				["Benchmark", BenchmarkScene, true],
-				["Masks", MaskScene, false],
+				["Masks", MaskScene, true],
 				["Sprite 3D", Sprite3DScene, true]
 			];
-			
-			//var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/jsHeader.png");
-			//var logo:Image = new Image(Texture.fromBitmapData(bmd));
+		#elseif cpp
+			var scenesToCreate:Array<Dynamic> = [
+				["Textures", TextureScene, true],
+				["Multitouch", TouchScene, true],
+				["TextFields", TextScene, true],
+				["Animations", AnimationScene, true],
+				["Custom hit-test", CustomHitTestScene, true],
+				["Movie Clip", MovieScene, true],
+				["Filters", FilterScene, false],
+				["Blend Modes", BlendModeScene, true],
+				["Render Texture", RenderTextureScene, false],
+				["Benchmark", BenchmarkScene, true],
+				["Masks", MaskScene, true],
+				["Sprite 3D", Sprite3DScene, true]
+			];
 		#end
 		
 		
@@ -88,7 +97,7 @@ class MainMenu extends Sprite
 		for (sceneToCreate in scenesToCreate)
 		{
 			var sceneTitle:String = sceneToCreate[0];
-			var sceneClass:Class<Dynamic>  = sceneToCreate[1];
+			//var sceneClass:Class<Dynamic>  = sceneToCreate[1];
 			var active:Bool = sceneToCreate[2];
 			
 			var button:Button = new Button(buttonTexture, sceneTitle);

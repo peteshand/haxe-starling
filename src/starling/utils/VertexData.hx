@@ -515,9 +515,9 @@ class VertexData
 		{
 			var dataLength:Int = mNumVertices * VertexData.ELEMENTS_PER_VERTEX;
 			
-			for (j in VertexData.COLOR_OFFSET...dataLength)
+			var i = VertexData.COLOR_OFFSET;
+			while (i < dataLength)
 			{
-				var i = j * VertexData.ELEMENTS_PER_VERTEX;
 				var alpha:Float = mRawData[Std.int(i+3)];
 				var divisor:Float = mPremultipliedAlpha ? alpha : 1.0;
 				var multiplier:Float = value ? alpha : 1.0;
@@ -528,6 +528,7 @@ class VertexData
 					mRawData[Std.int(i+1)] = mRawData[Std.int(i+1)] / divisor * multiplier;
 					mRawData[Std.int(i+2)] = mRawData[Std.int(i+2)] / divisor * multiplier;
 				}
+				i += ELEMENTS_PER_VERTEX;
 			}
 		}
 		

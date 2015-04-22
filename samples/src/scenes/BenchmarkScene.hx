@@ -1,6 +1,7 @@
 package scenes;
 
 import flash.system.System;
+import sample.Main;
 import starling.textures.Texture;
 
 import starling.core.Starling;
@@ -50,7 +51,7 @@ class BenchmarkScene extends Scene
 		
 		addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		
-		Main.mouseOnStageDispatcher.addEventListener(Event.CHANGE, OnActiveChange);
+		sample.Main.mouseOnStageDispatcher.addEventListener(Event.CHANGE, OnActiveChange);
 	}
 	
 	private function OnActiveChange(e:Event):Void 
@@ -128,7 +129,7 @@ class BenchmarkScene extends Scene
 	private function addTestObjects():Void
 	{
 		var padding:Int = 15;
-		var numObjects:Int = mFailCount > 20 ? 10 : 20;
+		var numObjects:Int = mFailCount > 20 ? 10 : 50;
 		
 		for (i in 0...numObjects)
 		{

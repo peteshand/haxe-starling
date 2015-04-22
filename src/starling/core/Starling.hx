@@ -341,7 +341,6 @@ class Starling extends EventDispatcher
 		}
 		
 		// register other event handlers
-		stage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 		stage.addEventListener(openfl.events.KeyboardEvent.KEY_DOWN, onKey, false, 0, true);
 		stage.addEventListener(openfl.events.KeyboardEvent.KEY_UP, onKey, false, 0, true);
 		stage.addEventListener(Event.RESIZE, onResize, false, 0, true);
@@ -369,7 +368,7 @@ class Starling extends EventDispatcher
 			if (!SystemUtil.supportsDepthAndStencil)
 				trace("[Starling] Mask support requires 'depthAndStencil' to be enabled" +
 					  " in the application descriptor.");
-
+					  
 			mShareContext = false;
 			requestContext3D(stage3D, renderMode, profile);
 		}
@@ -510,6 +509,12 @@ class Starling extends EventDispatcher
 		
 		trace("[Starling] Initialization complete.");
 		trace("[Starling] Display Driver:", mContext.driverInfo);
+		
+		#if flash
+			mNativeStage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
+		#else
+			mContext.setRenderMethod(onEnterFrame);
+		#end
 		
 		updateViewPort(true);
 		dispatchEventWith(Event.CONTEXT3D_CREATE, false, mContext);

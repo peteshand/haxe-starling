@@ -16,9 +16,8 @@ import starling.text.TextField;
 class MaskScene extends Scene
 {
 	private var mContents:Sprite;
-	//private var mMask:Canvas;
+	private var contentMask:Canvas;
 	private var mMaskDisplay:Canvas;
-	var flightImage:Image;
 	
 	public function new()
 	{
@@ -29,36 +28,36 @@ class MaskScene extends Scene
 		var stageWidth:Float  = Starling.current.stage.stageWidth;
 		var stageHeight:Float = Starling.current.stage.stageHeight;
 		
-		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0xFFFFFFFF);
-		touchQuad.alpha = 0.2; // only used to get touch events
+		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0xFFFFFF);
+		touchQuad.width = stageWidth;
+		touchQuad.height = stageHeight;
+		touchQuad.alpha = 0; // only used to get touch events
 		addChildAt(touchQuad, 0);
 		
-		flightImage = new Image(Game.assets.getTexture("flight_00"));
-		flightImage.x = (stageWidth - flightImage.width) / 2;
-		flightImage.y = 80;
-		mContents.addChild(flightImage);
+		var image:Image = new Image(Game.assets.getTexture("flight_00"));
+		image.x = (stageWidth - image.width) / 2;
+		image.y = 80;
+		mContents.addChild(image);
 
 		// just to prove it works, use a filter on the image.
-		var cm:ColorMatrixFilter = new ColorMatrixFilter();
-		cm.adjustHue(-0.5);
-		//flightImage.filter = cm;
+		//var cm:ColorMatrixFilter = new ColorMatrixFilter();
+		//cm.adjustHue(-0.5);
+		//image.filter = cm;
 		
 		var maskText:TextField = new TextField(256, 128,
-			"Move the mouse (or a finger) over the screen to move the mask.");
+			"Move the mouse (or a\nfinger) over the screen\nto move the mask.");
 		maskText.x = (stageWidth - maskText.width) / 2;
 		maskText.y = 260;
 		maskText.fontSize = 20;
 		mContents.addChild(maskText);
 		
-		trace("MaskScene");
-		
 		mMaskDisplay = createCircle();
-		//mMaskDisplay.alpha = 0.1;
+		mMaskDisplay.alpha = 0.1;
 		mMaskDisplay.touchable = false;
 		addChild(mMaskDisplay);
 		
-		mMask = createCircle();
-		//mContents.mask = mMask;
+		contentMask = createCircle();
+		mContents.mask = contentMask;
 		
 		addEventListener(TouchEvent.TOUCH, onMaskTouch);
 	}
@@ -76,15 +75,15 @@ class MaskScene extends Scene
 		if (touch != null)
 		{
 			var localPos:Point = touch.getLocation(this);
-			mMask.x = mMaskDisplay.x = flightImage.x = localPos.x;
-			mMask.y = mMaskDisplay.y = flightImage.y = localPos.y;
+			contentMask.x = mMaskDisplay.x = localPos.x;
+			contentMask.y = mMaskDisplay.y = localPos.y;
 		}
 	}
 
 	private function createCircle():Canvas
 	{
 		var circle:Canvas = new Canvas();
-		circle.beginFill(0xff0000);
+		circle.beginFill(0x000000);
 		circle.drawCircle(0, 0, 100);
 		circle.endFill();
 		return circle;

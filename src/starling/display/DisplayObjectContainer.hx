@@ -370,53 +370,41 @@ class DisplayObjectContainer extends DisplayObject
 	public override function render(support:RenderSupport, parentAlpha:Float):Void
 	{
 		var alpha:Float = parentAlpha * this.alpha;
-        var numChildren:Int = mChildren.length;
-        var blendMode:String = support.blendMode;
+		var numChildren:Int = mChildren.length;
+		var blendMode:String = support.blendMode;
 		
 		var i:Int = 0;
-        for (i in 0 ... numChildren)
-        {
-            var child:DisplayObject = mChildren[i];
+		for (i in 0 ... numChildren)
+		{
+			var child:DisplayObject = mChildren[i];
             
             if (child.hasVisibleArea)
             {
                 var filter:FragmentFilter = child.filter;
-
+				var mask:DisplayObject = child.mask;
+				
                 support.pushMatrix();
                 support.transformMatrix(child);
                 support.blendMode = child.blendMode;
                 
-                if (filter != null) filter.render(child, support, alpha);
-                else        child.render(support, alpha);
-                
+				if (mask != null) {
+					support.pushMask(mask);
+				}
+				
+                if (filter != null) {
+					filter.render(child, support, alpha);
+				}
+                else {
+					child.render(support, alpha);
+				}
+				
+				if (mask != null) support.popMask();
+				
                 support.blendMode = blendMode;
                 support.popMatrix();
             }
         }
 		
-		/*for (child in mChildren)
-		{
-			if (child.hasVisibleArea)
-			{
-				var displayObject:DisplayObject = child;
-				var filter:FragmentFilter = displayObject.filter;
-				var mask:DisplayObject = displayObject.mask;
-				
-				support.pushMatrix();
-				support.transformMatrix(displayObject);
-				support.blendMode = displayObject.blendMode;
-				
-				if (mask != null) support.pushMask(mask);
-				
-				if (filter != null) filter.render(displayObject, support, alpha);
-				else child.render(support, alpha);
-				
-				if (mask != null) support.popMask();
-				
-				support.blendMode = blendMode;
-				support.popMatrix();
-			}
-		}*/
 	}
 	
 	/** Dispatches an event on all children (recursively). The event must not bubble. */

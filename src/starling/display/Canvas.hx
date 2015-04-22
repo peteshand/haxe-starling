@@ -134,7 +134,9 @@ class Canvas extends DisplayObject
 	public override function render(support:RenderSupport, parentAlpha:Float):Void
 	{
 		if (mIndexData.length == 0) return;
-		if (mSyncRequired) syncBuffers();
+		if (mSyncRequired) {
+			syncBuffers();
+		}
 		
 		support.finishQuadBatch();
 		support.raiseDrawCount();
@@ -167,7 +169,7 @@ class Canvas extends DisplayObject
 		
 		var transformationMatrix:Matrix = targetSpace == this ?
 			null : getTransformationMatrix(targetSpace, sHelperMatrix);
-			
+		
 		return mVertexData.getBounds(transformationMatrix, 0, -1, resultRect);
 	}
 
@@ -179,7 +181,7 @@ class Canvas extends DisplayObject
 		
 		for (i in  0...mPolygons.length)
 			if (mPolygons[i].containsPoint(localPoint)) return this;
-			
+		
 		return null;
 	}
 
@@ -188,15 +190,16 @@ class Canvas extends DisplayObject
 		var oldNumVertices:Int = mVertexData.numVertices;
 		var oldNumIndices:Int = mIndexData.length;
 		
-		polygon.triangulate(mIndexData);
+		mIndexData = polygon.triangulate(mIndexData);
 		polygon.copyToVertexData(mVertexData, oldNumVertices);
 		
 		var newNumIndices:Int = mIndexData.length;
 		
 		// triangulation was done with vertex-indices of polygon only; now add correct offset.
-		for (i in oldNumIndices...newNumIndices)
+		for (i in oldNumIndices...newNumIndices) {
 			mIndexData[i] += oldNumVertices;
-			
+		}
+		
 		applyFillColor(oldNumVertices, polygon.numVertices);
 		
 		mPolygons[mPolygons.length] = polygon;
@@ -207,22 +210,23 @@ class Canvas extends DisplayObject
 	{
 		var target:Starling = Starling.current;
 		if (target.hasProgram(PROGRAM_NAME)) return; // already registered
-
+		
 		var vertexShader:String =
 				"m44 op, va0, vc0 \n" + // 4x4 matrix transform to output space
 				"mul v0, va1, vc4 \n";  // multiply color with alpha, pass it to fragment shader
-
+		
 		var fragmentShader:String =
 				"mov oc, v0";           // just forward incoming color
-
+		
 		target.registerProgramFromSource(PROGRAM_NAME, vertexShader, fragmentShader);
 	}
 
 	private function applyFillColor(vertexIndex:Int, numVertices:Int):Void
 	{
 		var endIndex:Int = vertexIndex + numVertices;
-		for (i in vertexIndex...endIndex)
+		for (i in vertexIndex...endIndex) {
 			mVertexData.setColorAndAlpha(i, mFillColor, mFillAlpha);
+		}
 	}
 
 	private function syncBuffers():Void
@@ -235,11 +239,14 @@ class Canvas extends DisplayObject
 		var numVertices:Float = mVertexData.numVertices;
 		var numIndices:Float  = mIndexData.length;
 		
+		trace("mVertexData.rawData = " + mVertexData.rawData);
+		trace("mIndexData = " + mIndexData);
+		
 		mVertexBuffer = context.createVertexBuffer(cast numVertices, VertexData.ELEMENTS_PER_VERTEX);
 		mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, cast numVertices);
 		
 		mIndexBuffer = context.createIndexBuffer(cast numIndices);
-		mIndexBuffer.uploadFromVector(cast mIndexData, 0, cast numIndices);
+		mIndexBuffer.uploadFromVector(mIndexData, 0, cast numIndices);
 		
 		mSyncRequired = false;
 	}

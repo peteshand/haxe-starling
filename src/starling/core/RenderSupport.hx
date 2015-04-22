@@ -494,13 +494,10 @@ class RenderSupport
 			Context3DCompareMode.EQUAL, 
 			Context3DStencilAction.INCREMENT_SATURATE
 		);
-
+		
 		drawMask(mask);
-
+		
 		context.setStencilReferenceValue(mMasks.length);
-		//triangleFace:String="frontAndBack", compareMode:String="always", actionOnBothPass:String="keep", actionOnDepthFail:String="keep", actionOnDepthPassStencilFail:String="keep"
-		
-		
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
@@ -511,20 +508,20 @@ class RenderSupport
 	public function popMask():Void
 	{
 		var mask:DisplayObject = mMasks.pop();
-
+		
 		var context:Context3D = Starling.Context;
 		if (context == null) return;
-
+		
 		finishQuadBatch();
-
+		
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
 			Context3DStencilAction.DECREMENT_SATURATE
 		);
-
+		
 		drawMask(mask);
-
+		
 		context.setStencilReferenceValue(mMasks.length);
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
@@ -539,7 +536,7 @@ class RenderSupport
 
 		var stage:Stage = mask.stage;
 		if (stage != null) mask.getTransformationMatrix(stage, mModelViewMatrix);
-		else       transformMatrix(mask);
+		else transformMatrix(mask);
 
 		mask.render(this, 0.0);
 		finishQuadBatch();
@@ -646,6 +643,7 @@ class RenderSupport
 	public static function setBlendFactors(premultipliedAlpha:Bool, blendMode:String="normal"):Void
 	{
 		var blendFactors:Array<Dynamic> = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
+		//trace('setBlendFactors(${blendFactors[0]} ${blendFactors[1]}) with blendMode=$blendMode');
 		Starling.Context.setBlendFactors(blendFactors[0], blendFactors[1]);
 	}
 	
@@ -685,9 +683,9 @@ class RenderSupport
 		
 		
 		var vertexByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.VERTEX, vertexShader);
-        var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
+		var fragmentByteCode = AGLSLShaderUtils.createShader(Context3DProgramType.FRAGMENT, fragmentShader);
 		
-        resultProgram.upload(vertexByteCode, fragmentByteCode);
+		resultProgram.upload(vertexByteCode, fragmentByteCode);
 		
 		return resultProgram;
 	}

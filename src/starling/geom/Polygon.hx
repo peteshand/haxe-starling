@@ -252,9 +252,9 @@ class Polygon
 	public function copyToVertexData(target:VertexData, targetIndex:Int=0):Void
 	{
 		var requiredTargetLength:Int = targetIndex + numVertices;
-		if (target.numVertices < requiredTargetLength) {
+		if (target.numVertices < requiredTargetLength)
 			target.numVertices = requiredTargetLength;
-		}
+		
 		target.rawData = copyToVector(target.rawData, targetIndex * VertexData.ELEMENTS_PER_VERTEX, VertexData.ELEMENTS_PER_VERTEX - 2);
 	}
 
@@ -301,7 +301,6 @@ class Polygon
 	/** Creates a circle with optimized implementations of triangulation, hitTest, etc. */
 	public static function createCircle(x:Float, y:Float, radius:Float):Polygon
 	{
-		trace("createCircle");
 		return new Ellipse(x, y, radius, radius);
 	}
 
