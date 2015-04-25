@@ -1,4 +1,5 @@
 /samples/bin/flash/*
 /samples/bin/html5/*
 /samples/bin/windows/*
+/samples/bin/android/*
 /samples/bin/.build

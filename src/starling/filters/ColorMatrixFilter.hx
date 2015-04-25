@@ -285,7 +285,7 @@ class ColorMatrixFilter extends FragmentFilter
 			i+=5;
 		}
 		
-		copyMatrix(sTmpMatrix1, mUserMatrix);
+		mUserMatrix = copyMatrix(sTmpMatrix1, mUserMatrix);
 		updateShaderMatrix();
 		return this;
 	}
@@ -323,10 +323,12 @@ class ColorMatrixFilter extends FragmentFilter
 		return this;
 	}
 
-	private function copyMatrix(from:Array<Float>, to:Array<Float>):Void
+	private function copyMatrix(from:Array<Float>, to:Array<Float>):Array<Float>
 	{
-		for (i in 0...20)
+		for (i in 0...20) {
 			to[i] = from[i];
+		}
+		return to;
 	}
 	
 	private function updateShaderMatrix():Void
@@ -377,7 +379,7 @@ class ColorMatrixFilter extends FragmentFilter
 		}
 		else
 		{
-			copyMatrix(value, mUserMatrix);
+			mUserMatrix = copyMatrix(value, mUserMatrix);
 		}
 		
 		updateShaderMatrix();

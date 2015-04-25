@@ -73,7 +73,7 @@ class BitmapFont
 	private var mChars:Map<Int, BitmapChar>;
 	private var mName:String;
 	private var mSize:Float;
-	private var mLineHeight:Float;
+	private var mLineHeight:Float = 0;
 	private var mBaseline:Float;
 	private var mOffsetX:Float;
 	private var mOffsetY:Float;
@@ -146,8 +146,8 @@ class BitmapFont
 				}
 				for (common in font.elementsNamed("common")) {
 					if (common.nodeType == Xml.Element ) {
-						mLineHeight = Std.parseFloat(common.get("mLineHeight")) / scale;
-						mBaseline = Std.parseFloat(common.get("mBaseline")) / scale;
+						mLineHeight = Std.parseFloat(common.get("lineHeight")) / scale;
+						mBaseline = Std.parseFloat(common.get("base")) / scale;
 					}
 				}
 				for (chars in font.elementsNamed("chars")) {
@@ -338,12 +338,8 @@ class BitmapFont
 				var currentLine:Array<CharLocation> = CharLocation.vectorFromPool();
 				
 				numChars = text.length;
-				
-				//for (i in 0...numChars)
-				for (k in 0...numChars) 
+				for (i in 0...numChars) 
 				{
-					var i = numChars - 1 - k;
-					
 					var lineFull:Bool = false;
 					var charID:Int = text.charCodeAt(i);
 					var char:BitmapChar = getChar(charID);
@@ -400,7 +396,6 @@ class BitmapFont
 					else if (lineFull)
 					{
 						sLines[sLines.length] = currentLine; // push
-						
 						if (lastWhiteSpace == i)
 							currentLine.pop();
 						

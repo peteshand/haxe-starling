@@ -16,7 +16,7 @@ import starling.text.TextField;
 class MaskScene extends Scene
 {
 	private var mContents:Sprite;
-	//private var mMask:Canvas;
+	private var contentMask:Canvas;
 	private var mMaskDisplay:Canvas;
 	
 	public function new()
@@ -28,7 +28,7 @@ class MaskScene extends Scene
 		var stageWidth:Float  = Starling.current.stage.stageWidth;
 		var stageHeight:Float = Starling.current.stage.stageHeight;
 		
-		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0x000000);
+		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0xFFFFFF);
 		touchQuad.width = stageWidth;
 		touchQuad.height = stageHeight;
 		touchQuad.alpha = 0; // only used to get touch events
@@ -45,7 +45,7 @@ class MaskScene extends Scene
 		//image.filter = cm;
 		
 		var maskText:TextField = new TextField(256, 128,
-			"Move the mouse (or a finger) over the screen to move the mask.");
+			"Move the mouse (or a\nfinger) over the screen\nto move the mask.");
 		maskText.x = (stageWidth - maskText.width) / 2;
 		maskText.y = 260;
 		maskText.fontSize = 20;
@@ -56,8 +56,8 @@ class MaskScene extends Scene
 		mMaskDisplay.touchable = false;
 		addChild(mMaskDisplay);
 		
-		mMask = createCircle();
-		mContents.mask = mMask;
+		contentMask = createCircle();
+		mContents.mask = contentMask;
 		
 		addEventListener(TouchEvent.TOUCH, onMaskTouch);
 	}
@@ -75,8 +75,8 @@ class MaskScene extends Scene
 		if (touch != null)
 		{
 			var localPos:Point = touch.getLocation(this);
-			mMask.x = mMaskDisplay.x = localPos.x;
-			mMask.y = mMaskDisplay.y = localPos.y;
+			contentMask.x = mMaskDisplay.x = localPos.x;
+			contentMask.y = mMaskDisplay.y = localPos.y;
 		}
 	}
 

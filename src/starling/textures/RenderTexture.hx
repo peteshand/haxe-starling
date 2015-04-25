@@ -181,8 +181,7 @@ class RenderTexture extends SubTexture
 	 *  @param antiAliasing Only supported beginning with AIR 13, and only on Desktop.
 	 *                      Values range from 0 (no antialiasing) to 4 (best quality).
 	 */
-	public function draw(object:DisplayObject, matrix:Matrix=null, alpha:Float=1.0,
-						 antiAliasing:Int=0):Void
+	public function draw(object:DisplayObject, matrix:Matrix=null, alpha:Float=1.0, antiAliasing:Int=0):Void
 	{
 		if (object == null) return;
 		
@@ -213,15 +212,15 @@ class RenderTexture extends SubTexture
 		mSupport.loadIdentity();
 		mSupport.blendMode = object.blendMode == BlendMode.AUTO ?
 			BlendMode.NORMAL : object.blendMode;
-
+		
 		if (matrix != null) mSupport.prependMatrix(matrix);
 		else mSupport.transformMatrix(object);
-
+		
 		if (mask != null) mSupport.pushMask(mask);
-
+		
 		if (filter != null) filter.render(object, mSupport, alpha);
 		else object.render(mSupport, alpha);
-
+		
 		if (mask != null)   mSupport.popMask();
 	}
 	
