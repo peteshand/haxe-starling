@@ -273,23 +273,9 @@ class Texture
 	{
 		if (format == null) format = Context3DTextureFormat.BGRA;
 
-		// This value should be a constant true, since we're creating a texture
-		// from BitmapData, which is always premultipled per the spec. However,
-		// OpenFL BitmapData is -not- premultipled for now, and since that is
-		// a bug that must be fixed there, we'll work around it here until it's
-		// fixed. Just make sure that you use an OpenFL version that still has
-		// this bug. If you're using a fixed version, then please report this
-		// "fix" as an issue on github.
-		var colorsArePremultipliedWithAlpha:Bool;
-		#if flash
-			colorsArePremultipliedWithAlpha = true; // Correct
-		#else
-			colorsArePremultipliedWithAlpha = false; // Wrong
-		#end
-
 		var texture:Texture = Texture.empty(
 			data.width / scale, data.height / scale,
-			colorsArePremultipliedWithAlpha,
+			true,
 			generateMipMaps,
 			optimizeForRenderToTexture,
 			scale, format, repeat);

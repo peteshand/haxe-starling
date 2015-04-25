@@ -34,6 +34,7 @@ class SubTexture extends Texture
 	private var mRegion:Rectangle;
 	private var mFrame:Rectangle;
 	private var mRotated:Bool;
+	private var mInvertedY:Bool;
 	private var mWidth:Float;
 	private var mHeight:Float;
 	private var mTransformationMatrix:Matrix = new Matrix();
@@ -48,6 +49,7 @@ class SubTexture extends Texture
 	public var parent(get, null):Texture;
 	public var ownsParent(get, null):Bool;
 	public var rotated(get, null):Bool;
+	public var invertedY(get, null):Bool;
 	public var region(get, null):Rectangle;
 	public var clipping(get, null):Rectangle;
 	public var transformationMatrix(get, null):Matrix;
@@ -74,8 +76,10 @@ class SubTexture extends Texture
 	 *                    the trimmed area.
 	 *  @param rotated    If true, the SubTexture will show the parent region rotated by
 	 *                    90 degrees (CCW).
+	 *  @param invertedY  If true, the SubTexture will assume that the parent texure is inverted
+	 *                    in the Y axis.
 	 */
-	public function new(_parent:Texture, region:Rectangle=null, ownsParent:Bool=false, frame:Rectangle=null, rotated:Bool=false)
+	public function new(_parent:Texture, region:Rectangle=null, ownsParent:Bool=false, frame:Rectangle=null, rotated:Bool=false, invertedY:Bool=false)
 	{
 		super();
 		// TODO: in a future version, the order of arguments of this constructor should
@@ -86,10 +90,17 @@ class SubTexture extends Texture
 		mFrame = frame != null ? frame.clone() : null;
 		mOwnsParent = ownsParent;
 		mRotated = rotated;
+		mInvertedY = invertedY;
 		mWidth  = rotated ? mRegion.height : mRegion.width;
 		mHeight = rotated ? mRegion.width  : mRegion.height;
 		mTransformationMatrix = new Matrix();
-		
+
+		if (invertedY)
+		{
+			mTransformationMatrix.translate(0, -_parent.height / mRegion.height);
+			mTransformationMatrix.scale(1, -1);
+		}
+
 		if (rotated)
 		{
 			mTransformationMatrix.translate(0, -1);
@@ -184,6 +195,9 @@ class SubTexture extends Texture
 	
 	/** Indicates if the parent texture is disposed when this object is disposed. */
 	private function get_ownsParent():Bool { return mOwnsParent; }
+	
+	/** If true, the SubTexture will show the parent region inverted in the Y axis. */
+	private function get_invertedY():Bool { return mInvertedY; }
 	
 	/** If true, the SubTexture will show the parent region rotated by 90 degrees (CCW). */
 	private function get_rotated():Bool { return mRotated; }

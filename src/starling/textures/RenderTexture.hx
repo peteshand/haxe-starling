@@ -71,8 +71,8 @@ import starling.utils.SystemUtil;
  */
 class RenderTexture extends SubTexture
 {
-	private var CONTEXT_POT_SUPPORT_KEY:String = "RenderTexture.supportsNonPotDimensions";
-	private var PMA:Bool = true;
+	private static inline var CONTEXT_POT_SUPPORT_KEY:String = "RenderTexture.supportsNonPotDimensions";
+	private static inline var PMA:Bool = true;
 	
 	private var mActiveTexture:Texture;
 	private var mBufferTexture:Texture;
@@ -102,7 +102,8 @@ class RenderTexture extends SubTexture
 	private var supportsNonPotDimensions(get, null):Bool;
 	private var isDoubleBuffered(get, null):Bool;
 	public var isPersistent(get, null):Bool;
-	
+	public var isInvertedY(get, null):Bool;
+
 	/** Creates a new RenderTexture with a certain size (in points). If the texture is
 	 *  persistent, the contents of the texture remains intact after each draw call, allowing
 	 *  you to use the texture just like a canvas. If it is not, it will be cleared before each
@@ -136,7 +137,7 @@ class RenderTexture extends SubTexture
 		mActiveTexture = Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
 		mActiveTexture.root.onRestore = mActiveTexture.root.clear;
 		
-		super(mActiveTexture, new Rectangle(0, 0, width, height), true, null, false);
+		super(mActiveTexture, new Rectangle(0, 0, width, height), true, null, false, isInvertedY);
 		
 		var rootWidth:Float  = mActiveTexture.root.width;
 		var rootHeight:Float = mActiveTexture.root.height;
@@ -341,10 +342,20 @@ class RenderTexture extends SubTexture
 
 	/** Indicates if the texture is persistent over multiple draw calls. */
 	private function get_isPersistent():Bool { return mIsPersistent; }
-	
+
+	/** Indicates if the texture is inverted about the Y axis */
+	public function get_isInvertedY():Bool
+	{
+		#if flash
+			return false;
+		#else
+			return true; // Should probably be different per renderer.
+		#end
+	}
+
 	/** @inheritDoc */
 	private override function get_base():TextureBase { return mActiveTexture.base; }
-	
+
 	/** @inheritDoc */
 	private override function get_root():ConcreteTexture { return mActiveTexture.root; }
 }
