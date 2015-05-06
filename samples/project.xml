@@ -16,7 +16,6 @@
 	<source path="src" />
 	<source path="../src" />
 	
-	<set name="lime-hybrid" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
 	
