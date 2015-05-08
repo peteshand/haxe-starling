@@ -474,11 +474,7 @@ class QuadBatch extends DisplayObject
 	/** @inheritDoc */
 	public override function render(support:RenderSupport, parentAlpha:Float):Void
 	{
-		#if js
-		if (mNumQuads != null)
-		#else
-		if (Math.isNaN(mNumQuads)) 
-		#end
+		if (mNumQuads != 0)
 		{
 			if (mBatchable)
 				support.batchQuadBatch(this, parentAlpha);
