@@ -160,7 +160,6 @@ class EventDispatcher
 					}
 					else listener(event, event.data);
 				#else
-					trace("listener = " + listener);
 					if (listener != null) listener(event, event.data);
 				#end
 				

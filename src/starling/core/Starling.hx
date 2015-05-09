@@ -207,7 +207,7 @@ class Starling extends EventDispatcher
 	private var mLastFrameTimestamp:Float;
 	private var mLeftMouseDown:Bool;
 	private var mStatsDisplay:StatsDisplay;
-	private var mShareContext:Bool;
+	private var mShareContext:Bool = false;
 	private var mProfile:String;
 	private var mContext:Context3D;
 	private var mStarted:Bool;
@@ -348,6 +348,11 @@ class Starling extends EventDispatcher
 		
 		mStage3D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated, false, 10, true);
 		mStage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10, true);
+		
+		trace("mStage3D " + mStage3D);
+		trace("mStage3D.x " + mStage3D.x);
+		trace("mStage3D.context3D " + mStage3D.context3D);
+		trace("mStage3D.context3D.driverInfo " + mStage3D.context3D.driverInfo);
 		
 		if (mStage3D.context3D != null && mStage3D.context3D.driverInfo != "Disposed")
 		{
@@ -577,8 +582,9 @@ class Starling extends EventDispatcher
 		mContext.setDepthTest(false, Context3DCompareMode.ALWAYS);
 		mContext.setCulling(Context3DTriangleFace.NONE);
 		
-		mContext.setStencilReferenceValue(0);
+		//mContext.setStencilReferenceValue(0);
 		
+		mSupport.stencilReferenceValue = 0;
 		mSupport.renderTarget = null; // back buffer
 		mSupport.setProjectionMatrix(
 			mViewPort.x < 0 ? -mViewPort.x / scaleX : 0.0,
