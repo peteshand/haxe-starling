@@ -91,6 +91,7 @@ class RenderSupport
 	public var blendMode(get, set):String;
 	public var renderTarget(get, set):Texture;
 	public var drawCount(get, null):Int;
+	public var stencilReferenceValue(get, set):UInt;
 	
 	// construction
 	
@@ -480,11 +481,13 @@ class RenderSupport
 	// stencil masks
 
 	private var mMasks = new Vector<DisplayObject>();
-
+	private var mStencilReferenceValue:UInt = 0;
+	
 	public function pushMask(mask:DisplayObject):Void
 	{
 		mMasks[mMasks.length] = mask;
-
+		mStencilReferenceValue++;
+		
 		var context:Context3D = Starling.Context;
 		if (context == null) return;
 
@@ -497,7 +500,7 @@ class RenderSupport
 		
 		drawMask(mask);
 		
-		context.setStencilReferenceValue(mMasks.length);
+		context.setStencilReferenceValue(mStencilReferenceValue);//context.setStencilReferenceValue(mMasks.length);
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
@@ -508,6 +511,7 @@ class RenderSupport
 	public function popMask():Void
 	{
 		var mask:DisplayObject = mMasks.pop();
+		mStencilReferenceValue--;
 		
 		var context:Context3D = Starling.Context;
 		if (context == null) return;
@@ -522,7 +526,7 @@ class RenderSupport
 		
 		drawMask(mask);
 		
-		context.setStencilReferenceValue(mMasks.length);
+		context.setStencilReferenceValue(mStencilReferenceValue);//context.setStencilReferenceValue(mMasks.length);
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
@@ -542,6 +546,19 @@ class RenderSupport
 		finishQuadBatch();
 
 		popMatrix();
+	}
+	
+	/** The current stencil reference value, which is per default the depth of the current
+	 *  stencil mask stack. Only change this value if you know what you're doing. */
+	public function get_stencilReferenceValue():UInt { return mStencilReferenceValue; }
+	public function set_stencilReferenceValue(value:UInt):UInt
+	{
+		mStencilReferenceValue = value;
+
+		if (Starling.current.contextValid)
+			Starling.Context.setStencilReferenceValue(value);
+			
+		return mStencilReferenceValue;
 	}
 
 	// optimized quad rendering

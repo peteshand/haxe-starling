@@ -207,7 +207,7 @@ class Starling extends EventDispatcher
 	private var mLastFrameTimestamp:Float;
 	private var mLeftMouseDown:Bool;
 	private var mStatsDisplay:StatsDisplay;
-	private var mShareContext:Bool;
+	private var mShareContext:Bool = false;
 	private var mProfile:String;
 	private var mContext:Context3D;
 	private var mStarted:Bool;
@@ -577,8 +577,9 @@ class Starling extends EventDispatcher
 		mContext.setDepthTest(false, Context3DCompareMode.ALWAYS);
 		mContext.setCulling(Context3DTriangleFace.NONE);
 		
-		mContext.setStencilReferenceValue(0);
+		//mContext.setStencilReferenceValue(0);
 		
+		mSupport.stencilReferenceValue = 0;
 		mSupport.renderTarget = null; // back buffer
 		mSupport.setProjectionMatrix(
 			mViewPort.x < 0 ? -mViewPort.x / scaleX : 0.0,

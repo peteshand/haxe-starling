@@ -96,7 +96,7 @@ class MovieClip extends Image implements IAnimatable
 		mCurrentTime = 0.0;
 		mCurrentFrame = 0;
 		mTextures = textures.concat(new Array<Texture>());
-		trace("CHECK INIT LENGTH IS NOT NEEDED");
+		//trace("CHECK INIT LENGTH IS NOT NEEDED");
 		mSounds = new Array<Sound>(/*numFrames*/);
 		mDurations = new Array<Float>(/*numFrames*/);
 		mStartTimes = new Array<Float>(/*numFrames*/);
