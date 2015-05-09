@@ -144,21 +144,8 @@ class ConcreteTexture extends Texture
 		}
 		else if (Std.is(mBase, RectangleTexture))
 		{
-			trace("CHECK");
 			var rectangleTexture:RectangleTexture = cast mBase;
 			if (rectangleTexture != null) rectangleTexture.uploadFromBitmapData(data);
-			
-			/*var hasUploadBmd:Bool = Reflect.hasField(mBase, "uploadFromBitmapData");
-			if (hasUploadBmd) {
-				var func = Reflect.getProperty(mBase, "uploadFromBitmapData");
-				if (Reflect.isFunction(func)){
-					Reflect.callMethod(mBase, "uploadFromBitmapData", [data]);
-				}
-			}*/
-			//mBase["uploadFromBitmapData"](data);
-		}
-		else {
-			trace("FIX");
 		}
 		
 		if (potData != null) potData.dispose();

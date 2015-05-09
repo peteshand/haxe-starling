@@ -349,11 +349,6 @@ class Starling extends EventDispatcher
 		mStage3D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated, false, 10, true);
 		mStage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10, true);
 		
-		trace("mStage3D " + mStage3D);
-		trace("mStage3D.x " + mStage3D.x);
-		trace("mStage3D.context3D " + mStage3D.context3D);
-		trace("mStage3D.context3D.driverInfo " + mStage3D.context3D.driverInfo);
-		
 		if (mStage3D.context3D != null && mStage3D.context3D.driverInfo != "Disposed")
 		{
 			if (profile == "auto" || Std.is(profile, Array))
