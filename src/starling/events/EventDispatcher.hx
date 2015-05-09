@@ -104,15 +104,14 @@ class EventDispatcher
 	{
 		var bubbles:Bool = event.bubbles;
 		
-		//trace("CHECK"); // (event.type in mEventListeners) == Reflect.hasField(mEventListeners, event.type)
-		
-		if (mEventListeners == null) {
-			return;
-		}
-		var containsType:Bool = mEventListeners.exists(event.type);
-		
-		if (!bubbles && (mEventListeners == null || containsType == false))
+		if (!bubbles && mEventListeners == null)
 			return; // no need to do anything
+		
+		if (mEventListeners != null){
+			var containsType:Bool = mEventListeners.exists(event.type);
+			if (!bubbles && containsType == false)
+				return; // no need to do anything
+		}
 		
 		// we save the current target and restore it later;
 		// this allows users to re-dispatch events without creating a clone.
@@ -120,7 +119,10 @@ class EventDispatcher
 		var previousTarget:EventDispatcher = event.target;
 		event.setTarget(this);
 		
-		if (bubbles && Std.is(this, DisplayObject)) bubbleEvent(event);
+		if (bubbles && Std.is(this, DisplayObject)) {
+			
+			bubbleEvent(event);
+		}
 		else                                  invokeEvent(event);
 		
 		if (previousTarget != null) event.setTarget(previousTarget);
@@ -150,15 +152,16 @@ class EventDispatcher
 			for (i in 0...numListeners)
 			{
 				var listener:EDFunction = cast listeners[i];
-				var numArgs:Int = listener.length;
 				#if flash
+					var numArgs:Int = listener.length;
 					if (numArgs == 0) listener();
 					else if (numArgs == 1) {
 						listener(event);
 					}
 					else listener(event, event.data);
 				#else
-					listener(event, event.data);
+					trace("listener = " + listener);
+					if (listener != null) listener(event, event.data);
 				#end
 				
 				
