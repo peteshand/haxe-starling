@@ -1162,9 +1162,6 @@ class AssetManager extends EventDispatcher
 			// On mobile, it is not allowed / endorsed to make stage3D calls while the app
 			// is in the background. Thus, we pause queue processing if that's the case.
 			
-			trace("SystemUtil.isDesktop = " + SystemUtil.isDesktop);
-			
-			trace("CHECK THIS IS NEEDED");
 			//if (SystemUtil.isDesktop)
 				onComplete(asset);
 			//else
