@@ -1054,8 +1054,7 @@ class DisplayObject extends EventDispatcher
 		while (currentObject.mParent != null) {
 			currentObject = currentObject.mParent;
 		}
-		if (currentObject == this) return null;
-		else return currentObject;
+		return currentObject;
 	}
 	
 	/** The root object the display object is connected to (i.e. an instance of the class 

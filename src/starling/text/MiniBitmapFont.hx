@@ -76,7 +76,7 @@ class MiniBitmapFont
 		1174119799,  787274608
 	];
 	
-	private static var XML_DATA:Xml = null;/*<font>
+	private static var XML_DATA:Xml = Xml.parse('<font>
 	  <info face="mini" size="8" bold="0" italic="0" smooth="0"/>
 	  <common lineHeight="8" base="7" scaleW="128" scaleH="64" pages="1" packed="0"/>
 	  <chars count="191">
@@ -272,7 +272,7 @@ class MiniBitmapFont
 		<char id="183" x="99" y="51" width="1" height="1" xoffset="0" yoffset="4" xadvance="2"/>
 		<char id="32" x="6" y="56" width="0" height="0" xoffset="0" yoffset="127" xadvance="3"/>
 	  </chars>
-	</font>;*/
+	</font>');
 	
 	public static var texture(get, null):Texture;
 	public static var xml(get, null):Xml;
