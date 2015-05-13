@@ -119,7 +119,8 @@ class MainMenu extends Sprite
 		
 		var driverInfo:String = Starling.Context.driverInfo;
 		#if html5
-		if (driverInfo == null) driverInfo = "OpenGL";
+		// uncomment once lime has made pull request https://github.com/openfl/lime/pull/434
+		//if (driverInfo == null) driverInfo = "OpenGL";
 		#end
 		var infoText:TextField = new TextField(310, 64, driverInfo, "Verdana", 10);
 		infoText.x = 5;
@@ -127,8 +128,6 @@ class MainMenu extends Sprite
 		infoText.vAlign = VAlign.BOTTOM;
 		infoText.addEventListener(TouchEvent.TOUCH, onInfoTextTouched);
 		addChildAt(infoText, 0);
-		
-		Starling.current.showStats = true;
 	}
 	
 	private function onInfoTextTouched(event:TouchEvent):Void
