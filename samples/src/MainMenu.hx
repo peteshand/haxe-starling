@@ -116,13 +116,19 @@ class MainMenu extends Sprite
 		
 		// show information about rendering method (hardware/software)
 		
+		
 		var driverInfo:String = Starling.Context.driverInfo;
+		#if html5
+		if (driverInfo == null) driverInfo = "OpenGL";
+		#end
 		var infoText:TextField = new TextField(310, 64, driverInfo, "Verdana", 10);
 		infoText.x = 5;
 		infoText.y = 475 - infoText.height;
 		infoText.vAlign = VAlign.BOTTOM;
 		infoText.addEventListener(TouchEvent.TOUCH, onInfoTextTouched);
 		addChildAt(infoText, 0);
+		
+		Starling.current.showStats = true;
 	}
 	
 	private function onInfoTextTouched(event:TouchEvent):Void

@@ -54,6 +54,9 @@ class Main extends Sprite
 	{
 		removeEventListener(openfl.events.Event.ADDED_TO_STAGE, onAddedToStage);
 		start();
+		
+		//var bm:Bitmap = new Bitmap(MiniBitmapFont.getBitmapData());
+		//addChild(bm);
 	}
 
 	private function start():Void
@@ -71,7 +74,7 @@ class Main extends Sprite
 		RenderTexture.optimizePersistentBuffers = true; // should be safe on Desktop
 
 		mStarling = new Starling(Game, stage, null, null, "auto", "baselineExtended");
-		mStarling.antiAliasing = 2;
+		mStarling.antiAliasing = 0;
 		mStarling.simulateMultitouch = false;
 		//mStarling.enableErrorChecking = Capabilities.isDebugger;
 		mStarling.addEventListener(starling.events.Event.ROOT_CREATED, function():Void

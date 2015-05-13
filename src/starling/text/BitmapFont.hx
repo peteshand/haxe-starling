@@ -136,6 +136,8 @@ class BitmapFont
 					if (info.nodeType == Xml.Element ) {
 						mName = info.get("face");
 						mSize = Std.parseFloat(info.get("size")) / scale;
+						//mSize = Std.parseFloat(info.get("bold")) / scale;
+						//mSize = Std.parseFloat(info.get("italic")) / scale;
 						if (info.get("smooth") == "0") smoothing = TextureSmoothing.NONE;
 						if (mSize <= 0)
 						{
@@ -148,6 +150,11 @@ class BitmapFont
 					if (common.nodeType == Xml.Element ) {
 						mLineHeight = Std.parseFloat(common.get("lineHeight")) / scale;
 						mBaseline = Std.parseFloat(common.get("base")) / scale;
+						//mBaseline = Std.parseFloat(common.get("scaleW")) / scale;
+						//mBaseline = Std.parseFloat(common.get("scaleH")) / scale;
+						//mBaseline = Std.parseFloat(common.get("pages")) / scale;
+						//mBaseline = Std.parseFloat(common.get("packed")) / scale;
+						
 					}
 				}
 				for (chars in font.elementsNamed("chars")) {
