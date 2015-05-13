@@ -3,3 +3,4 @@
 /samples/bin/windows/*
 /samples/bin/android/*
 /samples/bin/.build
+samples/bin/.build

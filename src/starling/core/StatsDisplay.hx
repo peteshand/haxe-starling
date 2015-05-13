@@ -78,7 +78,6 @@ class StatsDisplay extends Sprite
 	{
 		mTotalTime += event.passedTime;
 		mFrameCount++;
-		
 		if (mTotalTime > UPDATE_INTERVAL)
 		{
 			update();

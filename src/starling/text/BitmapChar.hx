@@ -23,9 +23,9 @@ class BitmapChar
 {
 	private var mTexture:Texture;
 	private var mCharID:Int;
-	private var mXOffset:Float;
-	private var mYOffset:Float;
-	private var mXAdvance:Float;
+	private var mXOffset:Float = 0;
+	private var mYOffset:Float = 0;
+	private var mXAdvance:Float = 0;
 	private var mKernings:Map<Int, Float>;
 	
 	public var charID(get, null):Int;
