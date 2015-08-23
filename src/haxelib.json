@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [ "starling", "2d", "gpu", "openfl", "flash", "air", "js", "web", "cpp" ],
 	"description": "GPU powered 2D rendering engine which mimics the conventional Flash display list architecture",
-	"version": "0.3.0",
-	"releasenote": "Event Dispatchment fix",
+	"version": "0.3.2",
+	"releasenote": "fix js textfield line height",
 	"contributors": [ "p.j.shand" ],
 	"dependencies": {
 		"openfl": ""
