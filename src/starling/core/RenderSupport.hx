@@ -191,7 +191,7 @@ class RenderSupport
 	}
 
 	/** Sets up the projection matrix for ortographic 2D rendering. */
-	@:deprecated("Deprecated, use setProjectionMatrix instead");
+	@:deprecated("Deprecated, use setProjectionMatrix instead")
 	public function setOrthographicProjection(x:Float, y:Float, width:Float, height:Float):Void
 	{
 		setProjectionMatrix(x, y, width, height);

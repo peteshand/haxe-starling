@@ -82,7 +82,7 @@ class Main extends Sprite
 			loadAssets(startGame);
 			switchRendering();
 		});
-
+		
 		mStarling.start();
 		
 		#if js
