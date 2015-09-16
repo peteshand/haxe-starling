@@ -191,14 +191,9 @@ class RenderSupport
 	}
 
 	/** Sets up the projection matrix for ortographic 2D rendering. */
-	//[Deprecated(replacement="setProjectionMatrix")] 
+	@:deprecated("Deprecated, use setProjectionMatrix instead");
 	public function setOrthographicProjection(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		trace("Deprecated, use setProjectionMatrix instead");
-		/*var stage:Stage = Starling.current.stage;
-		sClipRect.setTo(x, y, width, height);
-		setProjectionMatrix(x, y, width, height,
-			stage.stageWidth, stage.stageHeight, stage.cameraPosition);*/
 		setProjectionMatrix(x, y, width, height);
 	}
 	
