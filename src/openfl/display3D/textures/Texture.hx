@@ -57,7 +57,7 @@ class Texture extends TextureBase {
 		#if openfl_legacy
 		var p = BitmapData.getRGBAPixels (bitmapData);
 		#elseif js
-		var p = ByteArray.__ofBuffer (@:privateAccess (bitmapData.__image).data.buffer);
+		var p = ByteArray.__ofBuffer (@:privateAccess (bitmapData.image).data.buffer);
 		#else
 		var p = @:privateAccess (bitmapData.__image).data.buffer;
 		#end
