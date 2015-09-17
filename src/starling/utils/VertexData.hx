@@ -165,8 +165,9 @@ class VertexData
 		}
 		else
 		{
-			while (sourceIndex < sourceEnd)
+			while (sourceIndex < sourceEnd) {
 				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+			}
 		}
 	}
 	
@@ -605,7 +606,6 @@ class VertexData
 					a.push(0);
 				}*/
 				mRawData = new Float32Array(a);
-				trace(mRawData);
 				
 				/*if (length > currentLength) {
 					for (j in 0...length) 
