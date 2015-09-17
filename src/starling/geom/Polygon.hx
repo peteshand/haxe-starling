@@ -283,12 +283,17 @@ class Polygon
 	{
 		var result:String = "[Polygon \n";
 		var numPoints:Int = this.numVertices;
-
+		var _x:Int;
+		var _y:Int;
+		
 		for (i in 0...numPoints)
 		{
+			_x = Std.int(Math.floor(mCoords[i * 2    ] * 10) / 10);
+			_y = Std.int(Math.floor(mCoords[i * 2 + 1] * 10) / 10);
+			
 			result += "  [Vertex " + i + ": " +
-			"x="   + cast(Math.floor(mCoords[i * 2    ] * 10) / 10, Int) + ", " +
-			"y="   + cast(Math.floor(mCoords[i * 2 + 1] * 10) / 10, Int) + "]"  +
+			"x="   + _x + ", " +
+			"y="   + _y + "]"  +
 			(i == numPoints - 1 ? "\n" : ",\n");
 		}
 

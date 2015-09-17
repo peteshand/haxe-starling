@@ -579,25 +579,24 @@ class DisplayObject extends EventDispatcher
 		return (a - epsilon < b) && (a + epsilon > b);
 	}
 	
-	private function findCommonParent(object1:DisplayObject,
-											object2:DisplayObject):DisplayObject
+	private function findCommonParent(object1:DisplayObject, object2:DisplayObject):DisplayObject
 	{
 		var currentObject:DisplayObject = object1;
-
+		
 		while (currentObject != null)
 		{
-			sAncestors[sAncestors.length] = currentObject; // avoiding 'push'
+			sAncestors.push(currentObject);
 			currentObject = currentObject.mParent;
 		}
-
+		
 		currentObject = object2;
 		while (currentObject != null && sAncestors.indexOf(currentObject) == -1)
 			currentObject = currentObject.mParent;
-
+		
 		sAncestors.length = 0;
-
+		
 		if (currentObject != null) return currentObject;
-		else throw new ArgumentError("Dynamic not connected to target");
+		else throw new ArgumentError("Object not connected to target");
 	}
 
 	// stage event handling

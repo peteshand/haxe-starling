@@ -239,9 +239,6 @@ class Canvas extends DisplayObject
 		var numVertices:Float = mVertexData.numVertices;
 		var numIndices:Float  = mIndexData.length;
 		
-		trace("mVertexData.rawData = " + mVertexData.rawData);
-		trace("mIndexData = " + mIndexData);
-		
 		mVertexBuffer = context.createVertexBuffer(cast numVertices, VertexData.ELEMENTS_PER_VERTEX);
 		
 		#if js

@@ -380,8 +380,7 @@ class RenderSupport
 		applyClipRect();
 
 		if (target != null)
-			Starling.Context.setRenderToTexture(target.base,
-					SystemUtil.supportsDepthAndStencil, antiAliasing);
+			Starling.Context.setRenderToTexture(target.base, SystemUtil.supportsDepthAndStencil, antiAliasing);
 		else
 			Starling.Context.setRenderToBackBuffer();
 	}

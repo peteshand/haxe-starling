@@ -68,7 +68,7 @@ class MainMenu extends Sprite
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, false],
 				["Benchmark", BenchmarkScene, true],
-				["Masks", MaskScene, true],
+				["Masks", MaskScene, false],
 				["Sprite 3D", Sprite3DScene, true]
 			];
 		#elseif cpp

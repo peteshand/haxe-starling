@@ -179,7 +179,12 @@ class VertexData
 		#end
 		
 		var targetIndex:Int = mRawData.length;
-		var rawData:Float32Array = data.mRawData;
+		
+		#if js
+			var rawData:Float32Array = data.mRawData;
+		#else
+			var rawData:Vector<Float> = data.mRawData;
+		#end
 		var rawDataLength:Int = rawData.length;
 		
 		for (i in 0...rawDataLength)

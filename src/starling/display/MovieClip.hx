@@ -49,7 +49,7 @@ class MovieClip extends Image implements IAnimatable
 	private var mTextures:Array<Texture>;
 	private var mSounds:Array<Sound>;
 	private var mDurations:Array<Float>;
-	private var mStartTimes:Array<Float>;
+	private var mStartTimes:Vector<Float>;
 
 	private var mDefaultFrameDuration:Float;
 	private var mCurrentTime:Float;
@@ -219,7 +219,7 @@ class MovieClip extends Image implements IAnimatable
 	{
 		var numFrames:Int = this.numFrames;
 		
-		mStartTimes = [];
+		mStartTimes.length = 0;
 		mStartTimes[0] = 0;
 		
 		for (i in 1...numFrames)
