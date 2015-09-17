@@ -14,13 +14,12 @@
 	
 	<!-- classpath, haxe libs -->
 	<source path="src" />
-	<source path="../src" />
+	<source path="../../src" />
 	
 	<set name="lime-hybrid" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
 	<haxelib name="format" />
-	
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
