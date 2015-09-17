@@ -152,7 +152,7 @@ class BunnyMark extends Sprite
     private function enterFrame(e:Event):Void
     {    
 		if (pressingAdd) addCount++;
-		if (addCount % 5 == 0) {
+		if (addCount % 10 == 0) {
 			AddBunnies();
 			addCount++;
 		}
