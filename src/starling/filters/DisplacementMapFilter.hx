@@ -19,6 +19,7 @@ import openfl.display3D.Program3D;
 import openfl.display3D.VertexBuffer3D;
 import openfl.geom.Matrix3D;
 import openfl.geom.Point;
+import openfl.utils.Float32Array;
 import openfl.Vector;
 import starling.utils.StarlingUtils;
 
@@ -55,8 +56,14 @@ class DisplacementMapFilter extends FragmentFilter
 	/** Helper objects */
 	private static var _sOneHalf:Vector<Float>;
 	private static var sOneHalf(get, set):Vector<Float>;
-	private static var _sMapTexCoords:Vector<Float>;
-	private static var sMapTexCoords(get, set):Vector<Float>;
+	
+	#if js
+		private static var _sMapTexCoords:Float32Array;
+		private static var sMapTexCoords(get, set):Float32Array;
+	#else
+		private static var _sMapTexCoords:Vector<Float>;
+		private static var sMapTexCoords(get, set):Vector<Float>;
+	#end
 	private static var sMatrix:Matrix3D = new Matrix3D();
 	private static var _sMatrixData:Array<Float>;
 	private static var sMatrixData(get, set):Array<Float>;
@@ -118,26 +125,49 @@ class DisplacementMapFilter extends FragmentFilter
 		return _sOneHalf = value;
 	}
 	
-	static function get_sMapTexCoords():Vector<Float> 
-	{
-		if (_sMapTexCoords == null) {
-			_sMapTexCoords = new Vector<Float>();
-			_sMapTexCoords.push(0);
-			_sMapTexCoords.push(0);
-			_sMapTexCoords.push(1);
-			_sMapTexCoords.push(0);
-			_sMapTexCoords.push(0);
-			_sMapTexCoords.push(1);
-			_sMapTexCoords.push(1);
-			_sMapTexCoords.push(1);
+	#if js
+		static function get_sMapTexCoords():Float32Array
+		{
+			if (_sMapTexCoords == null) {
+				_sMapTexCoords = new Float32Array();
+				_sMapTexCoords.set(0, 0);
+				_sMapTexCoords.set(1, 0);
+				_sMapTexCoords.set(2, 1);
+				_sMapTexCoords.set(3, 0);
+				_sMapTexCoords.set(4, 0);
+				_sMapTexCoords.set(5, 1);
+				_sMapTexCoords.set(6, 1);
+				_sMapTexCoords.set(7, 1);
+			}
+			return _sMapTexCoords;
 		}
-		return _sMapTexCoords;
-	}
-	
-	static function set_sMapTexCoords(value:Vector<Float>):Vector<Float> 
-	{
-		return _sMapTexCoords = value;
-	}
+		
+		static function set_sMapTexCoords(value:Float32Array):Float32Array
+		{
+			return _sMapTexCoords = value;
+		}
+	#else
+		static function get_sMapTexCoords():Vector<Float>
+		{
+			if (_sMapTexCoords == null) {
+				_sMapTexCoords = new Vector<Float>();
+				_sMapTexCoords.push(0);
+				_sMapTexCoords.push(0);
+				_sMapTexCoords.push(1);
+				_sMapTexCoords.push(0);
+				_sMapTexCoords.push(0);
+				_sMapTexCoords.push(1);
+				_sMapTexCoords.push(1);
+				_sMapTexCoords.push(1);
+			}
+			return _sMapTexCoords;
+		}
+		
+		static function set_sMapTexCoords(value:Vector<Float>):Vector<Float>
+		{
+			return _sMapTexCoords = value;
+		}
+	#end
 	
 	/** Creates a new displacement map filter that uses the provided map texture. */
 	public function new(_mapTexture:Texture, mapPoint:Point=null, 
@@ -281,7 +311,12 @@ class DisplacementMapFilter extends FragmentFilter
 		sMapTexCoords[6] = -mapX + maxU; sMapTexCoords[7] = -mapY + maxV;
 		
 		mMapTexture.adjustTexCoords(sMapTexCoords);
-		mMapTexCoordBuffer.uploadFromVector(sMapTexCoords, 0, 4);
+		#if js
+			mMapTexCoordBuffer.uploadFromFloat32Array(sMapTexCoords, 0, 4);
+		#else
+			mMapTexCoordBuffer.uploadFromVector(sMapTexCoords, 0, 4);
+		#end
+		
 	}
 	
 	// properties

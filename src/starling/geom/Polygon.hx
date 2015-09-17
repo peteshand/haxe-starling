@@ -14,6 +14,7 @@ import openfl.errors.ArgumentError;
 import openfl.errors.Error;
 import openfl.errors.RangeError;
 import openfl.geom.Point;
+import openfl.utils.Float32Array;
 import openfl.Vector;
 
 import starling.utils.VertexData;
@@ -260,7 +261,11 @@ class Polygon
 
 	/** Copies all vertices to a 'Vector', beginning at a certain target index and skipping
 	 *  'stride' coordinates between each 'x, y' pair. */
-	public function copyToVector(target:Array<Float>, targetIndex:Int=0, stride:Int=0):Array<Float>
+	#if js
+	public function copyToVector(target:Float32Array, targetIndex:Int = 0, stride:Int = 0):Float32Array
+	#else
+	public function copyToVector(target:Vector<Float>, targetIndex:Int = 0, stride:Int = 0):Vector<Float>
+	#end
 	{
 		var numVertices:Int = this.numVertices;
 

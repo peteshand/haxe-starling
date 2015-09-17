@@ -4,3 +4,10 @@
 /samples/bin/android/*
 /samples/bin/.build
 samples/bin/.build
+/samples/bunnymark/bin/flash
+/samples/bunnymark/bin/html5
+/samples/original-demo/bin/android
+/samples/original-demo/bin/flash
+/samples/original-demo/bin/html5
+/samples/original-demo/bin/windows
+/samples/bunnymark/bin/windows
