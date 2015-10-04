@@ -10,6 +10,7 @@
 
 package starling.utils;
 
+import haxe.io.Bytes;
 import openfl.errors.ArgumentError;
 import openfl.errors.Error;
 import openfl.geom.Matrix;
@@ -17,7 +18,9 @@ import openfl.geom.Matrix3D;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.geom.Vector3D;
+import openfl.utils.ArrayBuffer;
 import openfl.Vector;
+import openfl.utils.Float32Array;
 
 /** The VertexData class manages a raw list of vertex information, allowing direct upload
  *  to Stage3D vertex buffers. <em>You only have to work with this class if you create display 
@@ -59,14 +62,21 @@ class VertexData
 	/** The offset of texture coordinates (u, v) within a vertex. */
 	public static var TEXCOORD_OFFSET:Int = 6;
 	
-	private var mRawData:Vector<Float>;
+	
 	private var mPremultipliedAlpha:Bool;
 	private var mNumVertices:Int;
 
 	public var tinted(get, null):Bool;
 	public var premultipliedAlpha(get, set):Bool;
 	public var numVertices(get, set):Int;
+	
+	#if js
+	private var mRawData:Float32Array;
+	public var rawData(get, set):Float32Array;
+	#else
+	private var mRawData:Vector<Float>;
 	public var rawData(get, set):Vector<Float>;
+	#end
 	
 	/** Helper object. */
 	private static var sHelperPoint:Point = new Point();
@@ -75,7 +85,12 @@ class VertexData
 	/** Create a new VertexData object with a specified number of vertices. */
 	public function new(numVertices:Int, premultipliedAlpha:Bool=false)
 	{
-		mRawData = new Vector<Float>();
+		#if js
+			mRawData = new Float32Array();
+		#else
+			mRawData = new Vector<Float>();
+		#end
+		
 		mPremultipliedAlpha = premultipliedAlpha;
 		this.numVertices = numVertices;
 	}
@@ -89,8 +104,16 @@ class VertexData
 		
 		var clone:VertexData = new VertexData(0, mPremultipliedAlpha);
 		clone.mNumVertices = numVertices;
-		clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX, numVertices * VertexData.ELEMENTS_PER_VERTEX);
-		clone.mRawData.fixed = true;
+		
+		#if js
+			trace("FIX");
+			//clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX, numVertices * VertexData.ELEMENTS_PER_VERTEX);
+			//clone.mRawData.fixed = true;
+		#else
+			clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX, numVertices * VertexData.ELEMENTS_PER_VERTEX);
+			clone.mRawData.fixed = true;
+		#end
+		
 		return clone;
 	}
 	
@@ -113,7 +136,12 @@ class VertexData
 		
 		var x:Float;
 		var y:Float;
-		var targetRawData:Vector<Float> = targetData.mRawData;
+		
+		#if js
+			var targetRawData:Float32Array = targetData.mRawData;
+		#else
+			var targetRawData:Vector<Float> = targetData.mRawData;
+		#end
 		var targetIndex:Int = targetVertexID * VertexData.ELEMENTS_PER_VERTEX;
 		var sourceIndex:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX;
 		var sourceEnd:Int = (vertexID + numVertices) * VertexData.ELEMENTS_PER_VERTEX;
@@ -137,25 +165,37 @@ class VertexData
 		}
 		else
 		{
-			while (sourceIndex < sourceEnd)
+			while (sourceIndex < sourceEnd) {
 				targetRawData[targetIndex++] = mRawData[sourceIndex++];
+			}
 		}
 	}
 	
 	/** Appends the vertices from another VertexData object. */
 	public function append(data:VertexData):Void
 	{
-		mRawData.fixed = false;
+		#if !js
+			mRawData.fixed = false;
+		#end
 		
 		var targetIndex:Int = mRawData.length;
-		var rawData:Vector<Float> = data.mRawData;
+		
+		#if js
+			var rawData:Float32Array = data.mRawData;
+		#else
+			var rawData:Vector<Float> = data.mRawData;
+		#end
 		var rawDataLength:Int = rawData.length;
 		
 		for (i in 0...rawDataLength)
 			mRawData[targetIndex++] = rawData[i];
 		
 		mNumVertices += data.numVertices;
-		mRawData.fixed = true;
+		
+		#if !js
+			mRawData.fixed = true;
+		#end
+		
 	}
 	
 	// functions
@@ -549,22 +589,15 @@ class VertexData
 	private function get_numVertices():Int { return mNumVertices; }
 	private function set_numVertices(value:Int):Int
 	{
-		mRawData.fixed = false;
-		
 		#if js
-			//OPTIMIZE;
-			// js hack to init values to 0
-			var currentLength:Int = 0;
-			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
-			if (mRawData.length > currentLength) {
-				for (j in 0...mRawData.length) 
-				{
-					untyped __js__('if ("undefined" === typeof this.mRawData.data[j]) this.mRawData.data[j] = 0;');
-				}
-			}
+			var length:Int = value * VertexData.ELEMENTS_PER_VERTEX;
+			var a = [for (j in 0...length) 0];	
+			mRawData = new Float32Array(a);
 		#else
+			mRawData.fixed = false;
 			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
 		#end
+		
 		
 		
 		var startIndex:Int = (mNumVertices * VertexData.ELEMENTS_PER_VERTEX) + VertexData.COLOR_OFFSET + 3;
@@ -578,17 +611,32 @@ class VertexData
         }
 		
 		mNumVertices = value;
-		mRawData.fixed = true;
+		
+		#if !js
+			mRawData.fixed = true;
+		#end
+		
 		
 		return value;
 	}
 	
-	/** The raw vertex data; not a copy! */
-	private function get_rawData():Vector<Float> { return mRawData; }
 	
-	private function set_rawData(value:Vector<Float>):Vector<Float>
-	{
-		mRawData = value;
-		return value;
-	}
+	
+	
+	/** The raw vertex data; not a copy! */
+	#if js
+		private function get_rawData():Float32Array { return mRawData; }
+		private function set_rawData(value:Float32Array):Float32Array
+		{
+			mRawData = value;
+			return value;
+		}
+	#else
+		private function get_rawData():Vector<Float> { return mRawData; }
+		private function set_rawData(value:Vector<Float>):Vector<Float>
+		{
+			mRawData = value;
+			return value;
+		}
+	#end
 }

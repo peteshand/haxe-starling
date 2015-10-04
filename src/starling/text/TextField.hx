@@ -304,7 +304,7 @@ class TextField extends DisplayObjectContainer
 		var align = TextFormatAlign.CENTER;
 		if (hAlign == HAlign.LEFT) align = TextFormatAlign.LEFT;
 		else if (hAlign == HAlign.RIGHT) align = TextFormatAlign.RIGHT;
-		var textFormat:TextFormat = new TextFormat(mFontName, mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, align);
+		var textFormat:TextFormat = new TextFormat(mFontName, cast(mFontSize * scale, Null<Int>), mColor, mBold, mItalic, mUnderline, null, null, align, null, null, null, null);
 		textFormat.kerning = mKerning;
 		
 		sNativeTextField.defaultTextFormat = textFormat;
@@ -332,9 +332,6 @@ class TextField extends DisplayObjectContainer
 		
 		var textWidth:Float  = sNativeTextField.textWidth;
 		var textHeight:Float = sNativeTextField.textHeight;
-		#if js
-			textHeight *= sNativeTextField.numLines;
-		#end
 		
 		if (isHorizontalAutoSize)
 			sNativeTextField.width = width = Math.ceil(textWidth + 5);
@@ -397,7 +394,7 @@ class TextField extends DisplayObjectContainer
 			if (size <= 4) break;
 			
 			var format:TextFormat = textField.defaultTextFormat;
-			format.size = size--;
+			format.size = cast(size--, Null<Int>);
 			textField.defaultTextFormat = format;
 
 			if (mIsHtmlText) textField.htmlText = mText;

@@ -119,13 +119,12 @@ class StarlingUtils
 	
     /** Uses a matrix to transform 2D coordinates into a different space. If you pass a 
      *  'resultPoint', the result will be stored in this point instead of creating a new object.*/
+    @:deprecated("[Starling] The method 'transformCoords' is deprecated. Please use 'MatrixUtil.transformCoords' instead.")
     public static function transformCoords(matrix:Matrix, x:Float, y:Float, resultPoint:Point=null):Point
     {
         if (!deprecationNotified)
         {
             deprecationNotified = true;
-            trace("[Starling] The method 'transformCoords' is deprecated. " + 
-                  "Please use 'MatrixUtil.transformCoords' instead.");
         }
         
         if (resultPoint == null) resultPoint = new Point();   
