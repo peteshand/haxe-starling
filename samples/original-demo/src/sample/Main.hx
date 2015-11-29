@@ -2,6 +2,8 @@ package sample;
 
 import haxe.Timer;
 import openfl.display.BitmapData;
+import openfl.text.TextField;
+import openfl.text.TextFieldType;
 import starling.events.EventDispatcher;
 
 #if js
@@ -37,6 +39,7 @@ class Main extends Sprite
 	private var mStarling:Starling;
 	public static var _mouseOnStage:Bool = false;
 	public static var mouseOnStageDispatcher:EventDispatcher;
+	public static var _root:Sprite;
 	
 	private var mouseOnStage(get, set):Bool;
 	
@@ -44,6 +47,7 @@ class Main extends Sprite
 	{
 		super();
 		
+		Main._root = this;
 		Main.mouseOnStageDispatcher = new EventDispatcher();
 		
 		if (stage != null) start();
@@ -74,7 +78,7 @@ class Main extends Sprite
 		RenderTexture.optimizePersistentBuffers = true; // should be safe on Desktop
 
 		mStarling = new Starling(Game, stage, null, null, "auto", "baselineExtended");
-		mStarling.antiAliasing = 0;
+		mStarling.antiAliasing = 2;
 		mStarling.simulateMultitouch = false;
 		//mStarling.enableErrorChecking = Capabilities.isDebugger;
 		mStarling.addEventListener(starling.events.Event.ROOT_CREATED, function():Void
@@ -128,6 +132,7 @@ class Main extends Sprite
 
 		assets.loadQueue(function(ratio:Float):Void
 		{
+			trace("ratio = " + ratio);
 			if (ratio == 1) onComplete(assets);
 		});
 	}

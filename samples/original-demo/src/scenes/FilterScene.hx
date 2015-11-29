@@ -27,7 +27,7 @@ class FilterScene extends Scene
 		
 		mButton = new Button(Game.assets.getTexture("button_normal"), "Switch Filter");
 		mButton.name = "switchFilers";
-		mButton.x = cast(Constants.CenterX - mButton.width / 2);
+		mButton.x = Math.round(Constants.CenterX - mButton.width / 2);
 		mButton.y = 15;
 		mButton.addEventListener(Event.TRIGGERED, onButtonTriggered);
 		addChild(mButton);
@@ -52,7 +52,7 @@ class FilterScene extends Scene
 		mFilterInfos.push(filterInfo);
 		
 		mInfoText.text = filterInfo[0];
-		mImage.filter  = filterInfo[1];
+		mImage.filter = filterInfo[1];
 	}
 	
 	private function initFilters():Void

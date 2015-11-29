@@ -11,6 +11,7 @@
 package starling.textures;
 
 import openfl.display3D.Context3D;
+import openfl.display3D.Context3DProfile;
 import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.VertexBuffer3D;
 import openfl.display3D.textures.TextureBase;
@@ -296,7 +297,7 @@ class RenderTexture extends SubTexture
 
 		if (support == null)
 		{
-			if (target.profile != "baselineConstrained" && Reflect.hasField(context, "createRectangleTexture" /*"createRectangleTexture" in context*/))
+			if (target.profile != Context3DProfile.BASELINE_CONSTRAINED && Reflect.hasField(context, "createRectangleTexture" /*"createRectangleTexture" in context*/))
 			{
 				var texture:TextureBase = null;
 				var buffer:VertexBuffer3D = null;

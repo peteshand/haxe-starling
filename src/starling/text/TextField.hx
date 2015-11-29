@@ -132,6 +132,7 @@ class TextField extends DisplayObjectContainer
 	public var textBounds(get, null):Rectangle;
 	
 	public var text(get, set):String;
+	public var htmlText(get, set):String;
 	public var fontName(get, set):String;
 	public var fontSize(get, set):Float;
 	public var color(get, set):UInt;
@@ -146,7 +147,7 @@ class TextField extends DisplayObjectContainer
 	public var autoSize(get, set):String;
 	public var batchable(get, set):Bool;
 	public var nativeFilters(get, set):Array<BitmapFilter>;
-	public var isHtmlText(get, set):Bool;
+	private var isHtmlText(get, set):Bool;
 	public static var defaultTextureFormat(get, set):Context3DTextureFormat;
 	private static var bitmapFonts(get, null):Map<String, BitmapFont>;
 	
@@ -278,10 +279,10 @@ class TextField extends DisplayObjectContainer
 	 *  over a range of characters or the complete TextField) to modify the format to
 	 *  your needs.
 	 *  
-	 *  @param textField  the flash.text.TextField object that you can format.
+	 *  @param textField  the openfl.text.TextField object that you can format.
 	 *  @param textFormat the default text format that's currently set on the text field.
 	 */
-	private function formatText(textField:flash.text.TextField, textFormat:TextFormat):Void {}
+	private function formatText(textField:openfl.text.TextField, textFormat:TextFormat):Void {}
 
 	private function renderText(scale:Float, resultTextBounds:Rectangle):BitmapData
 	{
@@ -383,7 +384,7 @@ class TextField extends DisplayObjectContainer
 		return bitmapData;
 	}
 	
-	private function autoScaleNativeTextField(textField:flash.text.TextField):Void
+	private function autoScaleNativeTextField(textField:openfl.text.TextField):Void
 	{
 		var size:Float   = cast(textField.defaultTextFormat.size);
 		var maxHeight:Int = Std.int (textField.height - 4);
@@ -402,7 +403,7 @@ class TextField extends DisplayObjectContainer
 		}
 	}
 	
-	private function calculateFilterOffset(textField:flash.text.TextField,
+	private function calculateFilterOffset(textField:openfl.text.TextField,
 										   hAlign:HAlign, vAlign:VAlign):Point
 	{
 		var resultOffset:Point = new Point();
@@ -596,6 +597,14 @@ class TextField extends DisplayObjectContainer
 			mRequiresRedraw = true;
 		}
 		return value;
+	}
+	
+	/** The displayed text. */
+	private function get_htmlText():String { return mText; }
+	private function set_htmlText(value:String):String
+	{
+		this.isHtmlText = true;
+		return this.text = value;
 	}
 	
 	/** The name of the font (true type or bitmap font). */

@@ -261,11 +261,11 @@ class Polygon
 
 	/** Copies all vertices to a 'Vector', beginning at a certain target index and skipping
 	 *  'stride' coordinates between each 'x, y' pair. */
-	#if js
+	/*#if js
 	public function copyToVector(target:Float32Array, targetIndex:Int = 0, stride:Int = 0):Float32Array
-	#else
+	#else*/
 	public function copyToVector(target:Vector<Float>, targetIndex:Int = 0, stride:Int = 0):Vector<Float>
-	#end
+	//#end
 	{
 		var numVertices:Int = this.numVertices;
 

@@ -1,7 +1,11 @@
 package scenes;
 
+import openfl.display.Bitmap;
+import openfl.display.Sprite;
+import sample.Main;
 import starling.text.BitmapFont;
 import starling.text.TextField;
+import starling.text.TextFieldAutoSize;
 import starling.utils.Color;
 import starling.utils.HAlign;
 import starling.utils.VAlign;
@@ -59,22 +63,36 @@ class TextScene extends Scene
 		
 		placementY = leftTF.y + leftTF.height + offset;
 		
-		#if flash
-		var fontTF:TextField = new TextField(300, 80,
-			"... or centered. Embedded fonts\nare detected automatically and\n" +
-			"<font color='#208080'>support</font> " +
-			"<font color='#993333'>basic</font> " +
-			"<font color='#333399'>HTML</font> " +
-			"<font color='#208020'>formatting</font>.",
-			ttFont, ttFontSize, 0x0, true);
+		//#if flash
+		var value:String = "... or centered. Embedded fonts\nare detected automatically and\n" +
+			"<font color='#208080'>support</font>" +
+			"<font color='#993333'>basic</font>" +
+			"<font color='#333399'>HTML</font>" +
+			"<font color='#208020'>formatting</font>.";
+		
+		var fontTF:TextField = new TextField(300, 80, value, ttFont, ttFontSize, 0x0, true);
 		fontTF.x = offset;
 		fontTF.y = placementY;
 		fontTF.border = true;
-		fontTF.isHtmlText = true;
+		fontTF.htmlText = value;
 		addChild(fontTF);
+		fontTF.redraw();
+		
+		/*var container = new Sprite();
+		container.graphics.beginFill(0xFF0000, 0.5);
+		container.graphics.drawRect(0, 0, 200, 200);
+		Main._root.addChild(container);*/
+		
+		
+		
+		/*var bitmap = new Bitmap(fontTF.bitmapData);
+		trace("bitmap.width = " + fontTF.bitmapData.width);
+		trace("bitmap.height = " + fontTF.bitmapData.height);
+		
+		container.addChild(bitmap);*/
 		
 		placementY = fontTF.y + fontTF.height + offset;
-		#end
+		//#end
 		
 		// Bitmap fonts!
 		
@@ -88,9 +106,11 @@ class TextScene extends Scene
 		// Look at the file "Assets.as" to see how this is done.
 		// After that, you can use them just like a conventional TrueType font.
 		
-		var bmpFontTF:TextField = new TextField(300, 150,  "It is very easy to\nuse Bitmap fonts,\nas well!", "Desyrel");
+		var bmpFontTF:TextField = new TextField(300, 150,  "It is very easy to\nuse Bitmap fonts,\nas well!", "desyrel");
+		//var bmpFontTF:TextField = new TextField(300, 150,  "111 111 to test\ntest~!", "desyrel");
 		bmpFontTF.fontSize = BitmapFont.NATIVE_SIZE; // the native bitmap font size, no scaling
 		bmpFontTF.color = Color.WHITE; // use white to use the texture as it is (no tinting)
+		//bmpFontTF.autoSize = TextFieldAutoSize.HORIZONTAL;
 		bmpFontTF.x = offset;
 		bmpFontTF.y = placementY;
 		addChild(bmpFontTF);

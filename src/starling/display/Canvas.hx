@@ -241,11 +241,11 @@ class Canvas extends DisplayObject
 		
 		mVertexBuffer = context.createVertexBuffer(cast numVertices, VertexData.ELEMENTS_PER_VERTEX);
 		
-		#if js
+		/*#if js
 			mVertexBuffer.uploadFromFloat32Array(mVertexData.rawData, 0, cast numVertices);
-		#else
+		#else*/
 			mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, cast numVertices);
-		#end
+		//#end
 		
 		mIndexBuffer = context.createIndexBuffer(cast numIndices);
 		mIndexBuffer.uploadFromVector(mIndexData, 0, cast numIndices);

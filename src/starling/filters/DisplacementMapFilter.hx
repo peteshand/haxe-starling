@@ -57,13 +57,13 @@ class DisplacementMapFilter extends FragmentFilter
 	private static var _sOneHalf:Vector<Float>;
 	private static var sOneHalf(get, set):Vector<Float>;
 	
-	#if js
+	/*#if js
 		private static var _sMapTexCoords:Float32Array;
 		private static var sMapTexCoords(get, set):Float32Array;
-	#else
+	#else*/
 		private static var _sMapTexCoords:Vector<Float>;
 		private static var sMapTexCoords(get, set):Vector<Float>;
-	#end
+	//#end
 	private static var sMatrix:Matrix3D = new Matrix3D();
 	private static var _sMatrixData:Array<Float>;
 	private static var sMatrixData(get, set):Array<Float>;
@@ -125,7 +125,7 @@ class DisplacementMapFilter extends FragmentFilter
 		return _sOneHalf = value;
 	}
 	
-	#if js
+	/*#if js
 		static function get_sMapTexCoords():Float32Array
 		{
 			if (_sMapTexCoords == null) {
@@ -146,7 +146,7 @@ class DisplacementMapFilter extends FragmentFilter
 		{
 			return _sMapTexCoords = value;
 		}
-	#else
+	#else*/
 		static function get_sMapTexCoords():Vector<Float>
 		{
 			if (_sMapTexCoords == null) {
@@ -167,7 +167,7 @@ class DisplacementMapFilter extends FragmentFilter
 		{
 			return _sMapTexCoords = value;
 		}
-	#end
+	//#end
 	
 	/** Creates a new displacement map filter that uses the provided map texture. */
 	public function new(_mapTexture:Texture, mapPoint:Point=null, 
@@ -311,11 +311,11 @@ class DisplacementMapFilter extends FragmentFilter
 		sMapTexCoords[6] = -mapX + maxU; sMapTexCoords[7] = -mapY + maxV;
 		
 		mMapTexture.adjustTexCoords(sMapTexCoords);
-		#if js
+		/*#if js
 			mMapTexCoordBuffer.uploadFromFloat32Array(sMapTexCoords, 0, 4);
-		#else
+		#else*/
 			mMapTexCoordBuffer.uploadFromVector(sMapTexCoords, 0, 4);
-		#end
+		//#end
 		
 	}
 	

@@ -70,13 +70,13 @@ class VertexData
 	public var premultipliedAlpha(get, set):Bool;
 	public var numVertices(get, set):Int;
 	
-	#if js
+	/*#if js
 	private var mRawData:Float32Array;
 	public var rawData(get, set):Float32Array;
-	#else
+	#else*/
 	private var mRawData:Vector<Float>;
 	public var rawData(get, set):Vector<Float>;
-	#end
+	//#end
 	
 	/** Helper object. */
 	private static var sHelperPoint:Point = new Point();
@@ -85,11 +85,11 @@ class VertexData
 	/** Create a new VertexData object with a specified number of vertices. */
 	public function new(numVertices:Int, premultipliedAlpha:Bool=false)
 	{
-		#if js
+		/*#if js
 			mRawData = new Float32Array();
-		#else
+		#else*/
 			mRawData = new Vector<Float>();
-		#end
+		//#end
 		
 		mPremultipliedAlpha = premultipliedAlpha;
 		this.numVertices = numVertices;
@@ -105,14 +105,14 @@ class VertexData
 		var clone:VertexData = new VertexData(0, mPremultipliedAlpha);
 		clone.mNumVertices = numVertices;
 		
-		#if js
+		/*#if js
 			trace("FIX");
 			//clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX, numVertices * VertexData.ELEMENTS_PER_VERTEX);
 			//clone.mRawData.fixed = true;
-		#else
+		#else*/
 			clone.mRawData = mRawData.slice(vertexID * VertexData.ELEMENTS_PER_VERTEX, numVertices * VertexData.ELEMENTS_PER_VERTEX);
 			clone.mRawData.fixed = true;
-		#end
+		//#end
 		
 		return clone;
 	}
@@ -137,11 +137,11 @@ class VertexData
 		var x:Float;
 		var y:Float;
 		
-		#if js
+		/*#if js
 			var targetRawData:Float32Array = targetData.mRawData;
-		#else
+		#else*/
 			var targetRawData:Vector<Float> = targetData.mRawData;
-		#end
+		//#end
 		var targetIndex:Int = targetVertexID * VertexData.ELEMENTS_PER_VERTEX;
 		var sourceIndex:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX;
 		var sourceEnd:Int = (vertexID + numVertices) * VertexData.ELEMENTS_PER_VERTEX;
@@ -180,11 +180,11 @@ class VertexData
 		
 		var targetIndex:Int = mRawData.length;
 		
-		#if js
+		/*#if js
 			var rawData:Float32Array = data.mRawData;
-		#else
+		#else*/
 			var rawData:Vector<Float> = data.mRawData;
-		#end
+		//#end
 		var rawDataLength:Int = rawData.length;
 		
 		for (i in 0...rawDataLength)
@@ -291,10 +291,10 @@ class VertexData
 		texCoords.x = Std.int(mRawData[offset]);
 		texCoords.y = Std.int(mRawData[Std.int(offset + 1)]);
 		
-		#if js
+		/*#if js
 		untyped __js__('if ("undefined" === typeof texCoords.x) texCoords.x = 0;');
 		untyped __js__('if ("undefined" === typeof texCoords.y) texCoords.y = 0;');
-		#end
+		#end*/
 		
 		//if (texCoords.x == undefined) texCoords.x = 0;
 		//if (texCoords.y == undefined) texCoords.y = 0;
@@ -589,14 +589,14 @@ class VertexData
 	private function get_numVertices():Int { return mNumVertices; }
 	private function set_numVertices(value:Int):Int
 	{
-		#if js
+		/*#if js
 			var length:Int = value * VertexData.ELEMENTS_PER_VERTEX;
 			var a = [for (j in 0...length) 0];	
 			mRawData = new Float32Array(a);
-		#else
+		#else*/
 			mRawData.fixed = false;
 			mRawData.length = value * VertexData.ELEMENTS_PER_VERTEX;
-		#end
+		//#end
 		
 		
 		
@@ -624,19 +624,19 @@ class VertexData
 	
 	
 	/** The raw vertex data; not a copy! */
-	#if js
+	/*#if js
 		private function get_rawData():Float32Array { return mRawData; }
 		private function set_rawData(value:Float32Array):Float32Array
 		{
 			mRawData = value;
 			return value;
 		}
-	#else
+	#else*/
 		private function get_rawData():Vector<Float> { return mRawData; }
 		private function set_rawData(value:Vector<Float>):Vector<Float>
 		{
 			mRawData = value;
 			return value;
 		}
-	#end
+	//#end
 }

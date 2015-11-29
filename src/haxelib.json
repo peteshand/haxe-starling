@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [ "starling", "2d", "gpu", "openfl", "flash", "air", "js", "web", "cpp" ],
 	"description": "GPU powered 2D rendering engine which mimics the conventional Flash display list architecture",
-	"version": "0.3.4",
-	"releasenote": "js target Vector<Float> changed to ArrayFloat32",
+	"version": "0.3.5",
+	"releasenote": "js bitmap font fix, flash/air filters fixed",
 	"contributors": [ "p.j.shand" ],
 	"dependencies": {
 		"openfl": ""

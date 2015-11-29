@@ -193,13 +193,17 @@ class AssetManager extends EventDispatcher
 	 *  texture atlases. */
 	public function getTexture(name:String):Texture
 	{
-		if (mTextures.exists(name)) return mTextures.get(name);
+		if (mTextures.exists(name)) {
+			return mTextures.get(name);
+		}
 		else
 		{
 			for (atlas in mAtlases)
 			{
 				var texture:Texture = atlas.getTexture(name);
-				if (texture != null) return texture;
+				if (texture != null) {
+					return texture;
+				}
 			}
 			return null;
 		}
@@ -970,6 +974,7 @@ class AssetManager extends EventDispatcher
 					
 					bytes.clear();
 					addTexture(name, texture);
+					onComplete();
 				}
 				else if (byteArrayStartsWith(bytes, "{") || byteArrayStartsWith(bytes, "["))
 				{

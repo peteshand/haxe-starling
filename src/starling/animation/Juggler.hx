@@ -84,8 +84,10 @@ class Juggler implements IAnimatable
 		{
 			mObjects[mObjects.length] = object;
 		
-			var dispatcher:EventDispatcher = cast object;
-			if (dispatcher != null) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+			if (Std.is(object, EventDispatcher)){
+				var dispatcher:EventDispatcher = cast(object, EventDispatcher);
+				if (dispatcher != null) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+			}
 		}
 	}
 	
