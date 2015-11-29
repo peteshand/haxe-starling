@@ -4,6 +4,7 @@ package;
 import openfl.Assets;
 import openfl.display.BitmapData;
 import scenes.AnimationScene;
+import scenes.BatchBenchmarkScene;
 import scenes.BenchmarkScene;
 import scenes.BlendModeScene;
 import scenes.CustomHitTestScene;
@@ -49,10 +50,11 @@ class MainMenu extends Sprite
 				["Animations", AnimationScene, true],
 				["Custom hit-test", CustomHitTestScene, true],
 				["Movie Clip", MovieScene, true],
-				["Filters", FilterScene, false],
+				["Filters", FilterScene, true],
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, true],
 				["Benchmark", BenchmarkScene, true],
+				//["Batch Benchmark", BatchBenchmarkScene, true],
 				["Masks", MaskScene, true],
 				["Sprite 3D", Sprite3DScene, true]
 			];
@@ -64,11 +66,12 @@ class MainMenu extends Sprite
 				["Animations", AnimationScene, true],
 				["Custom hit-test", CustomHitTestScene, true],
 				["Movie Clip", MovieScene, true],
-				["Filters", FilterScene, false],
+				["Filters", FilterScene, true],
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, false],
 				["Benchmark", BenchmarkScene, true],
-				["Masks", MaskScene, true],
+				//["Batch Benchmark", BatchBenchmarkScene, true],
+				["Masks", MaskScene, false],
 				["Sprite 3D", Sprite3DScene, true]
 			];
 		#elseif cpp
@@ -101,8 +104,8 @@ class MainMenu extends Sprite
 			var active:Bool = sceneToCreate[2];
 			
 			var button:Button = new Button(buttonTexture, sceneTitle);
-			button.x = count % 2 == 0 ? 28 : 167;
-			button.y = 155 + Math.floor(count / 2) * 46;
+			button.x = Math.round(count % 2 == 0 ? 28 : 167);
+			button.y = Math.round(155 + Math.floor(count / 2) * 46);
 			button.name = sceneTitle;
 			addChild(button);
 			button.touchable = active;
@@ -119,6 +122,7 @@ class MainMenu extends Sprite
 		
 		var driverInfo:String = Starling.Context.driverInfo;
 		#if html5
+		// uncomment once lime has made pull request https://github.com/openfl/lime/pull/434
 		if (driverInfo == null) driverInfo = "OpenGL";
 		#end
 		var infoText:TextField = new TextField(310, 64, driverInfo, "Verdana", 10);
@@ -127,15 +131,15 @@ class MainMenu extends Sprite
 		infoText.vAlign = VAlign.BOTTOM;
 		infoText.addEventListener(TouchEvent.TOUCH, onInfoTextTouched);
 		addChildAt(infoText, 0);
-		
-		Starling.current.showStats = true;
 	}
 	
 	private function onInfoTextTouched(event:TouchEvent):Void
 	{
+		#if !html5
 		var endTouch:Touch = event.getTouch(this, TouchPhase.BEGAN);
 		if (endTouch != null) {
 			Starling.current.showStats = !Starling.current.showStats;
 		}
+		#end
 	}
 }

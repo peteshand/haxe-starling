@@ -154,8 +154,8 @@ class Button extends DisplayObjectContainer
 		
 		mTextField.width  = mTextBounds.width;
 		mTextField.height = mTextBounds.height;
-		mTextField.x = mTextBounds.x;
-		mTextField.y = mTextBounds.y;
+		mTextField.x = Math.round(mTextBounds.x);
+		mTextField.y = Math.round(mTextBounds.y);
 	}
 	
 	private function onButtonTouch(event:TouchEvent):Void

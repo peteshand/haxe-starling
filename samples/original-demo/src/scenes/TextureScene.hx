@@ -1,6 +1,7 @@
 package scenes;
 
 import openfl.errors.Error;
+import openfl.utils.ByteArray;
 import starling.display.Image;
 import starling.text.TextField;
 import starling.textures.Texture;
@@ -28,7 +29,8 @@ class TextureScene extends Scene
 		image3.y = -60;
 		addChild(image3);
 		
-		try
+		
+		/*try
 		{
 			// display a compressed texture
 			var compressedTexture:Texture = Game.assets.getTexture("compressed_texture");
@@ -38,14 +40,18 @@ class TextureScene extends Scene
 			addChild(image);
 		}
 		catch (e:Error)
-		{
+		{*/
+			#if flash
+				//var textValue = "Flash Player and AIR must be at less 11.4 and 3.4 respectively (swf-version=17) to see a compressed ATF texture";
+				var textValue = "ATF textures currently not supported in the Haxe version of Starling.";
+			#else
+				var textValue = "ATF textures are not support in non Flash/Air targets.";
+			#end
 			// if it fails, it's probably not supported
-			var textField:TextField = new TextField(220, 128, 
-				"Update to Flash Player 11.4 or\nAIR 3.4 (swf-version=17) to\nsee a compressed " +
-				"ATF texture\ninstead of this boring text.", "Verdana", 14);
+			var textField:TextField = new TextField(220, 128, textValue, "Verdana", 14);
 			textField.x = Constants.CenterX - textField.width / 2;
 			textField.y = 280;
 			addChild(textField);
-		}
+		//}
 	}
 }

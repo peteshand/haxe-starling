@@ -14,13 +14,14 @@
 	
 	<!-- classpath, haxe libs -->
 	<source path="src" />
-	<source path="../src" />
+	<source path="../../src" />
+	<source path="C:/_projects/HaxeLibraries/FeathersUI/feathers/source" />
+	
 	
 	<set name="lime-hybrid" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
 	<haxelib name="format" />
-	
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
@@ -35,7 +36,7 @@
 	<!--<haxeflag name="-D -swf-version=24" if="flash" ></haxeflag>-->
 	<haxeflag name="-D advanced-telemetry" if="flash" ></haxeflag>
 	<!--<haxeflag name="--no-traces" if="flash" ></haxeflag>-->
-	<app swf-version="12"/>
+	<app swf-version="17"/>
 	
 	<android target-sdk-version="21" />
 	

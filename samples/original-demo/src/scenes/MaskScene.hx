@@ -57,6 +57,7 @@ class MaskScene extends Scene
 		addChild(mMaskDisplay);
 		
 		contentMask = createCircle();
+		addChild(contentMask);
 		mContents.mask = contentMask;
 		
 		addEventListener(TouchEvent.TOUCH, onMaskTouch);

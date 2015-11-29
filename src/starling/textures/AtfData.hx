@@ -35,15 +35,19 @@ class AtfData
 	/** Create a new instance by parsing the given byte array. */
 	public function new(data:ByteArray)
 	{
-		if (!isAtfData(data)) throw new ArgumentError("Invalid ATF data");
+		if (!isAtfData(data)) {
+			throw new ArgumentError("Invalid ATF data");
+		}
 		
-		trace("CHECK");
+		//String.fromCharCode(Std.parseInt(cast data.readByte()));
+		trace("FIX");
 		data.position = 6;
-		if (data.readByte() == 255) data.position = 12; // new file version
+		var v = data.readByte();
+		if (v == 255) data.position = 12; // new file version
 		else data.position =  6; // old file version
 
 		var format:UInt = data.readUnsignedByte();
-		switch (format & 0x7f)
+		switch (5) // FIX switch (format & 127)
 		{
 			case 0:
 			case 1: mFormat = Context3DTextureFormat.BGRA;
@@ -55,10 +59,11 @@ class AtfData
 			default: throw new Error("Invalid ATF format");
 		}
 		
-		mWidth = cast Math.pow(2, data.readUnsignedByte()); 
+		data.position = 13; // REMOVE hardcard 13
+		mWidth = cast Math.pow(2, data.readUnsignedByte());
 		mHeight = cast Math.pow(2, data.readUnsignedByte());
 		mNumTextures = data.readUnsignedByte();
-		mIsCubeMap = (format & 0x80) != 0;
+		mIsCubeMap = false;// FIX, remove hardcoded false // Was set to (format & 0x80) != 0;
 		mData = data;
 		
 		// version 2 of the new file format contains information about
@@ -81,14 +86,16 @@ class AtfData
 	/** Checks the first 3 bytes of the data for the 'ATF' signature. */
 	public static function isAtfData(data:ByteArray):Bool
 	{
-		if (data.length < 3) return false;
+		if (data.length < 3) {
+			return false;
+		}
 		else
 		{
-			
-			var charCodeStr:String = cast data.readByte();
-			charCodeStr += cast data.readByte();
-			charCodeStr += cast data.readByte();
-			var signature:String = String.fromCharCode(Std.parseInt(charCodeStr));
+			data.position = 0;
+			var charCodeStr:String = String.fromCharCode(Std.parseInt(cast data.readByte()));
+			charCodeStr += String.fromCharCode(Std.parseInt(cast data.readByte()));
+			charCodeStr += String.fromCharCode(Std.parseInt(cast data.readByte()));
+			var signature:String = charCodeStr;
 			return signature == "ATF";
 		}
 	}

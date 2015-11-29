@@ -132,6 +132,7 @@ class TextField extends DisplayObjectContainer
 	public var textBounds(get, null):Rectangle;
 	
 	public var text(get, set):String;
+	public var htmlText(get, set):String;
 	public var fontName(get, set):String;
 	public var fontSize(get, set):Float;
 	public var color(get, set):UInt;
@@ -146,7 +147,7 @@ class TextField extends DisplayObjectContainer
 	public var autoSize(get, set):String;
 	public var batchable(get, set):Bool;
 	public var nativeFilters(get, set):Array<BitmapFilter>;
-	public var isHtmlText(get, set):Bool;
+	private var isHtmlText(get, set):Bool;
 	public static var defaultTextureFormat(get, set):Context3DTextureFormat;
 	private static var bitmapFonts(get, null):Map<String, BitmapFont>;
 	
@@ -278,10 +279,10 @@ class TextField extends DisplayObjectContainer
 	 *  over a range of characters or the complete TextField) to modify the format to
 	 *  your needs.
 	 *  
-	 *  @param textField  the flash.text.TextField object that you can format.
+	 *  @param textField  the openfl.text.TextField object that you can format.
 	 *  @param textFormat the default text format that's currently set on the text field.
 	 */
-	private function formatText(textField:flash.text.TextField, textFormat:TextFormat):Void {}
+	private function formatText(textField:openfl.text.TextField, textFormat:TextFormat):Void {}
 
 	private function renderText(scale:Float, resultTextBounds:Rectangle):BitmapData
 	{
@@ -304,7 +305,7 @@ class TextField extends DisplayObjectContainer
 		var align = TextFormatAlign.CENTER;
 		if (hAlign == HAlign.LEFT) align = TextFormatAlign.LEFT;
 		else if (hAlign == HAlign.RIGHT) align = TextFormatAlign.RIGHT;
-		var textFormat:TextFormat = new TextFormat(mFontName, mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, align);
+		var textFormat:TextFormat = new TextFormat(mFontName, cast(mFontSize * scale, Null<Int>), mColor, mBold, mItalic, mUnderline, null, null, align, null, null, null, null);
 		textFormat.kerning = mKerning;
 		
 		sNativeTextField.defaultTextFormat = textFormat;
@@ -332,9 +333,6 @@ class TextField extends DisplayObjectContainer
 		
 		var textWidth:Float  = sNativeTextField.textWidth;
 		var textHeight:Float = sNativeTextField.textHeight;
-		#if js
-			textHeight *= sNativeTextField.numLines;
-		#end
 		
 		if (isHorizontalAutoSize)
 			sNativeTextField.width = width = Math.ceil(textWidth + 5);
@@ -386,7 +384,7 @@ class TextField extends DisplayObjectContainer
 		return bitmapData;
 	}
 	
-	private function autoScaleNativeTextField(textField:flash.text.TextField):Void
+	private function autoScaleNativeTextField(textField:openfl.text.TextField):Void
 	{
 		var size:Float   = cast(textField.defaultTextFormat.size);
 		var maxHeight:Int = Std.int (textField.height - 4);
@@ -397,7 +395,7 @@ class TextField extends DisplayObjectContainer
 			if (size <= 4) break;
 			
 			var format:TextFormat = textField.defaultTextFormat;
-			format.size = size--;
+			format.size = cast(size--, Null<Int>);
 			textField.defaultTextFormat = format;
 
 			if (mIsHtmlText) textField.htmlText = mText;
@@ -405,7 +403,7 @@ class TextField extends DisplayObjectContainer
 		}
 	}
 	
-	private function calculateFilterOffset(textField:flash.text.TextField,
+	private function calculateFilterOffset(textField:openfl.text.TextField,
 										   hAlign:HAlign, vAlign:VAlign):Point
 	{
 		var resultOffset:Point = new Point();
@@ -599,6 +597,14 @@ class TextField extends DisplayObjectContainer
 			mRequiresRedraw = true;
 		}
 		return value;
+	}
+	
+	/** The displayed text. */
+	private function get_htmlText():String { return mText; }
+	private function set_htmlText(value:String):String
+	{
+		this.isHtmlText = true;
+		return this.text = value;
 	}
 	
 	/** The name of the font (true type or bitmap font). */

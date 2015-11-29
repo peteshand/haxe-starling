@@ -4,6 +4,7 @@ import flash.system.System;
 import flash.ui.Keyboard;
 import openfl.Assets;
 import scenes.AnimationScene;
+import scenes.BatchBenchmarkScene;
 import scenes.BenchmarkScene;
 import scenes.BlendModeScene;
 import scenes.CustomHitTestScene;
@@ -57,6 +58,7 @@ class Game extends Sprite
 		sceneMap["Blend Modes"] = BlendModeScene;
 		sceneMap["Render Texture"] = RenderTextureScene;
 		sceneMap["Benchmark"] = BenchmarkScene;
+		sceneMap["Batch Benchmark"] = BatchBenchmarkScene;
 		sceneMap["Masks"] = MaskScene;
 		sceneMap["Sprite 3D"] = Sprite3DScene;
 		

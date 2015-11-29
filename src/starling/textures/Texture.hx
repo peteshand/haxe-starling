@@ -14,6 +14,7 @@ import flash.events.Event;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display3D.Context3D;
+import openfl.display3D.Context3DProfile;
 import openfl.display3D.Context3DTextureFormat;
 import openfl.display3D.textures.TextureBase;
 import openfl.errors.ArgumentError;
@@ -21,6 +22,8 @@ import openfl.geom.Rectangle;
 import openfl.net.NetStream;
 import openfl.system.Capabilities;
 import openfl.utils.ByteArray;
+import openfl.utils.Float32Array;
+import openfl.Vector;
 import starling.utils.StarlingUtils;
 
 import starling.core.Starling;
@@ -301,14 +304,12 @@ class Texture
 	{
 		var context:Context3D = Starling.Context;
 		if (context == null) throw new MissingContextError();
-
 		var atfData:AtfData = new AtfData(data);
 		var nativeTexture:flash.display3D.textures.Texture = context.createTexture(
 			atfData.width, atfData.height, atfData.format, false);
 		var concreteTexture = new ConcreteTexture(nativeTexture, atfData.format,
 			atfData.width, atfData.height, useMipMaps && atfData.numTextures > 1,
 			false, false, scale, repeat);
-
 		concreteTexture.uploadAtfData(data, 0, async);
 		concreteTexture.onRestore = function():Void
 		{
@@ -481,8 +482,9 @@ class Texture
 		var origWidth:Int  = Std.int(width  * scale);
 		var origHeight:Int = Std.int(height * scale);
 		
+		
 		var useRectTexture:Bool = !mipMapping && !repeat &&
-			Starling.current.profile != "baselineConstrained" &&
+			Starling.current.profile != Context3DProfile.BASELINE_CONSTRAINED &&
 			Reflect.hasField(context, "createRectangleTexture") && 
 			format != Context3DTextureFormat.COMPRESSED && 
 			format != Context3DTextureFormat.COMPRESSED_ALPHA;
@@ -561,7 +563,11 @@ class Texture
 	 *  @param stride     the distance (in vector elements) of consecutive UV pairs.
 	 *  @param count      the number of UV pairs that should be adjusted, or "-1" for all of them.
 	 */
-	public function adjustTexCoords(texCoords:Array<Float>, startIndex:Int=0, stride:Int=0, count:Int=-1):Array<Float>
+	/*#if js
+	public function adjustTexCoords(texCoords:Float32Array, startIndex:Int = 0, stride:Int = 0, count:Int = -1):Float32Array
+	#else*/
+	public function adjustTexCoords(texCoords:Vector<Float>, startIndex:Int = 0, stride:Int = 0, count:Int = -1):Vector<Float>
+	//#end
 	{
 		// override in subclasses
 		return texCoords;
@@ -615,9 +621,9 @@ class Texture
 	private static function get_maxSize():Int
 	{
 		var target:Starling = Starling.current;
-		var profile:String = (target != null) ? target.profile : "baseline";
+		var profile:Context3DProfile = (target != null) ? target.profile : Context3DProfile.BASELINE;
 
-		if (profile == "baseline" || profile == "baselineConstrained")
+		if (profile == Context3DProfile.BASELINE || profile == Context3DProfile.BASELINE_CONSTRAINED)
 			return 2048;
 		else
 			return 4096;

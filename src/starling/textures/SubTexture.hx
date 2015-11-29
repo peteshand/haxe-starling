@@ -17,6 +17,8 @@ import openfl.errors.Error;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
+import openfl.utils.Float32Array;
+import openfl.Vector;
 
 import starling.utils.MatrixUtil;
 import starling.utils.RectangleUtil;
@@ -150,7 +152,11 @@ class SubTexture extends Texture
 	}
 
 	/** @inheritDoc */
-	public override function adjustTexCoords(texCoords:Array<Float>, startIndex:Int=0, stride:Int=0, count:Int=-1):Array<Float>
+	/*#if js
+	public override function adjustTexCoords(texCoords:Float32Array, startIndex:Int=0, stride:Int=0, count:Int=-1):Float32Array
+	#else*/
+	public override function adjustTexCoords(texCoords:Vector<Float>, startIndex:Int=0, stride:Int=0, count:Int=-1):Vector<Float>
+	//#end
 	{
 		if (count < 0) {
 			count = Std.int((texCoords.length - startIndex - 2) / (stride + 2) + 1);

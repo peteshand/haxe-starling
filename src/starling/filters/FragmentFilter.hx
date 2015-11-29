@@ -168,14 +168,13 @@ class FragmentFilter
 		mVertexData.setTexCoords(2, 0, 1);
 		mVertexData.setTexCoords(3, 1, 1);
 		
-		//mIndexData = [0, 1, 2, 1, 3, 2];
 		mIndexData = new Vector<UInt>();
 		mIndexData.push(0);
 		mIndexData.push(1);
 		mIndexData.push(2);
 		mIndexData.push(1);
 		mIndexData.push(3);
-		mIndexData.push(4);
+		mIndexData.push(2);
 		
 		mIndexData.fixed = true;
 
@@ -397,7 +396,11 @@ class FragmentFilter
 			mIndexBuffer.uploadFromVector(mIndexData, 0, 6);
 		}
 		
-		mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, 4);
+		/*#if js
+			mVertexBuffer.uploadFromFloat32Array(mVertexData.rawData, 0, 4);
+		#else*/
+			mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, 4);
+		//#end
 	}
 	
 	private function updatePassTextures(width:Float, height:Float, scale:Float):Void
