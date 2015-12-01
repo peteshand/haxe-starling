@@ -808,7 +808,7 @@ class DisplayObject extends EventDispatcher
 	
 	private function onTouch(event:TouchEvent):Void
 	{
-		trace("CHECK"); // at least for flash
+		// FIX // at least for flash
 		//Mouse.cursor = event.interactsWith(this) ? MouseCursor.BUTTON : MouseCursor.AUTO;
 	}
 	

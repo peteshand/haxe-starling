@@ -24,14 +24,12 @@ class TouchScene extends Scene
 		// to find out how to react to touch events have a look at the TouchSheet class! 
 		// It's part of the demo.
 		
-		
-		
-		
 		var texture:Texture = Game.assets.getTexture("starling_sheet");
 		//var texture:Texture = Texture.fromBitmapData(Assets.getBitmapData("assets/textures/Untitled.png"));
 		//var texture:Texture = Texture.fromColor(256, 256, 0xFFFF0055);
 		var image = new Image(texture);
-		image.smoothing = TextureSmoothing.TRILINEAR;
+		
+		//image.smoothing = TextureSmoothing.TRILINEAR;
 		
 		var sheet:TouchSheet = new TouchSheet(image);
 		sheet.x = Constants.CenterX;

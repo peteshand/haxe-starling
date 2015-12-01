@@ -89,7 +89,6 @@ class RenderTextureScene extends Scene
 		{
 			for (touch in mTouches)
 			{
-				trace(touch.phase);
 				if (touch.phase == TouchPhase.BEGAN) {
 					mColors[touch.id] = Math.floor(Math.random() * 4294967295); // 0xFFFFFFFF
 				}
