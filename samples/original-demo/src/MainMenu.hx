@@ -38,7 +38,6 @@ class MainMenu extends Sprite
 	
 	private function init():Void
 	{
-		
 		var logo:Image = new Image(Game.assets.getTexture("logo"));
 		addChild(logo);
 		

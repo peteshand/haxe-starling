@@ -726,8 +726,7 @@ class RenderSupport
 			options.push("linear");
 			options.push(mipMapping ? "miplinear" : "mipnone");
 		}
-		
-		return "<" + options.join("") + ">";
+		return "<" + options.join(",") + ">";
 	}
 	
 	// statistics

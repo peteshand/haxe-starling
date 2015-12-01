@@ -29,6 +29,7 @@ class TouchSheet extends Sprite
 	private function onTouchSheetTouch(event:TouchEvent):Void
 	{
 		//this.rotation += 1 / 180 * Math.PI;
+		this.rotation = 33 / 180 * Math.PI;
 		
 		var touches = event.getTouches(this, TouchPhase.MOVED);
 		
