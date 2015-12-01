@@ -70,26 +70,35 @@ class RenderTextureScene extends Scene
 			mRenderTexture.draw(infoText);
 			mInfoTextDrawn = true;
 		}
+		
 		if (mTouches == null) {
 			return;
 		}
+		
+		var validCount:Int = 0;
+		for (touch in mTouches)
+		{
+			if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.ENDED) {
+				continue;
+			}
+			validCount++;
+		}
+		if (validCount == 0) return;
+		
 		mRenderTexture.drawBundled(function():Void
 		{
 			for (touch in mTouches)
 			{
+				trace(touch.phase);
 				if (touch.phase == TouchPhase.BEGAN) {
 					mColors[touch.id] = Math.floor(Math.random() * 4294967295); // 0xFFFFFFFF
 				}
 				
-				if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.ENDED)
-					continue;
-				
 				var location:Point = touch.getLocation(mCanvas);
 				mBrush.x = location.x;
 				mBrush.y = location.y;
-				//trace('mBrush x=${location.x} y=${location.y}');
+				
 				mBrush.color = mColors[touch.id];
-				//trace('mBrush.color = 0x${StringTools.hex(mBrush.color, 8)}');
 				mBrush.rotation = Math.random() * Math.PI * 2.0;
 				
 				mRenderTexture.draw(mBrush);

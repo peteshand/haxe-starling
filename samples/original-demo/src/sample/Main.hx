@@ -5,6 +5,7 @@ import openfl.display.BitmapData;
 import openfl.text.TextField;
 import openfl.text.TextFieldType;
 import starling.events.EventDispatcher;
+import utils.DeviceInfo;
 
 #if js
 import js.Browser;
@@ -90,9 +91,15 @@ class Main extends Sprite
 		mStarling.start();
 		
 		#if js
-			var firstElementChild:Element = Browser.document.body.firstElementChild.firstElementChild;
-			firstElementChild.onmousemove = onMouseMove;
-			firstElementChild.onmouseout = onLeaveHandler;
+		trace("DeviceInfo.isMobile = " + DeviceInfo.isMobile);	
+		if (DeviceInfo.isMobile) {
+				mouseOnStage = true;
+			}
+			else {
+				var firstElementChild:Element = Browser.document.body.firstElementChild.firstElementChild;
+				firstElementChild.onmousemove = onMouseMove;
+				firstElementChild.onmouseout = onLeaveHandler;
+			}
 		#else
 			stage.addEventListener(openfl.events.Event.MOUSE_LEAVE, onLeaveHandler);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);

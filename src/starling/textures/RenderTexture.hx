@@ -186,9 +186,10 @@ class RenderTexture extends SubTexture
 	{
 		if (object == null) return;
 		
-		if (mDrawing)
+		// Current need to use renderBundled for everything, using render directly causes the draw texture to flip back and forth in y axis
+		/*if (mDrawing)
 			render(object, matrix, alpha);
-		else
+		else*/
 			renderBundled(render, object, matrix, alpha, antiAliasing);
 	}
 	
@@ -260,12 +261,13 @@ class RenderTexture extends SubTexture
 		try
 		{
 			mDrawing = true;
-			StarlingUtils.execute(renderBlock, [object, matrix, alpha]);
+			renderBlock(object, matrix, alpha);
+			//StarlingUtils.execute(renderBlock, [object, matrix, alpha]);
 		}
 		catch (e:Error)
 		{
+			
 		}
-
 		mDrawing = false;
 		mSupport.finishQuadBatch();
 		mSupport.nextFrame();

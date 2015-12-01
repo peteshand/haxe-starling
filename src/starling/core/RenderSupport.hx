@@ -494,7 +494,7 @@ class RenderSupport
 		
 		drawMask(mask);
 		
-		context.setStencilReferenceValue(mStencilReferenceValue);//context.setStencilReferenceValue(mMasks.length);
+		context.setStencilReferenceValue(mStencilReferenceValue);
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,
@@ -520,7 +520,7 @@ class RenderSupport
 		
 		drawMask(mask);
 		
-		context.setStencilReferenceValue(mStencilReferenceValue);//context.setStencilReferenceValue(mMasks.length);
+		context.setStencilReferenceValue(mStencilReferenceValue);
 		context.setStencilActions(
 			Context3DTriangleFace.FRONT_AND_BACK,
 			Context3DCompareMode.EQUAL,

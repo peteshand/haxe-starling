@@ -596,7 +596,11 @@ class DisplayObject extends EventDispatcher
 		sAncestors.length = 0;
 		
 		if (currentObject != null) return currentObject;
-		else throw new ArgumentError("Object not connected to target");
+		else {
+			trace("Warning: Object not connected to target");
+			return null;
+			//throw new ArgumentError("Object not connected to target");
+		}
 	}
 
 	// stage event handling

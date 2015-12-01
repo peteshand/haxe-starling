@@ -4,6 +4,7 @@ import openfl.Assets;
 import starling.display.Image;
 import starling.text.TextField;
 import starling.textures.Texture;
+import starling.textures.TextureSmoothing;
 import starling.utils.StarlingUtils;
 
 import utils.TouchSheet;
@@ -29,7 +30,10 @@ class TouchScene extends Scene
 		var texture:Texture = Game.assets.getTexture("starling_sheet");
 		//var texture:Texture = Texture.fromBitmapData(Assets.getBitmapData("assets/textures/Untitled.png"));
 		//var texture:Texture = Texture.fromColor(256, 256, 0xFFFF0055);
-		var sheet:TouchSheet = new TouchSheet(new Image(texture));
+		var image = new Image(texture);
+		image.smoothing = TextureSmoothing.TRILINEAR;
+		
+		var sheet:TouchSheet = new TouchSheet(image);
 		sheet.x = Constants.CenterX;
 		sheet.y = Constants.CenterY;
 		
