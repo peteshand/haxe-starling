@@ -68,7 +68,7 @@ class MainMenu extends Sprite
 				["Movie Clip", MovieScene, true],
 				["Filters", FilterScene, false],
 				["Blend Modes", BlendModeScene, true],
-				["Render Texture", RenderTextureScene, false],
+				["Render Texture", RenderTextureScene, true],
 				["Benchmark", BenchmarkScene, true],
 				//["Batch Benchmark", BatchBenchmarkScene, true],
 				["Masks", MaskScene, false],

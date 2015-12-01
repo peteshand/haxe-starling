@@ -146,9 +146,13 @@ class SystemUtil
 	 *  and this property indicates if that's the case in the current runtime. */
 	public static function get_supportsRelaxedTargetClearRequirement():Bool
 	{
-		trace("FIX");
-		return true;
-		//return Std.parseInt(~/\d+/.exec(sVersion)[0]) >= 15;
+		#if flash
+			var reg = ~/\d+/;
+			reg.match(sVersion);
+			return Std.parseInt(reg.matched(0)) >= 15;
+        #else
+			return false;
+        #end
 	}
 
 	/** Returns the value of the 'initialWindow.depthAndStencil' node of the application
@@ -163,6 +167,6 @@ class SystemUtil
 	 *  applications (not the Flash Player). */
 	public static function get_supportsVideoTexture():Bool
 	{
-		return Reflect.hasField(Context3D, "supportsVideoTexture");
+		return Type.getInstanceFields(Context3D).indexOf("supportsVideoTexture") != -1;
 	}
 }
