@@ -64,9 +64,7 @@ class FilterScene extends Scene
 			["Glow", BlurFilter.createGlow()]
 		];
 		
-		trace("mImage = " + mImage);
 		var displacementMap:Texture = createDisplacementMap(mImage.width, mImage.height);
-		trace("displacementMap = " + displacementMap);
 		
 		displacementFilter = new DisplacementMapFilter(
 			displacementMap, 
