@@ -204,6 +204,15 @@ class VertexData
 	public function setPosition(vertexID:Int, x:Float, y:Float):Void
 	{
 		var offset:Int = vertexID * VertexData.ELEMENTS_PER_VERTEX + VertexData.POSITION_OFFSET;
+		#if js
+		// Set all NaN to 0
+		for (i in offset...offset + VertexData.ELEMENTS_PER_VERTEX) 
+		{
+			if (mRawData[i] == null) {
+				mRawData[i] = 0;
+			}
+		}
+		#end
 		mRawData[offset] = x;
 		mRawData[offset+1] = y;
 	}
