@@ -2,7 +2,7 @@
 ===============
 An unofficial port of Starling 1.7 framework.
 
-[Read more] (http://blog.peteshand.net/starling-for-haxe/);
+[Read more] (http://blog.peteshand.net/starling-for-haxe/)
 
 Samples
 -------------------
@@ -14,9 +14,9 @@ Original Starling Demo
 
 Install
 -------
-Download and install [haxe] (http://haxe.org/download/)
-Open a command line and type:
-haxelib install starling
+* Download and install [haxe] (http://haxe.org/download/)
+* Open a command line and type:
+* haxelib install starling
 
 Dependencies:
 -------------------
@@ -26,7 +26,8 @@ Dependencies:
 
 Missing functionality / work in progress:
 -------------------
-* ATF texture format
+* All targets
+  * ATF texture format
 * Native
   * Bitmap Fonts
   * html text styling
