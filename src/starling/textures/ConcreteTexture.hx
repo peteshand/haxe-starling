@@ -36,6 +36,13 @@ class ConcreteTexture extends Texture
 {
 	private static var TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
 	
+	#if html5
+	private inline static var MIN_MIPMAP_SIZE:Int = 8;
+	#else
+	private inline static var MIN_MIPMAP_SIZE:Int = 1;
+	#end
+	
+	
 	private var mBase:TextureBase;
 	private var mFormat:Context3DTextureFormat;
 	private var mWidth:Int;
@@ -119,7 +126,7 @@ class ConcreteTexture extends Texture
 			
 			potTexture.uploadFromBitmapData(data);
 			
-			if (mMipMapping && data.width > 1 && data.height > 1)
+			if (mMipMapping && data.width > MIN_MIPMAP_SIZE && data.height > MIN_MIPMAP_SIZE)
 			{
 				var currentWidth:Int  = data.width  >> 1;
 				var currentHeight:Int = data.height >> 1;
