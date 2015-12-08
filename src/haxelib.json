@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [ "starling", "2d", "gpu", "openfl", "flash", "air", "js", "web", "cpp" ],
 	"description": "GPU powered 2D rendering engine which mimics the conventional Flash display list architecture",
-	"version": "0.3.7",
-	"releasenote": "Fix lack of antialiasing on flash target, fixes for RenderTexture on HTML5",
+	"version": "0.3.8",
+	"releasenote": "scale9image added",
 	"contributors": [ "p.j.shand" ],
 	"dependencies": {
 		"openfl": ""
