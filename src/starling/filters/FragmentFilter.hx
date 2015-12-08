@@ -136,10 +136,10 @@ class FragmentFilter
 	private var marginX(get, set):Float;
 	private var marginY(get, set):Float;
 	private var numPasses(get, set):Int;
-	private /*final*/ var vertexPosAtID(get, set):Int;
-	private /*final*/ var texCoordsAtID(get, set):Int;
-	private /*final*/ var baseTextureID(get, set):Int;
-	private /*final*/ var mvpConstantID(get, set):Int;
+	private var vertexPosAtID(get, set):Int;
+	private var texCoordsAtID(get, set):Int;
+	private var baseTextureID(get, set):Int;
+	private var mvpConstantID(get, set):Int;
 	
 	
 	/** Creates a new Fragment filter with the specified number of passes and resolution.
@@ -147,7 +147,6 @@ class FragmentFilter
 	public function new(numPasses:Int=1, resolution:Float=1.0)
 	{
 		var name:String = Type.getClassName(Type.getClass(this));
-		trace("CHECK name = " + name);
 		if (Capabilities.isDebugger && name == "starling.filters.FragmentFilter")
 		{
 			throw new AbstractClassError();
@@ -486,7 +485,7 @@ class FragmentFilter
 		for (texture in mPassTextures)
 			texture.dispose();
 		
-		mPassTextures = new Array<Texture>();
+		mPassTextures.splice(0, mPassTextures.length);
 	}
 	
 	private function disposeCache():Void
@@ -613,24 +612,21 @@ class FragmentFilter
 	private function get_mode():String { return mMode; }
 	private function set_mode(value:String):String
 	{
-		mMode = value;
-		return value;
+		return mMode = value;
 	}
 	
 	/** Use the x-offset to move the filter output to the right or left. */
 	private function get_offsetX():Float { return mOffsetX; }
 	private function set_offsetX(value:Float):Float
 	{
-		mOffsetX = value;
-		return value;
+		return mOffsetX = value;
 	}
 	
 	/** Use the y-offset to move the filter output to the top or bottom. */
 	private function get_offsetY():Float { return mOffsetY; }
 	private function set_offsetY(value:Float):Float
 	{
-		mOffsetY = value;
-		return value;
+		return mOffsetY = value;
 	}
 	
 	/** The x-margin will extend the size of the filter texture along the x-axis.
@@ -638,8 +634,7 @@ class FragmentFilter
 	private function get_marginX():Float { return mMarginX; }
 	private function set_marginX(value:Float):Float
 	{
-		mMarginX = value;
-		return value;
+		return mMarginX = value;
 	}
 	
 	/** The y-margin will extend the size of the filter texture along the y-axis.
@@ -647,49 +642,43 @@ class FragmentFilter
 	private function get_marginY():Float { return mMarginY; }
 	private function set_marginY(value:Float):Float
 	{
-		mMarginY = value;
-		return value;
+		return mMarginY = value;
 	}
 	
 	/** The number of passes the filter is applied. The "activate" and "deactivate" methods
 	 *  will be called that often. */
 	private function set_numPasses(value:Int):Int
 	{
-		mNumPasses = value;
-		return value;
+		return mNumPasses = value;
 	}
 	
 	private function get_numPasses():Int { return mNumPasses; }
 	
 	/** The ID of the vertex buffer attribute that stores the vertex position. */ 
-	private /*final*/ function get_vertexPosAtID():Int { return mVertexPosAtID; }
-	private /*final*/ function set_vertexPosAtID(value:Int):Int
+	private function get_vertexPosAtID():Int { return mVertexPosAtID; }
+	private function set_vertexPosAtID(value:Int):Int
 	{
-		mVertexPosAtID = value;
-		return value;
+		return mVertexPosAtID = value;
 	}
 	
 	/** The ID of the vertex buffer attribute that stores the texture coordinates. */
-	private /*final*/ function get_texCoordsAtID():Int { return mTexCoordsAtID; }
-	private /*final*/ function set_texCoordsAtID(value:Int):Int
+	private function get_texCoordsAtID():Int { return mTexCoordsAtID; }
+	private function set_texCoordsAtID(value:Int):Int
 	{
-		mTexCoordsAtID = value;
-		return value;
+		return mTexCoordsAtID = value;
 	}
 
 	/** The ID (sampler) of the input texture (containing the output of the previous pass). */
-	private /*final*/ function get_baseTextureID():Int { return mBaseTextureID; }
-	private /*final*/ function set_baseTextureID(value:Int):Int
+	private function get_baseTextureID():Int { return mBaseTextureID; }
+	private function set_baseTextureID(value:Int):Int
 	{
-		mBaseTextureID = value;
-		return value;
+		return mBaseTextureID = value;
 	}
 	
 	/** The ID of the first register of the modelview-projection constant (a 4x4 matrix). */
-	private /*final*/ function get_mvpConstantID():Int { return mMvpConstantID; }
-	private /*final*/ function set_mvpConstantID(value:Int):Int
+	private function get_mvpConstantID():Int { return mMvpConstantID; }
+	private function set_mvpConstantID(value:Int):Int
 	{
-		mMvpConstantID = value;
-		return value;
+		return mMvpConstantID = value;
 	}
 }
