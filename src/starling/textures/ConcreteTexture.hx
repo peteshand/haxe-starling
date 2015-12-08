@@ -135,7 +135,7 @@ class ConcreteTexture extends Texture
 				var transform:Matrix = new Matrix(.5, 0, 0, .5);
 				var bounds:Rectangle = new Rectangle();
 				
-				while (currentWidth >= 1 || currentHeight >= 1)
+				while (currentWidth >= MIN_MIPMAP_SIZE || currentHeight >= MIN_MIPMAP_SIZE)
 				{
 					bounds.width = currentWidth; bounds.height = currentHeight;
 					canvas.fillRect(bounds, 0);
