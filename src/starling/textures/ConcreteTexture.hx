@@ -36,11 +36,7 @@ class ConcreteTexture extends Texture
 {
 	private static var TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
 	
-	#if html5
-	private inline static var MIN_MIPMAP_SIZE:Int = 8;
-	#else
-	private inline static var MIN_MIPMAP_SIZE:Int = 1;
-	#end
+	private static var BITMAP_CACHE:Map<String, BitmapData> = new Map();
 	
 	
 	private var mBase:TextureBase;
@@ -126,17 +122,21 @@ class ConcreteTexture extends Texture
 			
 			potTexture.uploadFromBitmapData(data);
 			
-			if (mMipMapping && data.width > MIN_MIPMAP_SIZE && data.height > MIN_MIPMAP_SIZE)
+			if (mMipMapping && data.width > 1 && data.height > 1)
 			{
 				var currentWidth:Int  = data.width  >> 1;
 				var currentHeight:Int = data.height >> 1;
 				var level:Int = 1;
-				var canvas:BitmapData = new BitmapData(currentWidth, currentHeight, true, 0);
 				var transform:Matrix = new Matrix(.5, 0, 0, .5);
 				var bounds:Rectangle = new Rectangle();
 				
-				while (currentWidth >= MIN_MIPMAP_SIZE || currentHeight >= MIN_MIPMAP_SIZE)
+				while (currentWidth >= 1 && currentHeight >= 1)
 				{
+					var canvas:BitmapData = BITMAP_CACHE.get(currentWidth + "x" + currentHeight);
+					if (canvas == null) {
+						canvas = new BitmapData(currentWidth, currentHeight, true, 0);
+						BITMAP_CACHE.set(currentWidth + "x" + currentHeight, canvas);
+					}
 					bounds.width = currentWidth; bounds.height = currentHeight;
 					canvas.fillRect(bounds, 0);
 					canvas.draw(data, transform, null, null, null, true);
@@ -146,7 +146,6 @@ class ConcreteTexture extends Texture
 					currentHeight = currentHeight >> 1;
 				}
 				
-				canvas.dispose();
 			}
 		}
 		else if (Std.is(mBase, RectangleTexture))
