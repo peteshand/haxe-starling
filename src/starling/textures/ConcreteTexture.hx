@@ -36,6 +36,9 @@ class ConcreteTexture extends Texture
 {
 	private static var TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
 	
+	private static var BITMAP_CACHE:Map<String, BitmapData> = new Map();
+	
+	
 	private var mBase:TextureBase;
 	private var mFormat:Context3DTextureFormat;
 	private var mWidth:Int;
@@ -124,12 +127,16 @@ class ConcreteTexture extends Texture
 				var currentWidth:Int  = data.width  >> 1;
 				var currentHeight:Int = data.height >> 1;
 				var level:Int = 1;
-				var canvas:BitmapData = new BitmapData(currentWidth, currentHeight, true, 0);
 				var transform:Matrix = new Matrix(.5, 0, 0, .5);
 				var bounds:Rectangle = new Rectangle();
 				
-				while (currentWidth >= 1 || currentHeight >= 1)
+				while (currentWidth >= 1 && currentHeight >= 1)
 				{
+					var canvas:BitmapData = BITMAP_CACHE.get(currentWidth + "x" + currentHeight);
+					if (canvas == null) {
+						canvas = new BitmapData(currentWidth, currentHeight, true, 0);
+						BITMAP_CACHE.set(currentWidth + "x" + currentHeight, canvas);
+					}
 					bounds.width = currentWidth; bounds.height = currentHeight;
 					canvas.fillRect(bounds, 0);
 					canvas.draw(data, transform, null, null, null, true);
@@ -139,7 +146,6 @@ class ConcreteTexture extends Texture
 					currentHeight = currentHeight >> 1;
 				}
 				
-				canvas.dispose();
 			}
 		}
 		else if (Std.is(mBase, RectangleTexture))
