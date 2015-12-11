@@ -113,9 +113,9 @@ class ConcreteTexture extends Texture
 			data = potData;
 		}
 		
-		if (Std.is(mBase, flash.display3D.textures.Texture))
+		if (Std.is(mBase, openfl.display3D.textures.Texture))
 		{
-			var potTexture:flash.display3D.textures.Texture = cast mBase;
+			var potTexture:openfl.display3D.textures.Texture = cast mBase;
 			
 			potTexture.uploadFromBitmapData(data);
 			
@@ -165,7 +165,7 @@ class ConcreteTexture extends Texture
 	public function uploadAtfData(data:ByteArray, offset:Int=0, async:Dynamic=null):Void
 	{
 		var isAsync:Bool = Reflect.isFunction(async) || async == true;
-		var potTexture:flash.display3D.textures.Texture = cast mBase;
+		var potTexture:openfl.display3D.textures.Texture = cast mBase;
 		
 		if (potTexture == null)
 			throw new Error("This texture type does not support ATF data");
@@ -195,7 +195,7 @@ class ConcreteTexture extends Texture
 	public function attachVideo(type:String, attachment:Dynamic, onComplete:ConcreteTextureFunction=null):Void
 	{
 		var name:String = Type.getClassName(Type.getClass(mBase));
-		if (name == "flash.display3D.textures.VideoTexture")
+		if (name == "openfl.display3D.textures.VideoTexture")
 		{
 			mDataUploaded = true;
 			mTextureReadyCallback = onComplete;
@@ -240,13 +240,13 @@ class ConcreteTexture extends Texture
 	{
 		var context:Context3D = Starling.Context;
 		var name:String = Type.getClassName(Type.getClass(mBase));
-		if (name == "flash.display3D.textures.Texture" || name == "openfl.display3D.textures.Texture")
+		if (name == "openfl.display3D.textures.Texture" || name == "openfl.display3D.textures.Texture")
 			mBase = context.createTexture(mWidth, mHeight, mFormat, 
 										  mOptimizedForRenderTexture);
-		else if (name == "flash.display3D.textures.RectangleTexture" || name == "openfl.display3D.textures.RectangleTexture")
+		else if (name == "openfl.display3D.textures.RectangleTexture" || name == "openfl.display3D.textures.RectangleTexture")
 			mBase = context.createRectangleTexture(mWidth, mHeight, mFormat,
 													  mOptimizedForRenderTexture);
-		/*else if (name == "flash.display3D.textures.VideoTexture")
+		/*else if (name == "openfl.display3D.textures.VideoTexture")
 			mBase = context.createVideoTexture();*/
 		else
 			throw new NotSupportedError("Texture type not supported: " + name);

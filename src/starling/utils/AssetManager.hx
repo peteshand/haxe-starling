@@ -948,7 +948,7 @@ class AssetManager extends EventDispatcher
 				addTexture(name, texture);
 				onComplete();
 			}
-			else if (Std.is(asset, ByteArray))
+			else if (Std.is(asset, ByteArrayData))
 			{
 				bytes = cast asset;
 				

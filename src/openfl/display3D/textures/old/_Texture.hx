@@ -1,4 +1,4 @@
-package openfl.display3D.textures; #if !flash
+package openfl.display3D.textures.old; #if !flash
 
 
 import openfl.display3D.Context3D;
