@@ -116,7 +116,9 @@ class RenderTexture extends SubTexture
 	public function new(width:Int, height:Int, persistent:Bool=true,
 								  scale:Float=-1, format:Context3DTextureFormat=null, repeat:Bool=false)
 	{
-		if (format == null) format = Context3DTextureFormat.BGRA;
+		if (format == null) {
+			format = Context3DTextureFormat.BGRA;
+		}
 		// TODO: when Adobe has fixed this bug on the iPad 1 (see 'supportsNonPotDimensions'),
 		//       we can remove 'legalWidth/Height' and just pass on the original values.
 		//
@@ -154,6 +156,8 @@ class RenderTexture extends SubTexture
 			mHelperImage = new Image(mBufferTexture);
 			mHelperImage.smoothing = TextureSmoothing.NONE; // solves some antialias-issues
 		}
+		
+		clear(0x000000, 0);
 	}
 	
 	/** @inheritDoc */
@@ -243,9 +247,11 @@ class RenderTexture extends SubTexture
 			mHelperImage.texture = mBufferTexture;
 		}
 		
+		var previousRenderTarget:Texture = mSupport.renderTarget;
+		
 		// limit drawing to relevant area
 		sClipRect.setTo(0, 0, mActiveTexture.width, mActiveTexture.height);
-
+		
 		mSupport.pushClipRect(sClipRect);
 		mSupport.setRenderTarget(mActiveTexture, antiAliasing);
 		
@@ -258,20 +264,17 @@ class RenderTexture extends SubTexture
 		else
 			mBufferReady = true;
 		
-		try
-		{
+		try {
 			mDrawing = true;
-			renderBlock(object, matrix, alpha);
-			//StarlingUtils.execute(renderBlock, [object, matrix, alpha]);
-		}
-		catch (e:Error)
-		{
-			
+			//renderBlock(object, matrix, alpha);
+			StarlingUtils.execute(renderBlock, [object, matrix, alpha]);
+		} catch( msg : String ) {
+			trace("Error occurred: " + msg);
 		}
 		mDrawing = false;
 		mSupport.finishQuadBatch();
 		mSupport.nextFrame();
-		mSupport.renderTarget = null;
+		mSupport.renderTarget = previousRenderTarget;
 		mSupport.popClipRect();
 	}
 	
