@@ -389,10 +389,18 @@ class FragmentFilter
 	
 	private function updateBuffers(context:Context3D, bounds:Rectangle):Void
 	{
-		mVertexData.setPosition(0, bounds.x, bounds.bottom);
-		mVertexData.setPosition(1, bounds.right, bounds.bottom);
-		mVertexData.setPosition(2, bounds.x, bounds.y);
-		mVertexData.setPosition(3, bounds.right, bounds.y);
+		// Pretty sure there is a better place to do this, however not sure where it is.
+		#if flash
+			mVertexData.setPosition(0, bounds.x, bounds.y);
+			mVertexData.setPosition(1, bounds.right, bounds.y);
+			mVertexData.setPosition(2, bounds.x, bounds.bottom);
+			mVertexData.setPosition(3, bounds.right, bounds.bottom);
+		#else
+			mVertexData.setPosition(0, bounds.x, bounds.bottom);
+			mVertexData.setPosition(1, bounds.right, bounds.bottom);
+			mVertexData.setPosition(2, bounds.x, bounds.y);
+			mVertexData.setPosition(3, bounds.right, bounds.y);
+		#end
 		
 		if (mVertexBuffer == null)
 		{
