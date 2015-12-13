@@ -11,8 +11,11 @@
 package starling.filters;
 
 import openfl.display3D.Context3D;
+import openfl.display3D.Context3DMipFilter;
 import openfl.display3D.Context3DProgramType;
+import openfl.display3D.Context3DTextureFilter;
 import openfl.display3D.Context3DVertexBufferFormat;
+import openfl.display3D.Context3DWrapMode;
 import openfl.display3D.IndexBuffer3D;
 import openfl.display3D.Program3D;
 import openfl.display3D.VertexBuffer3D;
@@ -70,78 +73,67 @@ import starling.utils.VertexData;
 class FragmentFilter
 {
 	/** The minimum size of a filter texture. */
-	private var MIN_TEXTURE_SIZE:Int = 64;
-	
-	/** All filter processing is expected to be done with premultiplied alpha. */
-	private var PMA:Bool = true;
-	
-	/** The standard vertex shader code. It will be used automatically if you don't create
-	 *  a custom vertex shader yourself. */
-	private var STD_VERTEX_SHADER:String = 
-		"m44 op, va0, vc0 \n" + // 4x4 matrix transform to output space
-		"mov v0, va1      \n";  // pass texture coordinates to fragment program
-	
-	/** The standard fragment shader code. It just forwards the texture color to the output. */
-	private var STD_FRAGMENT_SHADER:String =
-		"tex oc, v0, fs0 <2d, clamp, linear, mipnone>"; // just forward texture color
-	
-	private var mVertexPosAtID:Int = 0;
-	private var mTexCoordsAtID:Int = 1;
-	private var mBaseTextureID:Int = 0;
-	private var mMvpConstantID:Int = 0;
-	
-	private var mNumPasses:Int;
-	private var mPassTextures:Array<Texture>;
+    private inline static var MIN_TEXTURE_SIZE:Int = 64;
+    
+    /** All filter processing is expected to be done with premultiplied alpha. */
+    private inline static var PMA:Bool = true;
+    
+    /** The standard vertex shader code. It will be used automatically if you don't create
+     *  a custom vertex shader yourself. */
+    private inline static var STD_VERTEX_SHADER:String = 
+        "m44 op, va0, vc0 \n" + // 4x4 matrix transform to output space
+        "mov v0, va1      \n";  // pass texture coordinates to fragment program
+    
+    /** The standard fragment shader code. It just forwards the texture color to the output. */
+    private inline static var STD_FRAGMENT_SHADER:String =
+        "tex oc, v0, fs0 <2d, clamp, linear, mipnone>"; // just forward texture color
+    
+    private var mVertexPosAtID:Int = 0;
+    private var mTexCoordsAtID:Int = 1;
+    private var mBaseTextureID:Int = 0;
+    private var mMvpConstantID:Int = 0;
+    
+    private var mNumPasses:Int;
+    private var mPassTextures:Array<Texture>;
 
-	private var mMode:String;
-	private var mResolution:Float;
-	private var mMarginX:Float;
-	private var mMarginY:Float;
-	private var mOffsetX:Float;
-	private var mOffsetY:Float;
+    private var mMode:String;
+    private var mResolution:Float;
+    private var mMarginX:Float;
+    private var mMarginY:Float;
+    private var mOffsetX:Float;
+    private var mOffsetY:Float;
+    
+    private var mVertexData:VertexData;
+    private var mVertexBuffer:VertexBuffer3D;
+    private var mIndexData:Vector<UInt>;
+    private var mIndexBuffer:IndexBuffer3D;
+    
+    private var mCacheRequested:Bool;
+    private var mCache:QuadBatch;
+    
+    /** Helper objects. */
+    private static var sStageBounds:Rectangle = new Rectangle();
+    private static var sTransformationMatrix:Matrix = new Matrix();
+    
+    /** Helper objects that may be used recursively (thus not static). */
+    private var mHelperMatrix:Matrix     = new Matrix();
+    private var mHelperMatrix3D:Matrix3D = new Matrix3D();
+    private var mHelperRect:Rectangle    = new Rectangle();
+    private var mHelperRect2:Rectangle   = new Rectangle();
 	
-	private var mVertexData:VertexData;
-	private var mVertexBuffer:VertexBuffer3D;
-	private var mIndexData:Vector<UInt>;
-	private var mIndexBuffer:IndexBuffer3D;
-	
-	private var mCacheRequested:Bool;
-	private var mCache:QuadBatch;
-	
-	/** Helper objects. */
-	private static var sStageBounds:Rectangle = new Rectangle();
-	private static var sTransformationMatrix:Matrix = new Matrix();
-	
-	/** Helper objects that may be used recursively (thus not static). */
-	private var mHelperMatrix:Matrix     = new Matrix();
-	private var mHelperMatrix3D:Matrix3D = new Matrix3D();
-	private var mHelperRect:Rectangle    = new Rectangle();
-	private var mHelperRect2:Rectangle   = new Rectangle();
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public var isCached(get, null):Bool;
-	public var resolution(get, set):Float;
-	public var mode(get, set):String;
-	public var offsetX(get, set):Float;
-	public var offsetY(get, set):Float;
-	private var marginX(get, set):Float;
-	private var marginY(get, set):Float;
-	private var numPasses(get, set):Int;
-	private var vertexPosAtID(get, set):Int;
-	private var texCoordsAtID(get, set):Int;
-	private var baseTextureID(get, set):Int;
-	private var mvpConstantID(get, set):Int;
-	
-	
+	public var isCached(get, never):Bool;
+    public var resolution(get, set):Float;
+    public var mode(get, set):String;
+    public var offsetX(get, set):Float;
+    public var offsetY(get, set):Float;
+    private var marginX(get, set):Float;
+    private var marginY(get, set):Float;
+    private var numPasses(get, set):Int;
+    private var vertexPosAtID(get, set):Int;
+    private var texCoordsAtID(get, set):Int;
+    private var baseTextureID(get, set):Int;
+    private var mvpConstantID(get, set):Int;
+    
 	/** Creates a new Fragment filter with the specified number of passes and resolution.
 	 *  This constructor may only be called by the constructor of a subclass. */
 	public function new(numPasses:Int=1, resolution:Float=1.0)
@@ -249,11 +241,15 @@ class FragmentFilter
 		var projMatrix3D:Matrix3D = mHelperMatrix3D;
 		var bounds:Rectangle      = mHelperRect;
 		var boundsPot:Rectangle   = mHelperRect2;
+		var previousStencilRefValue:UInt;
+		var previousRenderTarget:Texture;
+        var intersectWithStage:Bool;
 		
 		if (context == null) throw new MissingContextError();
 		
 		// the bounds of the object in stage coordinates
 		// (or, if the object is not connected to the stage, in its base object's coordinates)
+		intersectWithStage = !intoCache && mOffsetX == 0 && mOffsetY == 0;
 		calculateBounds(object, targetSpace, mResolution * scale, !intoCache, bounds, boundsPot);
 		
 		if (bounds.isEmpty())
@@ -270,10 +266,13 @@ class FragmentFilter
 		support.pushMatrix();
 		support.pushMatrix3D();
 		
+		support.pushClipRect(boundsPot/*, false*/);
+		
 		// save original projection matrix and render target
 		projMatrix.copyFrom(support.projectionMatrix);
 		projMatrix3D.copyFrom(support.projectionMatrix3D);
-		var previousRenderTarget:Texture = support.renderTarget;
+		previousRenderTarget = support.renderTarget;
+        previousStencilRefValue = support.stencilReferenceValue;
 		
 		if (previousRenderTarget != null && !SystemUtil.supportsRelaxedTargetClearRequirement)
 			throw new IllegalOperationError(
@@ -297,8 +296,7 @@ class FragmentFilter
 		// prepare drawing of actual filter passes
 		RenderSupport.setBlendFactors(PMA);
 		support.loadIdentity();  // now we'll draw in stage coordinates!
-		support.pushClipRect(bounds);
-
+		
 		context.setVertexBufferAt(mVertexPosAtID, mVertexBuffer, VertexData.POSITION_OFFSET, 
 								  Context3DVertexBufferFormat.FLOAT_2);
 		context.setVertexBufferAt(mTexCoordsAtID, mVertexBuffer, VertexData.TEXCOORD_OFFSET,
@@ -324,21 +322,28 @@ class FragmentFilter
 				else
 				{
 					// draw into back buffer, at original (stage) coordinates
+					support.popClipRect();
 					support.projectionMatrix   = projMatrix;
 					support.projectionMatrix3D = projMatrix3D;
 					support.renderTarget = previousRenderTarget;
 					support.translateMatrix(mOffsetX, mOffsetY);
+					support.stencilReferenceValue = previousStencilRefValue;
 					support.blendMode = object.blendMode;
 					support.applyBlendMode(PMA);
 				}
 			}
 			
 			passTexture = getPassTexture(i);
+			 activate(i, context, passTexture);
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, mMvpConstantID, 
 												  support.mvpMatrix3D, true);
-			context.setTextureAt(mBaseTextureID, passTexture.base);
+			 context.setSamplerStateAt(0, Context3DWrapMode.CLAMP, Context3DTextureFilter.LINEAR, Context3DMipFilter.MIPNONE);
+            context.setTextureAt(mBaseTextureID, passTexture.base);
+			 context.setVertexBufferAt(mVertexPosAtID, mVertexBuffer, VertexData.POSITION_OFFSET, 
+                                  Context3DVertexBufferFormat.FLOAT_2);
+             context.setVertexBufferAt(mTexCoordsAtID, mVertexBuffer, VertexData.TEXCOORD_OFFSET,
+                                  Context3DVertexBufferFormat.FLOAT_2);
 			
-			activate(i, context, passTexture);
 			context.drawTriangles(mIndexBuffer, 0, 2);
 			deactivate(i, context, passTexture);
 		}
@@ -350,7 +355,6 @@ class FragmentFilter
 		
 		support.popMatrix();
 		support.popMatrix3D();
-		support.popClipRect();
 		
 		if (intoCache)
 		{
@@ -358,6 +362,7 @@ class FragmentFilter
 			support.renderTarget = previousRenderTarget;
 			support.projectionMatrix.copyFrom(projMatrix);
 			support.projectionMatrix3D.copyFrom(projMatrix3D);
+			support.popClipRect();
 			
 			// Create an image containing the cache. To have a display object that contains
 			// the filter output in object coordinates, we wrap it in a QuadBatch: that way,
@@ -373,7 +378,8 @@ class FragmentFilter
 			MatrixUtil.prependTranslation(sTransformationMatrix,
 				bounds.x + mOffsetX, bounds.y + mOffsetY);
 			quadBatch.addImage(image, 1.0, sTransformationMatrix);
-
+			
+			// NEW quadBatch.ownsTexture = true;
 			return quadBatch;
 		}
 		else return null;
@@ -383,10 +389,10 @@ class FragmentFilter
 	
 	private function updateBuffers(context:Context3D, bounds:Rectangle):Void
 	{
-		mVertexData.setPosition(0, bounds.x, bounds.y);
-		mVertexData.setPosition(1, bounds.right, bounds.y);
-		mVertexData.setPosition(2, bounds.x, bounds.bottom);
-		mVertexData.setPosition(3, bounds.right, bounds.bottom);
+		mVertexData.setPosition(0, bounds.x, bounds.bottom);
+		mVertexData.setPosition(1, bounds.right, bounds.bottom);
+		mVertexData.setPosition(2, bounds.x, bounds.y);
+		mVertexData.setPosition(3, bounds.right, bounds.y);
 		
 		if (mVertexBuffer == null)
 		{
@@ -591,94 +597,63 @@ class FragmentFilter
 	}
 	
 	// properties
-	
-	/** Indicates if the filter is cached (via the "cache" method). */
-	private function get_isCached():Bool { return (mCache != null) || mCacheRequested; }
-	
-	/** The resolution of the filter texture. "1" means stage resolution, "0.5" half the
-	 *  stage resolution. A lower resolution saves memory and execution time (depending on 
-	 *  the GPU), but results in a lower output quality. Values greater than 1 are allowed;
-	 *  such values might make sense for a cached filter when it is scaled up. @default 1 */
-	private function get_resolution():Float { return mResolution; }
-	private function set_resolution(value:Float):Float 
-	{
-		if (value <= 0) throw new ArgumentError("Resolution must be > 0");
-		else mResolution = value;
-		return value;
-	}
-	
-	/** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
-	 *  class. @default "replace" */
-	private function get_mode():String { return mMode; }
-	private function set_mode(value:String):String
-	{
-		return mMode = value;
-	}
-	
-	/** Use the x-offset to move the filter output to the right or left. */
-	private function get_offsetX():Float { return mOffsetX; }
-	private function set_offsetX(value:Float):Float
-	{
-		return mOffsetX = value;
-	}
-	
-	/** Use the y-offset to move the filter output to the top or bottom. */
-	private function get_offsetY():Float { return mOffsetY; }
-	private function set_offsetY(value:Float):Float
-	{
-		return mOffsetY = value;
-	}
-	
-	/** The x-margin will extend the size of the filter texture along the x-axis.
-	 *  Useful when the filter will "grow" the rendered object. */
-	private function get_marginX():Float { return mMarginX; }
-	private function set_marginX(value:Float):Float
-	{
-		return mMarginX = value;
-	}
-	
-	/** The y-margin will extend the size of the filter texture along the y-axis.
-	 *  Useful when the filter will "grow" the rendered object. */
-	private function get_marginY():Float { return mMarginY; }
-	private function set_marginY(value:Float):Float
-	{
-		return mMarginY = value;
-	}
-	
-	/** The number of passes the filter is applied. The "activate" and "deactivate" methods
-	 *  will be called that often. */
-	private function set_numPasses(value:Int):Int
-	{
-		return mNumPasses = value;
-	}
-	
-	private function get_numPasses():Int { return mNumPasses; }
-	
-	/** The ID of the vertex buffer attribute that stores the vertex position. */ 
-	private function get_vertexPosAtID():Int { return mVertexPosAtID; }
-	private function set_vertexPosAtID(value:Int):Int
-	{
-		return mVertexPosAtID = value;
-	}
-	
-	/** The ID of the vertex buffer attribute that stores the texture coordinates. */
-	private function get_texCoordsAtID():Int { return mTexCoordsAtID; }
-	private function set_texCoordsAtID(value:Int):Int
-	{
-		return mTexCoordsAtID = value;
-	}
+    
+    /** Indicates if the filter is cached (via the "cache" method). */
+    private function get_isCached():Bool { return (mCache != null) || mCacheRequested; }
+    
+    /** The resolution of the filter texture. "1" means stage resolution, "0.5" half the
+     *  stage resolution. A lower resolution saves memory and execution time (depending on 
+     *  the GPU), but results in a lower output quality. Values greater than 1 are allowed;
+     *  such values might make sense for a cached filter when it is scaled up. @default 1 */
+    private function get_resolution():Float { return mResolution; }
+    private function set_resolution(value:Float):Float 
+    {
+        if (value <= 0) throw new ArgumentError("Resolution must be > 0");
+        else mResolution = value; 
+        return mResolution;
+    }
+    
+    /** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
+     *  class. @default "replace" */
+    private function get_mode():String { return mMode; }
+    private function set_mode(value:String):String { return mMode = value; }
+    
+    /** Use the x-offset to move the filter output to the right or left. */
+    private function get_offsetX():Float { return mOffsetX; }
+    private function set_offsetX(value:Float):Float { return mOffsetX = value; }
+    
+    /** Use the y-offset to move the filter output to the top or bottom. */
+    private function get_offsetY():Float { return mOffsetY; }
+    private function set_offsetY(value:Float):Float { return mOffsetY = value; }
+    
+    /** The x-margin will extend the size of the filter texture along the x-axis.
+     *  Useful when the filter will "grow" the rendered object. */
+    private function get_marginX():Float { return mMarginX; }
+    private function set_marginX(value:Float):Float { return mMarginX = value; }
+    
+    /** The y-margin will extend the size of the filter texture along the y-axis.
+     *  Useful when the filter will "grow" the rendered object. */
+    private function get_marginY():Float { return mMarginY; }
+    private function set_marginY(value:Float):Float { return mMarginY = value; }
+    
+    /** The number of passes the filter is applied. The "activate" and "deactivate" methods
+     *  will be called that often. */
+    private function set_numPasses(value:Int):Int { return mNumPasses = value; }
+    private function get_numPasses():Int { return mNumPasses; }
+    
+    /** The ID of the vertex buffer attribute that stores the vertex position. */ 
+    private function get_vertexPosAtID():Int { return mVertexPosAtID; }
+    private function set_vertexPosAtID(value:Int):Int { return mVertexPosAtID = value; }
+    
+    /** The ID of the vertex buffer attribute that stores the texture coordinates. */
+    private function get_texCoordsAtID():Int { return mTexCoordsAtID; }
+    private function set_texCoordsAtID(value:Int):Int { return mTexCoordsAtID = value; }
 
-	/** The ID (sampler) of the input texture (containing the output of the previous pass). */
-	private function get_baseTextureID():Int { return mBaseTextureID; }
-	private function set_baseTextureID(value:Int):Int
-	{
-		return mBaseTextureID = value;
-	}
-	
-	/** The ID of the first register of the modelview-projection constant (a 4x4 matrix). */
-	private function get_mvpConstantID():Int { return mMvpConstantID; }
-	private function set_mvpConstantID(value:Int):Int
-	{
-		return mMvpConstantID = value;
-	}
+    /** The ID (sampler) of the input texture (containing the output of the previous pass). */
+    private function get_baseTextureID():Int { return mBaseTextureID; }
+    private function set_baseTextureID(value:Int):Int { return mBaseTextureID = value; }
+    
+    /** The ID of the first register of the modelview-projection inline static constant (a 4x4 matrix). */
+    private function get_mvpConstantID():Int { return mMvpConstantID; }
+    private function set_mvpConstantID(value:Int):Int { return mMvpConstantID = value; }
 }

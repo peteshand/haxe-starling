@@ -21,7 +21,6 @@ import openfl.net.URLRequest;
 import openfl.system.LoaderContext;
 import openfl.system.System;
 import openfl.utils.ByteArray;
-import openfl.Vector;
 
 import starling.core.Starling;
 import starling.events.Event;
@@ -120,7 +119,7 @@ class AssetManager extends EventDispatcher
 	private var mKeepFontXmls:Bool;
 	private var mNumConnections:Int;
 	private var mVerbose:Bool;
-	private var mQueue:Vector<Dynamic>;
+	private var mQueue:Array<Dynamic>;
 	
 	private var mTextures:Map<String, Texture>;
 	private var mAtlases:Map<String, TextureAtlas>;
@@ -130,7 +129,7 @@ class AssetManager extends EventDispatcher
 	private var mByteArrays:Map<String, ByteArray>;
 	
 	/** helper objects */
-	private static var sNames = new Vector<String>();
+	private static var sNames = new Array<String>();
 	
 	/** Regex for name / extension extraction from URL. */
 	private static var NAME_REGEX = ~/([^\?\/\\]+?)(?:\.([\w\-]+))?(?:\?.*)?$/;
@@ -157,7 +156,7 @@ class AssetManager extends EventDispatcher
 	 *  how enqueued bitmaps will be converted to textures. */
 	public function new(scaleFactor:Float=1, useMipmaps:Bool=false)
 	{
-		mQueue = new Vector<Dynamic>();
+		mQueue = new Array<Dynamic>();
 		mDefaultTextureOptions = new TextureOptions(scaleFactor, useMipmaps);
 		mTextures = new Map<String, Texture>();
 		mAtlases = new Map<String, TextureAtlas>();
@@ -220,8 +219,7 @@ class AssetManager extends EventDispatcher
 			result[result.length] = getTexture(name); // avoid 'push'
 		
 		
-		
-		sNames.length = 0;
+		sNames.splice(0, sNames.length);
 		return result;
 	}
 	
@@ -468,7 +466,7 @@ class AssetManager extends EventDispatcher
 	/** Empties the queue and aborts any pending load operations. */
 	public function purgeQueue():Void
 	{
-		mQueue.length = 0;
+		mQueue.splice(0, mQueue.length);
 		dispatchEventWith(Event.CANCEL);
 	}
 	
@@ -649,7 +647,7 @@ class AssetManager extends EventDispatcher
 		var i:Int;
 		var canceled:Bool = false;
 		var xmls = new Array<Xml>();
-		var assetInfos = mQueue.concat(new Vector<Dynamic>());
+		var assetInfos = mQueue.concat(new Array<Dynamic>());
 		/*for (j in 0...mQueue.length) 
 		{
 			assetInfos.push(mQueue[j]);
@@ -839,7 +837,7 @@ class AssetManager extends EventDispatcher
 		for (i in 0...mNumConnections)
 			loadNextQueueElement();
 
-		mQueue.length = 0;
+		mQueue.splice(0, mQueue.length);
 		mNumLoadingQueues++;
 		addEventListener(Event.CANCEL, cancel);
 	}

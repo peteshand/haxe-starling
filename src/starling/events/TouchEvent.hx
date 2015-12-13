@@ -62,10 +62,10 @@ class TouchEvent extends Event
 	private var mVisitedObjects:Array<EventDispatcher>;
 	
 	/** Helper object. */
-	private static var sTouches = new Vector<Touch>();
+	private static var sTouches = new Array<Touch>();
 	
 	public var timestamp(get, null):Float;
-	public var touches(get, null):Vector<Touch>;
+	public var touches(get, null):Array<Touch>;
 	public var shiftKey(get, null):Bool;
 	public var ctrlKey(get, null):Bool;
 	
@@ -129,7 +129,7 @@ class TouchEvent extends Event
 					if (sTouches[i].id == id) { touch = sTouches[i]; break; }
 			}
 			
-			sTouches.length = 0;
+			sTouches.splice(0, sTouches.length);
 			return touch;
 		}
 		else return null;
@@ -151,7 +151,7 @@ class TouchEvent extends Event
 			}
 		}
 		
-		sTouches.length = 0;
+		sTouches.splice(0, sTouches.length);
 		return result;
 	}
 	
@@ -161,7 +161,7 @@ class TouchEvent extends Event
 	 *  Dispatches the event along a custom bubble chain. During the lifetime of the event,
 	 *  each object is visited only once. */
 	/*internal*/ 
-	public function dispatch(chain:Vector<EventDispatcher>):Void
+	public function dispatch(chain:Array<EventDispatcher>):Void
 	{
 		//trace("CHECK");
 		if (chain != null && cast(chain.length))
@@ -193,7 +193,7 @@ class TouchEvent extends Event
 	private function get_timestamp():Float { return mTimestamp; }
 	
 	/** All touches that are currently available. */
-	private function get_touches():Vector<Touch> { return (cast data).concat(); }
+	private function get_touches():Array<Touch> { return (cast data).concat(); }
 	
 	/** Indicates if the shift key was pressed when the event occurred. */
 	private function get_shiftKey():Bool { return mShiftKey; }

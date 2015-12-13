@@ -63,14 +63,14 @@ class TouchProcessor
 	
 	/** A vector of arrays with the arguments that were passed to the "enqueue"
 	 *  method (the oldest being at the end of the vector). */
-	private var mQueue:Vector<Array<Dynamic>>;
+	private var mQueue:Array<Array<Dynamic>>;
 	
 	/** The list of all currently active touches. */
-	private var mCurrentTouches:Vector<Touch> = new Vector<Touch>();
+	private var mCurrentTouches:Array<Touch> = new Array<Touch>();
 	
 	/** Helper objects. */
-	private static var sUpdatedTouches = new Vector<Touch>();
-	private static var sHoveringTouchData = new Vector<Dynamic>();
+	private static var sUpdatedTouches = new Array<Touch>();
+	private static var sHoveringTouchData = new Array<Dynamic>();
 	private static var sHelperPoint = new Point();
 	
 	public var simulateMultitouch(get, set):Bool;
@@ -87,9 +87,9 @@ class TouchProcessor
 		mRoot = mStage = stage;
 		mElapsedTime = 0.0;
 		
-		mQueue = new Vector<Array<Dynamic>>();
+		mQueue = new Array<Array<Dynamic>>();
 		mLastTaps = new Array<Touch>();
-		mCurrentTouches.length = 0;
+		mCurrentTouches.splice(0, mCurrentTouches.length);
 		
 		mStage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		mStage.addEventListener(KeyboardEvent.KEY_UP,   onKey);
@@ -109,68 +109,59 @@ class TouchProcessor
 	 *  the queue while doing so. This method is called by Starling once per frame. */
 	public function advanceTime(passedTime:Float):Void
 	{
-		//var i:Int;
-		var touch:Touch;
-		
-		mElapsedTime += passedTime;
-		sUpdatedTouches.length = 0;
-		
-		// remove old taps
-		/*if (mLastTaps.length > 0)
-		{
-			//for (i = mLastTaps.length - 1; i >= 0; --i)
-			for (j in 0...mLastTaps.length) {
-				var i = mLastTaps.length - j - 1;
-				if (mElapsedTime - mLastTaps[i].timestamp > mMultitapTime)
-					mLastTaps.splice(i, 1);
-			}
-		}*/
-		
-		var len = mQueue.length;
-		for (i in 0...len) 
-		//while (mQueue.length > 0)
-		{
-			var j = len - 1 - i;
-			var mQueueItem = mQueue[j];
-			if (mQueueItem == null) {
-				//mQueue.splice(i, 1);
-				//mQueue = new Vector<Array<Dynamic>>();
-				continue;
-			}
-			
-			
-			
-			// Set touches that were new or moving to phase 'stationary'.
-			for (touch in mCurrentTouches)
-				if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED)
-					touch.phase = TouchPhase.STATIONARY;
+		var i:Int;
+        var touch:Touch;
+        
+        mElapsedTime += passedTime;
+		sUpdatedTouches.splice(0, sUpdatedTouches.length);
+        
+        // remove old taps
+        if (mLastTaps.length > 0)
+        {
+            //for (i=mLastTaps.length-1; i>=0; --i)
+            var i:Int = mLastTaps.length - 1;
+            while (i >= 0)
+            {
+                if (mElapsedTime - mLastTaps[i].timestamp > mMultitapTime)
+                    mLastTaps.splice(i, 1);
+                --i;
+            }
+        }
+        
+        while (mQueue.length > 0)
+        {
+            // Set touches that were new or moving to phase 'stationary'.
+            for(touch in mCurrentTouches)
+                if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED)
+                    touch.phase = TouchPhase.STATIONARY;
 
-			// analyze new touches, but each ID only once
-			//while (mQueue.length > 0 && containsTouchWithID(sUpdatedTouches, mQueue[mQueue.length-1][0]) == false)
-			while (mQueue.length > 0 && containsTouchWithID(sUpdatedTouches, mQueueItem[0]) == false)
-			{
-				var touchArgs:Array<Dynamic> = mQueue.pop();
-				
-				touch = createOrUpdateTouch(
-							touchArgs[0], touchArgs[1], touchArgs[2], touchArgs[3],
-							touchArgs[4], touchArgs[5], touchArgs[6]);
-				
-				sUpdatedTouches[sUpdatedTouches.length] = touch; // avoiding 'push'
-			}
-			// process the current set of touches (i.e. dispatch touch events)
-			processTouches(sUpdatedTouches, mShiftDown, mCtrlDown);
+            // analyze new touches, but each ID only once
+            while (mQueue.length > 0 &&
+                  !containsTouchWithID(sUpdatedTouches, mQueue[mQueue.length-1][0]))
+            {
+                var touchArgs:Array<Dynamic> = mQueue.pop();
+                touch = createOrUpdateTouch(
+                            touchArgs[0], touchArgs[1], touchArgs[2], touchArgs[3],
+                            touchArgs[4], touchArgs[5], touchArgs[6]);
+                
+                sUpdatedTouches[sUpdatedTouches.length] = touch; // avoiding 'push'
+            }
 
-			// remove ended touches
-			for (k in 0...mCurrentTouches.length) {
-				var i = mCurrentTouches.length - k - 1;
-				if (mCurrentTouches[i].phase == TouchPhase.ENDED)
-					mCurrentTouches.splice(i, 1);
-			}
-			
-			sUpdatedTouches = new Vector<Touch>();//sUpdatedTouches.length = 0;
-		}
-		
-		mQueue = new Vector<Array<Dynamic>>();
+            // process the current set of touches (i.e. dispatch touch events)
+            processTouches(sUpdatedTouches, mShiftDown, mCtrlDown);
+
+            // remove ended touches
+            //for (i=mCurrentTouches.length-1; i>=0; --i)
+            var i:Int = mCurrentTouches.length - 1;
+            while (i >= 0)
+            {
+                if (mCurrentTouches[i].phase == TouchPhase.ENDED)
+                    mCurrentTouches.splice(i, 1);
+                --i;
+            }
+            
+            sUpdatedTouches = [];
+        }
 	}
 	
 	/** Dispatches TouchEvents to the display objects that are affected by the list of
@@ -183,7 +174,7 @@ class TouchProcessor
 	 */
 	private function processTouches(touches:Vector<Touch>, shiftDown:Bool, ctrlDown:Bool):Void
 	{
-		sHoveringTouchData.length = 0;
+		sHoveringTouchData.splice(0, sHoveringTouchData.length);
 		
 		// the same touch event will be dispatched to all targets;
 		// the 'dispatch' method will make sure each bubble target is visited only once.
@@ -509,7 +500,7 @@ class TouchProcessor
 		}
 
 		// purge touches
-		mCurrentTouches.length = 0;
-		mQueue = new Vector<Array<Dynamic>>(); // mQueue.length = 0;
+		mCurrentTouches.splice(0, mCurrentTouches.length);
+		mQueue = new Array<Array<Dynamic>>(); // mQueue.length = 0;
 	}
 }

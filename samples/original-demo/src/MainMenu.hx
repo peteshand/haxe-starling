@@ -65,12 +65,12 @@ class MainMenu extends Sprite
 				["Animations", AnimationScene, true],
 				["Custom hit-test", CustomHitTestScene, true],
 				["Movie Clip", MovieScene, true],
-				["Filters", FilterScene, false],
+				["Filters", FilterScene, true],
 				["Blend Modes", BlendModeScene, true],
 				["Render Texture", RenderTextureScene, true],
 				["Benchmark", BenchmarkScene, true],
 				//["Batch Benchmark", BatchBenchmarkScene, true],
-				["Masks", MaskScene, false],
+				["Masks", MaskScene, true],
 				["Sprite 3D", Sprite3DScene, true]
 			];
 		#elseif cpp

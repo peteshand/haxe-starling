@@ -12,7 +12,6 @@ package starling.events;
 
 import openfl.geom.Matrix;
 import openfl.geom.Point;
-import openfl.Vector;
 import starling.utils.StarlingUtils;
 
 import starling.display.DisplayObject;
@@ -49,7 +48,7 @@ class Touch
 	private var mPressure:Float;
 	private var mWidth:Float;
 	private var mHeight:Float;
-	private var mBubbleChain:Vector<EventDispatcher>;
+	private var mBubbleChain:Array<EventDispatcher>;
 	
 	/** Helper object. */
 	private static var sHelperMatrix:Matrix = new Matrix();
@@ -69,7 +68,7 @@ class Touch
 	public var height(get, set):Float;
 	
 	/*internal*/
-	public var bubbleChain(get, null):Vector<EventDispatcher>;
+	public var bubbleChain(get, null):Array<EventDispatcher>;
 	
 	/** Creates a new Touch object. */
 	public function new(id:Int)
@@ -78,7 +77,7 @@ class Touch
 		mTapCount = 0;
 		mPhase = TouchPhase.HOVER;
 		mPressure = mWidth = mHeight = 1.0;
-		mBubbleChain = new Vector<EventDispatcher>();
+		mBubbleChain = new Array<EventDispatcher>();
 	}
 	
 	/** Converts the current location of a touch to the local coordinate system of a display 
@@ -152,7 +151,8 @@ class Touch
 			var length:Int = 1;
 			var element:DisplayObject = mTarget;
 			
-			mBubbleChain.length = 1;
+			mBubbleChain.splice(1, mBubbleChain.length - 1);
+			
 			mBubbleChain[0] = element;
 			
 			while ((element = element.parent) != null)
@@ -160,7 +160,7 @@ class Touch
 		}
 		else
 		{
-			mBubbleChain.length = 0;
+			mBubbleChain.splice(0, mBubbleChain.length);
 		}
 	}
 	
@@ -274,8 +274,8 @@ class Touch
 	
 	/** @private */
 	@:allow(TouchProcessor)
-	private function get_bubbleChain():Vector<EventDispatcher>
+	private function get_bubbleChain():Array<EventDispatcher>
 	{
-		return mBubbleChain.concat(new Vector<EventDispatcher>());
+		return mBubbleChain.concat(new Array<EventDispatcher>());
 	}
 }

@@ -32,18 +32,18 @@ class BlurFilter extends FragmentFilter
 	private static var MAX_SIGMA:Float = 2.0;
 	
 	private var mNormalProgram:Program3D;
-	private var mTintedProgram:Program3D;
-	
-	private var mOffsets = new Vector<Float>();
-	private var mWeights = new Vector<Float>();
-	private var mColor   = new Vector<Float>();
-	
-	private var mBlurX:Float;
-	private var mBlurY:Float;
-	private var mUniformColor:Bool;
-	
-	/** helper object */
-	private var sTmpWeights:Vector<Float> = new Vector<Float>(5, true);
+    private var mTintedProgram:Program3D;
+    
+    private var mOffsets:#if flash Vector<Float> #else Array<Float> #end = [0.0, 0, 0, 0];
+    private var mWeights:#if flash Vector<Float> #else Array<Float> #end = [0.0, 0, 0, 0];
+    private var mColor:#if flash Vector<Float> #else Array<Float> #end   = [1.0, 1, 1, 1];
+    
+    private var mBlurX:Float;
+    private var mBlurY:Float;
+    private var mUniformColor:Bool;
+    
+    /** helper object */
+    private var sTmpWeights:Array<Float> = [0, 0, 0, 0, 0];
 	
 	public var blurX(get, set):Float;
 	public var blurY(get, set):Float;
@@ -64,21 +64,6 @@ class BlurFilter extends FragmentFilter
 	 */
 	public function new(blurX:Float=1, blurY:Float=1, resolution:Float=1)
 	{
-		mOffsets.push(0);
-		mOffsets.push(0);
-		mOffsets.push(0);
-		mOffsets.push(0);
-		
-		mWeights.push(0);
-		mWeights.push(0);
-		mWeights.push(0);
-		mWeights.push(0);
-		
-		mColor.push(1);
-		mColor.push(1);
-		mColor.push(1);
-		mColor.push(1);
-		
 		super(1, resolution);
 		mBlurX = blurX;
 		mBlurY = blurY;
@@ -190,20 +175,24 @@ class BlurFilter extends FragmentFilter
 		// vertex attribute 1:   texture coordinates (FLOAT_2)
 		// texture 0:            input texture
 		
+		if (mUniformColor && pass == numPasses - 1)
+        {
+            context.setProgram(mTintedProgram);
+        }
+        else
+        {
+            context.setProgram(mNormalProgram);
+        }
+		
 		updateParameters(pass, Std.int(texture.nativeWidth), Std.int(texture.nativeHeight));
 		
 		context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,   4, cast mOffsets);
 		context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, cast mWeights);
 		
 		if (mUniformColor && pass == numPasses - 1)
-		{
-			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1, cast mColor);
-			context.setProgram(mTintedProgram);
-		}
-		else
-		{
-			context.setProgram(mNormalProgram);
-		}
+        {
+            context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 1, mColor);
+        }
 	}
 	
 	private function updateParameters(pass:Int, textureWidth:Int, textureHeight:Int):Void
