@@ -357,7 +357,7 @@ class BitmapFont
 					}
 					else if (char == null)
 					{
-						trace("[Starling] Missing character: " + charID);
+						trace("[Starling] Missing character: " + charID+" ("+text.charAt(i)+")");
 					}
 					else
 					{
