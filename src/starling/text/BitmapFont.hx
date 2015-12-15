@@ -345,7 +345,8 @@ class BitmapFont
 				var currentLine:Array<CharLocation> = CharLocation.vectorFromPool();
 				
 				numChars = text.length;
-				for (i in 0...numChars) 
+				var i = 0;
+				while (i < numChars) 
 				{
 					var lineFull:Bool = false;
 					var charID:Int = text.charCodeAt(i);
@@ -390,7 +391,7 @@ class BitmapFont
 							if (currentLine.length == 0)
 								break;
 							
-							//i -= numCharsToRemove;
+							i -= numCharsToRemove;
 							lineFull = true;
 						}
 					}
@@ -419,6 +420,7 @@ class BitmapFont
 							break;
 						}
 					}
+					i++;
 				} // for each char
 			} // if (mLineHeight <= containerHeight)
 			
