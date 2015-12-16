@@ -139,7 +139,6 @@ class Main extends Sprite
 
 		assets.loadQueue(function(ratio:Float):Void
 		{
-			trace("ratio = " + ratio);
 			if (ratio == 1) onComplete(assets);
 		});
 	}
