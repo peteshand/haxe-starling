@@ -55,7 +55,7 @@ class TextureOptions
 	private function get_scale():Float { return mScale; }
 	private function set_scale(value:Float):Float
 	{
-		mScale = value > 0 ? value : Starling.ContentScaleFactor;
+		mScale = value > 0 ? value : Starling.current.contentScaleFactor;
 		return value;
 	}
 	
