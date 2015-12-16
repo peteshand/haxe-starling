@@ -32,14 +32,14 @@ class Sprite3DScene extends Scene
 
 	private function start():Void
 	{
-		Starling.Juggler.tween(mCube, 6, { rotationX: 2 * Math.PI, repeatCount: 0 });
-		Starling.Juggler.tween(mCube, 7, { rotationY: 2 * Math.PI, repeatCount: 0 });
-		Starling.Juggler.tween(mCube, 8, { rotationZ: 2 * Math.PI, repeatCount: 0 });
+		Starling.current.juggler.tween(mCube, 6, { rotationX: 2 * Math.PI, repeatCount: 0 });
+		Starling.current.juggler.tween(mCube, 7, { rotationY: 2 * Math.PI, repeatCount: 0 });
+		Starling.current.juggler.tween(mCube, 8, { rotationZ: 2 * Math.PI, repeatCount: 0 });
 	}
 
 	private function stop():Void
 	{
-		Starling.Juggler.removeTweens(mCube);
+		Starling.current.juggler.removeTweens(mCube);
 	}
 
 	private function createCube(texture:Texture):Sprite3D
