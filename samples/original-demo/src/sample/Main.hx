@@ -128,7 +128,7 @@ class Main extends Sprite
 		assets.enqueueWithName(EmbeddedAssets.atlas, "atlas");
 		assets.enqueueWithName(EmbeddedAssets.atlas_xml, "atlas_xml");
 		assets.enqueueWithName(EmbeddedAssets.background, "background");
-		//assets.enqueueWithName(EmbeddedAssets.compressed_texture, "compressed_texture");
+		assets.enqueueWithName(EmbeddedAssets.compressed_texture, "compressed_texture");
 		assets.enqueueWithName(EmbeddedAssets.desyrel, "desyrel");
 		assets.enqueueWithName(EmbeddedAssets.desyrel_fnt, "desyrel_fnt");
 		assets.enqueueWithName(EmbeddedAssets.wing_flap, "wing_flap");
