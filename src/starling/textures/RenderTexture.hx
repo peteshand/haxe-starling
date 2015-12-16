@@ -194,7 +194,7 @@ class RenderTexture extends SubTexture
      *  @param drawingBlock  a callback with the form: <pre>function():void;</pre>
      *  @param antiAliasing  Only supported beginning with AIR 13, and only on Desktop.
      *                       Values range from 0 (no antialiasing) to 4 (best quality). */
-    public function drawBundled(drawingBlock:DisplayObject->Matrix->Float->Void, antiAliasing:Int=0):Void
+    public function drawBundled(drawingBlock:Dynamic, antiAliasing:Int=0):Void
     {
         renderBundled(drawingBlock, null, null, 1.0, antiAliasing);
     }
@@ -219,7 +219,7 @@ class RenderTexture extends SubTexture
         if (mask != null)   mSupport.popMask();
     }
     
-    private function renderBundled(renderBlock:DisplayObject->Matrix->Float->Void, object:DisplayObject=null,
+    private function renderBundled(renderBlock:Dynamic, object:DisplayObject=null,
                                    matrix:Matrix=null, alpha:Float=1.0,
                                    antiAliasing:Int=0):Void
     {

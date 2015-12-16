@@ -1,7 +1,9 @@
 package scenes;
 
 import flash.geom.Point;
+import openfl.geom.Matrix;
 import openfl.Vector;
+import starling.display.DisplayObject;
 
 import starling.core.RenderSupport;
 import starling.display.BlendMode;
@@ -22,21 +24,22 @@ class RenderTextureScene extends Scene
 	private var mButton:Button;
 	private var mColors:Map<Int, UInt>;
 	private var mInfoTextDrawn:Bool;
-	private var mTouches:Vector<Touch>;
+	private var mTouches:Array<Touch>;
 
 	public function new()
 	{
 		super();
 		
 		mInfoTextDrawn = false;
-		mTouches = null;
-
+		mTouches = new Array<Touch>();
+		mTouches.splice(0, mTouches.length);
+		
 		mColors = new Map<Int, UInt>();
-		mRenderTexture = new RenderTexture(320, 435);
+		mRenderTexture = new RenderTexture(320, 480);
 		
 		mCanvas = new Image(mRenderTexture);
 		mCanvas.addEventListener(TouchEvent.TOUCH, onRenderTexTouch);
-		addChild(mCanvas);
+		addChildAt(mCanvas, 0);
 		
 		mBrush = new Image(Game.assets.getTexture("brush"));
 		mBrush.pivotX = mBrush.width / 2;
@@ -54,14 +57,12 @@ class RenderTextureScene extends Scene
 	private function onRenderTexTouch(event:TouchEvent):Void
 	{
 		mTouches = event.getTouches(mCanvas);
+		if (mTouches == null) return;
+		draw();
 	}
-
-	public override function render(support:RenderSupport, parentAlpha:Float):Void
+	
+	private function draw() 
 	{
-		// touching the canvas will draw a brush texture. The 'drawBundled' method is not
-		// strictly necessary, but it's faster when you are drawing with several fingers
-		// simultaneously.
-		super.render(support, parentAlpha);
 		if (!mInfoTextDrawn) {
 			var infoText:TextField = new TextField(256, 128, "Touch the screen\nto draw!");
 			infoText.fontSize = 24;
@@ -71,26 +72,17 @@ class RenderTextureScene extends Scene
 			mInfoTextDrawn = true;
 		}
 		
-		if (mTouches == null) {
-			return;
-		}
-		
-		var validCount:Int = 0;
-		for (touch in mTouches)
-		{
-			if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.ENDED) {
-				continue;
-			}
-			validCount++;
-		}
-		if (validCount == 0) return;
-		
 		mRenderTexture.drawBundled(function():Void
 		{
 			for (touch in mTouches)
 			{
+				if (touch == null) continue;
+				if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.ENDED) {
+					continue;
+				}
 				if (touch.phase == TouchPhase.BEGAN) {
-					mColors[touch.id] = Math.floor(Math.random() * 4294967295); // 0xFFFFFFFF
+					var c:UInt = Math.floor(Math.random() * 4294967295); // 0xFFFFFFFF
+					mColors[touch.id] = c;
 				}
 				
 				var location:Point = touch.getLocation(mCanvas);
@@ -98,14 +90,17 @@ class RenderTextureScene extends Scene
 				mBrush.y = location.y;
 				
 				mBrush.color = mColors[touch.id];
+				
+				
 				mBrush.rotation = Math.random() * Math.PI * 2.0;
 				
 				mRenderTexture.draw(mBrush);
 			}
 		});
-		mTouches = null;
+		mTouches = new Array<Touch>();
+		mTouches.splice(0, mTouches.length);
 	}
-
+	
 	private function onButtonTriggered():Void
 	{
 		if (mBrush.blendMode == BlendMode.NORMAL)
