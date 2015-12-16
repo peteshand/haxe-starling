@@ -9,7 +9,6 @@
 // =================================================================================================
 
 package starling.filters;
-
 import starling.errors.AbstractClassError;
 
 /** A class that provides constant values for filter modes. The values are used in the
@@ -17,15 +16,15 @@ import starling.errors.AbstractClassError;
  *  original object. */
 class FragmentFilterMode
 {
-	/** @private */
-	public function new() { throw new AbstractClassError(); }
-	
-	/** The filter is displayed below the filtered object. */
-	public static var BELOW:String = "below";
-	
-	/** The filter is replacing the filtered object. */
-	public static var REPLACE:String = "replace";
-	
-	/** The filter is displayed above the filtered object. */ 
-	public static var ABOVE:String = "above";
+    /** @private */
+    public function FragmentFilterMode() { throw new AbstractClassError(); }
+    
+    /** The filter is displayed below the filtered object. */
+    inline public static var BELOW:String = "below";
+    
+    /** The filter is replacing the filtered object. */
+    inline public static var REPLACE:String = "replace";
+    
+    /** The filter is displayed above the filtered object. */ 
+    inline public static var ABOVE:String = "above";
 }

@@ -36,12 +36,12 @@ class MovieScene extends Scene
 	
 	private function onAddedToStage():Void
 	{
-		Starling.Juggler.add(mMovie);
+		Starling.current.juggler.add(mMovie);
 	}
 	
 	private function onRemovedFromStage():Void
 	{
-		Starling.Juggler.remove(mMovie);
+		Starling.current.juggler.remove(mMovie);
 	}
 	
 	public override function dispose():Void

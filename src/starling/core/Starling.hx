@@ -265,9 +265,6 @@ class Starling extends EventDispatcher
 	public var contextValid(get, null):Bool;
 	public static var current(get, null):Starling;
 	public static var all(get, null):Array<Starling>;
-	public static var Context(get, null):Context3D;
-	public static var Juggler(get, null):Juggler;
-	public static var ContentScaleFactor(get, null):Float;
 	public static var multitouchEnabled(get, set):Bool;
 	public static var handleLostContext(get, set):Bool;
 	
@@ -302,6 +299,7 @@ class Starling extends EventDispatcher
 							 renderMode:String="auto", profile:Dynamic=null)
 	{
 		super();
+		
 		if (profile == null) profile = Context3DProfile.BASELINE_CONSTRAINED;
 		if (stage == null) throw new ArgumentError("Stage must not be null");
 		if (viewPort == null) viewPort = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
@@ -473,10 +471,12 @@ class Starling extends EventDispatcher
 	
 	private function onCreated(event:Event):Void
 	{
-		var context:Context3D = stage3D.context3D;
+		var context:Context3D = cast stage3D.context3D;
 		context.setStencilActions(
 			cast Context3DTriangleFace.FRONT_AND_BACK,
 			cast Context3DCompareMode.EQUAL, 
+			cast Context3DStencilAction.DECREMENT_SATURATE,
+			cast Context3DStencilAction.KEEP,
 			cast Context3DStencilAction.DECREMENT_SATURATE
 		);
 		
@@ -530,7 +530,7 @@ class Starling extends EventDispatcher
 	
 	private function initializeGraphicsAPI():Void
 	{
-		mContext = mStage3D.context3D;
+		mContext = cast mStage3D.context3D;
 		mContext.enableErrorChecking = mEnableErrorChecking;
 		contextData[PROGRAM_DATA_NAME] = new Map<String, Dynamic>();
 		
@@ -616,7 +616,7 @@ class Starling extends EventDispatcher
 			mStage.stageWidth, mStage.stageHeight, mStage.cameraPosition);
 		
 		if (mShareContext == false)
-			RenderSupport.Clear(mStage.color, 1.0);
+			RenderSupport._clear(mStage.color, 1.0);
 		
 		
 		mStage.render(mSupport, 1.0);
@@ -1241,7 +1241,7 @@ class Starling extends EventDispatcher
 	public static function get_all():Array<Starling> { return sAll; }
 	
 	/** The render context of the currently active Starling instance. */
-	public static function get_Context():Context3D { return sCurrent != null ? sCurrent.context : null; }
+	//public static function get_Context():Context3D { return sCurrent != null ? sCurrent.context : null; }
 	
 	/** The default juggler of the currently active Starling instance. */
 	public static function get_Juggler():Juggler { return sCurrent != null ? sCurrent.juggler : null; }
@@ -1301,3 +1301,11 @@ class Starling extends EventDispatcher
 }
 
 typedef StarlingFunction = Dynamic;
+
+typedef Context3D = starling.openfl.Context3D;
+typedef AGLSLParser = starling.openfl.AGLSLParser;
+typedef Mapping = starling.openfl.Mapping;
+typedef OpenGLView = starling.openfl.OpenGLView;
+
+// should be resolved once 3.5.3 is pushed
+typedef AGALTokenizer = starling.openfl.AGALTokenizer;

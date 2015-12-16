@@ -223,7 +223,7 @@ class TextField extends DisplayObjectContainer
 			mTextBounds = new Rectangle();
 		
 		var texture:Texture;
-		var scale:Float = Starling.ContentScaleFactor;
+		var scale:Float = Starling.current.contentScaleFactor;
 		var bitmapData:BitmapData = renderText(scale, mTextBounds);
 		var format:Context3DTextureFormat = sDefaultTextureFormat;
 		var maxTextureSize:Int = Texture.maxSize;

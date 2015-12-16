@@ -2,6 +2,9 @@ package scenes;
 
 import flash.display.BitmapData;
 import flash.display.BitmapDataChannel;
+import openfl.Assets;
+import openfl.display.Bitmap;
+import openfl.Lib;
 
 import starling.core.Starling;
 import starling.display.Button;
@@ -63,8 +66,7 @@ class FilterScene extends Scene
 			["Drop Shadow", BlurFilter.createDropShadow()],
 			["Glow", BlurFilter.createGlow()]
 		];
-		
-		var displacementMap:Texture = createDisplacementMap(mImage.width, mImage.height);
+		var displacementMap = Texture.fromBitmapData(Assets.getBitmapData("assets/textures/perlinNoise.png"), false, false, scale);
 		
 		displacementFilter = new DisplacementMapFilter(
 			displacementMap, 
@@ -98,14 +100,5 @@ class FilterScene extends Scene
 		var hueFilter:ColorMatrixFilter = new ColorMatrixFilter();
 		hueFilter.adjustHue(1);
 		mFilterInfos.push(["Hue", hueFilter]);
-	}
-	
-	private function createDisplacementMap(width:Float, height:Float):Texture
-	{
-		var scale:Float = Starling.ContentScaleFactor;
-		var map:BitmapData = new BitmapData(cast width*scale, cast height*scale, false);
-		map.perlinNoise(20*scale, 20*scale, 3, 5, false, true);
-		var texture:Texture = Texture.fromBitmapData(map, false, false, scale);
-		return texture;
 	}
 }

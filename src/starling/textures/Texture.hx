@@ -278,7 +278,7 @@ class Texture
 
 		var texture:Texture = Texture.empty(
 			data.width / scale, data.height / scale,
-			false,
+			true,
 			generateMipMaps,
 			optimizeForRenderToTexture,
 			scale, format, repeat);
@@ -302,7 +302,7 @@ class Texture
 	public static function fromAtfData(data:ByteArray, scale:Float=1, useMipMaps:Bool=true,
 									   async:TextureFunction=null, repeat:Bool=false):Texture
 	{
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		if (context == null) throw new MissingContextError();
 		var atfData:AtfData = new AtfData(data);
 		var nativeTexture:flash.display3D.textures.Texture = context.createTexture(
@@ -391,7 +391,7 @@ class Texture
 		if (!SystemUtil.supportsVideoTexture)
 			throw new NotSupportedError("Video Textures are not supported on this platform");
 
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		if (context == null) throw new MissingContextError();
 		
 		var func:Dynamic = Reflect.getProperty(context, "createVideoTexture");
@@ -470,12 +470,12 @@ class Texture
 								 mipMapping:Bool=true, optimizeForRenderToTexture:Bool=false,
 								 scale:Float=-1, format:Context3DTextureFormat=null, repeat:Bool=false):Texture
 	{
-		if (scale <= 0) scale = Starling.ContentScaleFactor;
+		if (scale <= 0) scale = Starling.current.contentScaleFactor;
 		if (format == null) format = Context3DTextureFormat.BGRA;
 		
 		var actualWidth:Int, actualHeight:Int;
 		var nativeTexture:TextureBase;
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		
 		if (context == null) throw new MissingContextError();
 		
@@ -507,6 +507,9 @@ class Texture
 
 			nativeTexture = context.createTexture(actualWidth, actualHeight, format,
 												  optimizeForRenderToTexture);
+			#if js 
+				cast(nativeTexture, openfl.display3D.textures.Texture).uploadFromUInt8Array(null);
+			#end
 		}
 		
 		var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, format,

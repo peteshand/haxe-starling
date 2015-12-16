@@ -188,13 +188,14 @@ class Button extends DisplayObjectContainer
 		{
 			mTriggerBounds = getBounds(stage, mTriggerBounds);
 			mTriggerBounds.inflate(MAX_DRAG_DIST, MAX_DRAG_DIST);
-
+			
 			state = ButtonState.DOWN;
 		}
 		else if (touch.phase == TouchPhase.MOVED)
 		{
+			mTriggerBounds = getBounds(stage, mTriggerBounds);
 			isWithinBounds = mTriggerBounds.contains(touch.globalX, touch.globalY);
-
+			
 			if (mState == ButtonState.DOWN && !isWithinBounds)
 			{
 				// reset button when finger is moved too far away ...

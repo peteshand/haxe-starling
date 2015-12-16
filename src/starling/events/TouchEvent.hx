@@ -10,8 +10,10 @@
 
 package starling.events;
 
-import openfl.Vector;
+//import starling.core.starling_private;
 import starling.display.DisplayObject;
+
+//use namespace starling_private;
 
 /** A TouchEvent is triggered either by touch or mouse input.  
  *  
@@ -41,7 +43,7 @@ import starling.display.DisplayObject;
  *  the touches that occurred on top of certain objects, you can query the event for touches
  *  with a specific target:</p>
  * 
- *  <code>var touches:Vector.&lt;Touch&gt; = touchEvent.getTouches(this);</code>
+ *  <code>var touches:Array&lt;Touch&gt; = touchEvent.getTouches(this);</code>
  *  
  *  <p>This will return all touches of "this" or one of its children. When you are not using 
  *  multitouch, you can also access the touch object directly, like this:</p>
@@ -62,15 +64,16 @@ class TouchEvent extends Event
 	private var mVisitedObjects:Array<EventDispatcher>;
 	
 	/** Helper object. */
-	private static var sTouches = new Vector<Touch>();
+	private static var sTouches:Array<Touch> = new Array<Touch>();
 	
 	public var timestamp(get, null):Float;
-	public var touches(get, null):Vector<Touch>;
+	public var touches(get, null):Array<Touch>;
 	public var shiftKey(get, null):Bool;
 	public var ctrlKey(get, null):Bool;
 	
 	/** Creates a new TouchEvent instance. */
-	public function new(type:String, touches:Vector<Touch>, shiftKey:Bool=false, ctrlKey:Bool=false, bubbles:Bool=true)
+	public function new(type:String, touches:Array<Touch>, shiftKey:Bool=false, 
+							   ctrlKey:Bool=false, bubbles:Bool=true)
 	{
 		super(type, bubbles, touches);
 		
@@ -88,10 +91,11 @@ class TouchEvent extends Event
 	/** Returns a list of touches that originated over a certain target. If you pass a
 	 *  'result' vector, the touches will be added to this vector instead of creating a new 
 	 *  object. */
-	public function getTouches(target:DisplayObject, phase:String=null, result:Vector<Touch>=null):Vector<Touch>
+	public function getTouches(target:DisplayObject, phase:String=null,
+							   result:Array<Touch>=null):Array<Touch>
 	{
-		if (result == null) result = new Vector<Touch>();
-		var allTouches:Vector<Touch> = cast data;
+		if (result == null) result = new Array<Touch>();
+		var allTouches:Array<Touch> = cast(data);
 		var numTouches:Int = allTouches.length;
 		
 		for (i in 0...numTouches)
@@ -101,7 +105,7 @@ class TouchEvent extends Event
 			var correctPhase:Bool = (phase == null || phase == touch.phase);
 				
 			if (correctTarget && correctPhase)
-				result[result.length] = touch; // avoiding 'push'
+				result[result.length] = touch; // aVoiding 'push'
 		}
 		return result;
 	}
@@ -115,7 +119,7 @@ class TouchEvent extends Event
 	 */
 	public function getTouch(target:DisplayObject, phase:String=null, id:Int=-1):Touch
 	{
-		sTouches = getTouches(target, phase, sTouches);
+		getTouches(target, phase, sTouches);
 		var numTouches:Int = sTouches.length;
 		
 		if (numTouches > 0) 
@@ -129,7 +133,7 @@ class TouchEvent extends Event
 					if (sTouches[i].id == id) { touch = sTouches[i]; break; }
 			}
 			
-			sTouches.length = 0;
+			sTouches.splice(0, sTouches.length);
 			return touch;
 		}
 		else return null;
@@ -139,7 +143,7 @@ class TouchEvent extends Event
 	public function interactsWith(target:DisplayObject):Bool
 	{
 		var result:Bool = false;
-		sTouches = getTouches(target, null, sTouches);
+		getTouches(target, null, sTouches);
 		
 		for (j in 0...sTouches.length) 
 		{
@@ -150,8 +154,7 @@ class TouchEvent extends Event
 				break;
 			}
 		}
-		
-		sTouches.length = 0;
+		sTouches.splice(0, sTouches.length);
 		return result;
 	}
 	
@@ -160,21 +163,17 @@ class TouchEvent extends Event
 	/** @private
 	 *  Dispatches the event along a custom bubble chain. During the lifetime of the event,
 	 *  each object is visited only once. */
-	/*internal*/ 
-	public function dispatch(chain:Vector<EventDispatcher>):Void
+	public function dispatch(chain:Array<EventDispatcher>):Void
 	{
-		//trace("CHECK");
-		if (chain != null && cast(chain.length))
+		if (chain != null && chain.length > 0)
 		{
 			var chainLength:Int = bubbles ? chain.length : 1;
 			var previousTarget:EventDispatcher = target;
-			var eventDispatcher:EventDispatcher = cast chain[0];
+			setTarget(chain[0]);
 			
-			setTarget(eventDispatcher);
-			
-			for (i in 0...chainLength)
+			for (i in 0...chainLength) 
 			{
-				var chainElement:EventDispatcher = cast chain[i];
+				var chainElement:EventDispatcher = cast(chain[i]);
 				if (mVisitedObjects.indexOf(chainElement) == -1)
 				{
 					var stopPropagation:Bool = chainElement.invokeEvent(this);
@@ -190,14 +189,14 @@ class TouchEvent extends Event
 	// properties
 	
 	/** The time the event occurred (in seconds since application launch). */
-	private function get_timestamp():Float { return mTimestamp; }
+	public function get_timestamp():Float { return mTimestamp; }
 	
 	/** All touches that are currently available. */
-	private function get_touches():Vector<Touch> { return (cast data).concat(); }
+	public function get_touches():Array<Touch> { return (cast data).concat(); }
 	
 	/** Indicates if the shift key was pressed when the event occurred. */
-	private function get_shiftKey():Bool { return mShiftKey; }
+	public function get_shiftKey():Bool { return mShiftKey; }
 	
 	/** Indicates if the ctrl key was pressed when the event occurred. (Mac OS: Cmd or Ctrl) */
-	private function get_ctrlKey():Bool { return mCtrlKey; }
+	public function get_ctrlKey():Bool { return mCtrlKey; }
 }

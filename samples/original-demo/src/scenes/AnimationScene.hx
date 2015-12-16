@@ -90,7 +90,7 @@ class AnimationScene extends Scene
 		// This is done by the 'Juggler'. It receives the tween and will carry it out.
 		// We use the default juggler here, but you can create your own jugglers, as well.            
 		// That way, you can group animations into logical parts.  
-		Starling.Juggler.add(tween);
+		Starling.current.juggler.add(tween);
 		
 		// show which tweening function is used
 		mTransitionLabel.text = transition;
@@ -98,7 +98,7 @@ class AnimationScene extends Scene
 		
 		var hideTween:Tween = new Tween(mTransitionLabel, 2.0, Transitions.EASE_IN);
 		hideTween.animate("alpha", 0.0);
-		Starling.Juggler.add(hideTween);
+		Starling.current.juggler.add(hideTween);
 	}
 	
 	private function onDelayButtonTriggered():Void
@@ -109,9 +109,9 @@ class AnimationScene extends Scene
 		// you use your own juggler in a component of your game, because it gives you perfect 
 		// control over the flow of time and animations. 
 		
-		Starling.Juggler.delayCall(colorizeEgg, 1.0, [true]);
-		Starling.Juggler.delayCall(colorizeEgg, 2.0, [false]);
-		Starling.Juggler.delayCall(function():Void { mDelayButton.enabled = true; }, 2.0, []);
+		Starling.current.juggler.delayCall(colorizeEgg, 1.0, [true]);
+		Starling.current.juggler.delayCall(colorizeEgg, 2.0, [false]);
+		Starling.current.juggler.delayCall(function():Void { mDelayButton.enabled = true; }, 2.0, []);
 	}
 	
 	private function colorizeEgg(colorize:Bool):Void

@@ -3,19 +3,32 @@
 	<!-- NMML reference: https://gist.github.com/1763850 -->
 	
 	<!-- metadata, make sure 'package' is at least 3 segments (ie. com.mycompany.myproject) -->
-	<meta title="Starling Demo" package="StarlingDemo" version="1.0.0" company="P.J.Shand" />
+	<meta title="OpenFLStarlingSamples" package="starling.samples" version="1.0.0" company="P.J.Shand" />
 	
 	<!-- output -->
-	<app main="sample.Main" file="StarlingDemo" path="bin" />
+	<app main="sample.Main" file="OpenFLStarlingSamples1" path="bin" />
 	
 	<window background="#000000" fps="60" />
-	<window width="320" height="480" unless="mobile" />
+	<!--<window width="320" height="480" unless="mobile" />-->
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
+	<window width="320" height="480" 
+		orientation="portrait" 
+		vsync="true" fps="60" 
+		hardware="true" 
+		allow-shaders="true" 
+		require-shaders="true" 
+		depth-buffer="false" 
+		stencil-buffer="true" 
+		background="0x111111"
+	/>
 	
 	<!-- classpath, haxe libs -->
 	<source path="src" />
 	<source path="../../src" />
+	<source path="C:/_projects/HaxeLibraries/FeathersUI/feathers/source" />
 	
+	
+	<set name="lime-hybrid" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
 	<haxelib name="format" />
@@ -28,8 +41,14 @@
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->
+	<haxeflag name="-dce no" /> 
 	
+	<!--<haxeflag name="-D -swf-version=24" if="flash" ></haxeflag>-->
+	<haxeflag name="-D advanced-telemetry" if="flash" ></haxeflag>
+	<!--<haxeflag name="--no-traces" if="flash" ></haxeflag>-->
 	<app swf-version="17"/>
+	
+	<android target-sdk-version="21" />
 	
 	<haxedef name="source-map-content" if="html5" />
 	<haxedef name="dom" if="html5" />
