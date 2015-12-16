@@ -144,7 +144,7 @@ class Canvas extends DisplayObject
 		sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = 1.0;
 		sRenderAlpha[3] = parentAlpha * this.alpha;
 		
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		if (context == null) throw new MissingContextError();
 		
 		// apply the current blend mode
@@ -233,7 +233,7 @@ class Canvas extends DisplayObject
 	{
 		destroyBuffers();
 		
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		if (context == null) throw new MissingContextError();
 		
 		var numVertices:Float = mVertexData.numVertices;
