@@ -105,7 +105,7 @@ class Game extends Sprite
 		if (event.keyCode == Keyboard.SPACE)
 			Starling.current.showStats = !Starling.current.showStats;
 		else if (event.keyCode == Keyboard.X)
-			Starling.Context.dispose();
+			Starling.current.context.dispose();
 	}
 	
 	private function onButtonTriggered(event:Event):Void
