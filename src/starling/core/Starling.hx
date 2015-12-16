@@ -412,28 +412,23 @@ class Starling extends EventDispatcher
 	
 	private function requestContext3D(stage3D:Stage3D, renderMode:String, profile:Dynamic):Void
 	{
+		
 		tempRenderMode = renderMode;
 		profiles = null;
 		currentProfile = null;
 		trace(profile);
 		trace(Type.getClass(profile));
 		var type:Class<Dynamic> = Type.getClass(profile);
-		/*if (type == String) {
-			if (profile == "auto") {
-				profiles = [Context3DProfile.STANDARD, Context3DProfile.BASELINE_CONSTRAINED, Context3DProfile.BASELINE_EXTENDED, Context3DProfile.BASELINE, Context3DProfile.BASELINE_CONSTRAINED];
-			}
-			else {
-				var context3DProfile:Context3DProfile = cast(profile);
-				profiles = [context3DProfile];
-			}
-		}*/
+		
 		
 		if (profile == "auto" || profile == null) {
 			profiles = [Context3DProfile.BASELINE_EXTENDED, Context3DProfile.BASELINE_EXTENDED, Context3DProfile.BASELINE, Context3DProfile.BASELINE_CONSTRAINED];
 		}
+		#if (!flash)
 		else if (Std.is(profile, Context3DProfile)) {
 			profiles = [cast(profile, Context3DProfile)];
 		}
+		#end
 		else if (type == String) {
 			var context3DProfile:Context3DProfile = cast(profile);
 			profiles = [context3DProfile];
@@ -441,11 +436,6 @@ class Starling extends EventDispatcher
 		else if (type == Array) {
 			profiles = cast (profile);
 		}
-		
-		/*else if (Std.is(profile, Context3DProfile))
-			profiles = [cast(profile, Context3DProfile)];
-		else if (Std.is(profile, Array))
-			profiles = cast (profile);*/
 		else {
 			throw new ArgumentError("Profile must be of type 'Context3DProfile', 'String', or 'Array'");
 		}

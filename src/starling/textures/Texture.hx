@@ -278,7 +278,7 @@ class Texture
 
 		var texture:Texture = Texture.empty(
 			data.width / scale, data.height / scale,
-			true,
+			false,
 			generateMipMaps,
 			optimizeForRenderToTexture,
 			scale, format, repeat);

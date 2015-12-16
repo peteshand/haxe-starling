@@ -36,6 +36,9 @@ class ConcreteTexture extends Texture
 {
 	private static var TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
 	
+	private static var BITMAP_CACHE:Map<String, BitmapData> = new Map();
+	
+	
 	private var mBase:TextureBase;
 	private var mFormat:Context3DTextureFormat;
 	private var mWidth:Int;
@@ -113,9 +116,9 @@ class ConcreteTexture extends Texture
 			data = potData;
 		}
 		
-		if (Std.is(mBase, flash.display3D.textures.Texture))
+		if (Std.is(mBase, openfl.display3D.textures.Texture))
 		{
-			var potTexture:flash.display3D.textures.Texture = cast mBase;
+			var potTexture:openfl.display3D.textures.Texture = cast mBase;
 			
 			potTexture.uploadFromBitmapData(data);
 			
@@ -124,12 +127,16 @@ class ConcreteTexture extends Texture
 				var currentWidth:Int  = data.width  >> 1;
 				var currentHeight:Int = data.height >> 1;
 				var level:Int = 1;
-				var canvas:BitmapData = new BitmapData(currentWidth, currentHeight, true, 0);
 				var transform:Matrix = new Matrix(.5, 0, 0, .5);
 				var bounds:Rectangle = new Rectangle();
 				
-				while (currentWidth >= 1 || currentHeight >= 1)
+				while (currentWidth >= 1 && currentHeight >= 1)
 				{
+					var canvas:BitmapData = BITMAP_CACHE.get(currentWidth + "x" + currentHeight);
+					if (canvas == null) {
+						canvas = new BitmapData(currentWidth, currentHeight, true, 0);
+						BITMAP_CACHE.set(currentWidth + "x" + currentHeight, canvas);
+					}
 					bounds.width = currentWidth; bounds.height = currentHeight;
 					canvas.fillRect(bounds, 0);
 					canvas.draw(data, transform, null, null, null, true);
@@ -139,7 +146,6 @@ class ConcreteTexture extends Texture
 					currentHeight = currentHeight >> 1;
 				}
 				
-				canvas.dispose();
 			}
 		}
 		else if (Std.is(mBase, RectangleTexture))
@@ -165,7 +171,7 @@ class ConcreteTexture extends Texture
 	public function uploadAtfData(data:ByteArray, offset:Int=0, async:Dynamic=null):Void
 	{
 		var isAsync:Bool = Reflect.isFunction(async) || async == true;
-		var potTexture:flash.display3D.textures.Texture = cast mBase;
+		var potTexture:openfl.display3D.textures.Texture = cast mBase;
 		
 		if (potTexture == null)
 			throw new Error("This texture type does not support ATF data");
@@ -195,7 +201,7 @@ class ConcreteTexture extends Texture
 	public function attachVideo(type:String, attachment:Dynamic, onComplete:ConcreteTextureFunction=null):Void
 	{
 		var name:String = Type.getClassName(Type.getClass(mBase));
-		if (name == "flash.display3D.textures.VideoTexture")
+		if (name == "openfl.display3D.textures.VideoTexture")
 		{
 			mDataUploaded = true;
 			mTextureReadyCallback = onComplete;
@@ -240,13 +246,13 @@ class ConcreteTexture extends Texture
 	{
 		var context:Context3D = Starling.current.context;
 		var name:String = Type.getClassName(Type.getClass(mBase));
-		if (name == "flash.display3D.textures.Texture" || name == "openfl.display3D.textures.Texture")
+		if (name == "openfl.display3D.textures.Texture" || name == "openfl.display3D.textures.Texture")
 			mBase = context.createTexture(mWidth, mHeight, mFormat, 
 										  mOptimizedForRenderTexture);
-		else if (name == "flash.display3D.textures.RectangleTexture" || name == "openfl.display3D.textures.RectangleTexture")
+		else if (name == "openfl.display3D.textures.RectangleTexture" || name == "openfl.display3D.textures.RectangleTexture")
 			mBase = context.createRectangleTexture(mWidth, mHeight, mFormat,
 													  mOptimizedForRenderTexture);
-		/*else if (name == "flash.display3D.textures.VideoTexture")
+		/*else if (name == "openfl.display3D.textures.VideoTexture")
 			mBase = context.createVideoTexture();*/
 		else
 			throw new NotSupportedError("Texture type not supported: " + name);
