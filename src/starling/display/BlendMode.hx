@@ -126,7 +126,7 @@ class BlendMode
 	
 	/** Returns the blend factors that correspond with a certain mode and premultiplied alpha
 	 *  value. Throws an ArgumentError if the mode does not exist. */
-	public static function getBlendFactors(mode:String, premultipliedAlpha:Bool=true):Array<Dynamic>
+	public static function getBlendFactors(mode:String, premultipliedAlpha:Bool=true):Array<Context3DBlendFactor>
 	{
 		//trace("CHECK");
 		
