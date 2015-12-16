@@ -238,7 +238,7 @@ class ConcreteTexture extends Texture
 	//starling_internal
 	private function createBase():Void
 	{
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		var name:String = Type.getClassName(Type.getClass(mBase));
 		if (name == "flash.display3D.textures.Texture" || name == "openfl.display3D.textures.Texture")
 			mBase = context.createTexture(mWidth, mHeight, mFormat, 
@@ -259,7 +259,7 @@ class ConcreteTexture extends Texture
 	 *  don't call it from within a render method. */ 
 	public function clear(color:UInt=0x0, alpha:Float=0.0):Void
 	{
-		var context:Context3D = Starling.Context;
+		var context:Context3D = Starling.current.context;
 		if (context == null) throw new MissingContextError();
 		
 		if (mPremultipliedAlpha && alpha < 1.0) {
@@ -272,7 +272,7 @@ class ConcreteTexture extends Texture
 		// FP 11.8 plugin/projector: calling clear on a compressed texture doesn't work there
 		// (while it *does* work on iOS + Android).
 		
-		try { RenderSupport.Clear(color, alpha); }
+		try { RenderSupport._clear(color, alpha); }
 		catch (e:Error) {}
 		
 		context.setRenderToBackBuffer();
