@@ -152,13 +152,12 @@ import openfl.Lib;
 		updateDepthAndStencilState();
 		
 		// TODO use antiAlias parameter
-		//setBackBufferViewPort (null, null, width, height);
-		updateBackBufferViewPort ();
+		setBackBufferViewPort (null, null, width, height);
 		updateScissorRectangle ();
 		
 	}
 	
-	/*private function setBackBufferViewPort (?x:Int, ?y:Int, ?width:Int, ?height:Int) {
+	private function setBackBufferViewPort (?x:Int, ?y:Int, ?width:Int, ?height:Int) {
 		
 		if (x == null) x = Std.int (scrollRect.x);
 		if (y == null) y = Std.int (scrollRect.y);
@@ -174,7 +173,7 @@ import openfl.Lib;
 		
 		updateBackBufferViewPort ();
 		
-	}*/
+	}
 	
 	private function updateBackBufferViewPort () {
 		
