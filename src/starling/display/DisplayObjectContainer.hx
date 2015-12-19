@@ -64,6 +64,7 @@ import starling.utils.MatrixUtil;
  *  @see Sprite
  *  @see DisplayObject
  */
+@:keep
 class DisplayObjectContainer extends DisplayObject
 {
 	// members

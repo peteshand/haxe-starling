@@ -26,6 +26,8 @@
 	<source path="src" />
 	<source path="../../src" />
 	
+	
+	<!--<set name="lime-hybrid" />-->
 	<set name="next" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
@@ -37,9 +39,10 @@
 	<assets path="assets/fonts" rename="assets/fonts" />
 	<assets path="assets/textures" rename="assets/textures" />
 	
-	<!-- optimize output
-	<haxeflag name="-dce full" /> -->
-	<haxeflag name="-dce no" /> 
+	<!-- optimize output-->
+	<!--<haxeflag name="-dce full" /> -->
+	<haxeflag name="-dce std" /> 
+	<!--<haxeflag name="-dce no" /> -->
 	
 	<!--<haxeflag name="-D -swf-version=24" if="flash" ></haxeflag>-->
 	<haxeflag name="-D advanced-telemetry" if="flash" ></haxeflag>

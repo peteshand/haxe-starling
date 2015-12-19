@@ -25,7 +25,7 @@ class BenchmarkScene extends Scene
 	private var mWaitFrames:Int;
 	
 	private var activeChange:Int = 0;
-	private var texture:Texture;
+	private var texture:starling.textures.Texture;
 	
 	public function new()
 	{

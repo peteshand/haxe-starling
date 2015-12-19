@@ -32,7 +32,7 @@ import starling.events.Event;
 import starling.utils.Color;
 
 /** A ConcreteTexture wraps a Stage3D texture object, storing the properties of the texture. */
-class ConcreteTexture extends Texture
+class ConcreteTexture extends starling.textures.Texture
 {
 	private static var TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
 	

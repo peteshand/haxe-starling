@@ -31,7 +31,7 @@
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="True" />
-    <option additional="--macro openfl.Lib.includeExterns()&#xA;--remap flash:openfl&#xA;-dce no&#xA;--macro allowPackage(&quot;flash&quot;)" />
+    <option additional="--macro openfl.Lib.includeExterns()&#xA;--remap flash:openfl&#xA;-dce std&#xA;--macro allowPackage(&quot;flash&quot;)" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -54,7 +54,7 @@
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Custom" />
-    <option testMovieCommand="http://192.168.0.11:2000" />
+    <option testMovieCommand="" />
   </options>
   <!-- Plugin storage -->
   <storage />
