@@ -73,8 +73,8 @@ class RenderTexture extends SubTexture
     inline private static var CONTEXT_POT_SUPPORT_KEY:String = "RenderTexture.supportsNonPotDimensions";
     inline private static var PMA:Bool = true;
     
-    private var mActiveTexture:Texture;
-    private var mBufferTexture:Texture;
+    private var mActiveTexture:starling.textures.Texture;
+    private var mBufferTexture:starling.textures.Texture;
     private var mHelperImage:Image;
     private var mDrawing:Bool;
     private var mBufferReady:Bool;
@@ -128,7 +128,7 @@ class RenderTexture extends SubTexture
 
         // [/Workaround]
 
-        mActiveTexture = Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
+        mActiveTexture = starling.textures.Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
         mActiveTexture.root.onRestore = mActiveTexture.root.clear;
         
         super(mActiveTexture, new Rectangle(0, 0, width, height), true, null, false);
@@ -142,7 +142,7 @@ class RenderTexture extends SubTexture
         
         if (persistent && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
         {
-            mBufferTexture = Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
+            mBufferTexture = starling.textures.Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
             mBufferTexture.root.onRestore = mBufferTexture.root.clear;
             mHelperImage = new Image(mBufferTexture);
             mHelperImage.smoothing = TextureSmoothing.NONE; // solves some antialias-issues
@@ -230,13 +230,13 @@ class RenderTexture extends SubTexture
         // switch buffers
         if (isDoubleBuffered)
         {
-            var tmpTexture:Texture = mActiveTexture;
+            var tmpTexture:starling.textures.Texture = mActiveTexture;
             mActiveTexture = mBufferTexture;
             mBufferTexture = tmpTexture;
             mHelperImage.texture = mBufferTexture;
         }
 
-        var previousRenderTarget:Texture = mSupport.renderTarget;
+        var previousRenderTarget:starling.textures.Texture = mSupport.renderTarget;
         
         // limit drawing to relevant area
         sClipRect.setTo(0, 0, mActiveTexture.width, mActiveTexture.height);
@@ -273,7 +273,7 @@ class RenderTexture extends SubTexture
     public function clear(rgb:UInt=0, alpha:Float=0.0):Void
     {
         if (!Starling.current.contextValid) return;
-        var previousRenderTarget:Texture = mSupport.renderTarget;
+        var previousRenderTarget:starling.textures.Texture = mSupport.renderTarget;
 
         mSupport.renderTarget = mActiveTexture;
         mSupport.clear(rgb, alpha);

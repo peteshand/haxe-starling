@@ -73,12 +73,12 @@ class Game extends Sprite
 		sAssets = assets;
 		
 		//this.stage.color = 0xFFFF0000;
-		var texture:Texture = assets.getTexture('background');
+		var texture:starling.textures.Texture = assets.getTexture('background');
 		addChild(new Image(texture));
 		showMainMenu();
 		
 		/*var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/background.jpg");
-		var texture:Texture = Texture.fromBitmapData(bmd);
+		var texture:starling.textures.Texture = starling.textures.Texture.fromBitmapData(bmd);
 		addChild(new Image(texture));
 		showMainMenu();*/
 		

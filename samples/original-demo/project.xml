@@ -25,7 +25,6 @@
 	<!-- classpath, haxe libs -->
 	<source path="src" />
 	<source path="../../src" />
-	<!--<source path="C:/_projects/HaxeLibraries/FeathersUI/feathers/source" />-->
 	
 	
 	<!--<set name="lime-hybrid" />-->
