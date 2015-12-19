@@ -565,8 +565,11 @@ class DisplayObject extends EventDispatcher
 		
 		sAncestors.splice(0, sAncestors.length);
         
-        if (currentObject != null) return currentObject;
-        else throw new ArgumentError("Object not connected to target");
+		if (currentObject != null) return currentObject;
+		else {
+			trace("findCommonParent: Object not connected to target");
+			return null;
+		}
     }
 
     // stage event handling

@@ -1305,7 +1305,6 @@ typedef StarlingFunction = Dynamic;
 typedef Context3D = starling.openfl.Context3D;
 typedef AGLSLParser = starling.openfl.AGLSLParser;
 typedef Mapping = starling.openfl.Mapping;
-typedef OpenGLView = starling.openfl.OpenGLView;
 
 // should be resolved once 3.5.3 is pushed
 typedef AGALTokenizer = starling.openfl.AGALTokenizer;
