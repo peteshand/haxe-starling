@@ -74,8 +74,12 @@ class Game extends Sprite
 		
 		//this.stage.color = 0xFFFF0000;
 		var texture:starling.textures.Texture = assets.getTexture('background');
-		addChild(new Image(texture));
+		var backgroundImage:Image = new Image(texture);
+		addChild(backgroundImage);
 		showMainMenu();
+		
+		backgroundImage.scaleX = Starling.current.nativeStage.stageWidth / 320;
+		backgroundImage.scaleY = Starling.current.nativeStage.stageHeight / 480;
 		
 		/*var bmd:BitmapData = Assets.getBitmapData("assets/textures/1x/background.jpg");
 		var texture:starling.textures.Texture = starling.textures.Texture.fromBitmapData(bmd);
@@ -98,6 +102,8 @@ class Game extends Sprite
 			mMainMenu = new MainMenu();
 		
 		addChild(mMainMenu);
+		
+		mMainMenu.scaleX = mMainMenu.scaleY = Starling.current.nativeStage.stageWidth / 320;
 	}
 	
 	private function onKey(event:KeyboardEvent):Void
@@ -140,6 +146,7 @@ class Game extends Sprite
 		}
 		mMainMenu.removeFromParent();
 		addChild(mCurrentScene);
+		mCurrentScene.scaleX = mCurrentScene.scaleY = Starling.current.nativeStage.stageWidth / 320;
 	}
 	
 	public static function get_assets():AssetManager { return sAssets; }
