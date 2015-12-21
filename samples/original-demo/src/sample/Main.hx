@@ -5,6 +5,7 @@ import openfl.display.BitmapData;
 import openfl.text.TextField;
 import openfl.text.TextFieldType;
 import starling.events.EventDispatcher;
+import starling.textures.TextureOptions;
 import utils.DeviceInfo;
 
 #if js
@@ -125,11 +126,11 @@ class Main extends Sprite
 		
 		//assets.verbose = Capabilities.isDebugger;
 		//assets.enqueue(EmbeddedAssets);
-		assets.enqueueWithName(EmbeddedAssets.atlas, "atlas");
+		assets.enqueueWithName(EmbeddedAssets.atlas, "atlas", new TextureOptions(2));
 		assets.enqueueWithName(EmbeddedAssets.atlas_xml, "atlas_xml");
 		assets.enqueueWithName(EmbeddedAssets.background, "background");
 		assets.enqueueWithName(EmbeddedAssets.compressed_texture, "compressed_texture");
-		assets.enqueueWithName(EmbeddedAssets.desyrel, "desyrel");
+		assets.enqueueWithName(EmbeddedAssets.desyrel, "desyrel", new TextureOptions(2));
 		assets.enqueueWithName(EmbeddedAssets.desyrel_fnt, "desyrel_fnt");
 		assets.enqueueWithName(EmbeddedAssets.wing_flap, "wing_flap");
 		

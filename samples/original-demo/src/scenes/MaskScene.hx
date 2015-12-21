@@ -25,8 +25,8 @@ class MaskScene extends Scene
 		mContents = new Sprite();
 		addChild(mContents);
 		
-		var stageWidth:Float  = Starling.current.stage.stageWidth;
-		var stageHeight:Float = Starling.current.stage.stageHeight;
+		var stageWidth:Float  = 320;// Starling.current.stage.stageWidth;
+		var stageHeight:Float = 480;// Starling.current.stage.stageHeight;
 		
 		var touchQuad:Quad = new Quad(stageWidth, stageHeight, 0xFFFFFF);
 		touchQuad.width = stageWidth;

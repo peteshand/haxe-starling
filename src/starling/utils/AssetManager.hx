@@ -517,7 +517,6 @@ class AssetManager extends EventDispatcher
 	 */
 	public function enqueue(rawAssets:Dynamic):Void
 	{
-		trace("FIX");
 		if (Std.is(rawAssets, Array)) {
 			var rawAssetsArray:Array<Dynamic> = rawAssets;
 			for (i in 0...rawAssetsArray.length) 
@@ -649,10 +648,10 @@ class AssetManager extends EventDispatcher
 		var canceled:Bool = false;
 		var xmls = new Array<Xml>();
 		var assetInfos = mQueue.concat(new Array<Dynamic>());
-		/*for (j in 0...mQueue.length) 
+		for (j in 0...mQueue.length) 
 		{
 			assetInfos.push(mQueue[j]);
-		}*/
+		}
 		
 		var assetCount:Int = mQueue.length;
 		var assetProgress = new Array<Float>();
@@ -951,7 +950,8 @@ class AssetManager extends EventDispatcher
 			{
 				bytes = cast asset;
 				
-				if (AtfData.isAtfData(bytes))
+				var isAtfData = AtfData.isAtfData(bytes);
+				if (isAtfData)
 				{
 					options.onReady = prependCallback(options.onReady, onComplete);
 					texture = Texture.fromData(bytes, options);

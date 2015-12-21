@@ -104,7 +104,7 @@ class BenchmarkScene extends Scene
 		var numObjects:Int = mContainer.numChildren;
 		var passedTime:Float = event.passedTime;
 		
-		var addAmount:Float = Math.PI / 2 * passedTime;
+		var addAmount:Float = Math.PI / 2 * passedTime * 2;
 		for (i in 0...numObjects)
 			mContainer.children[i].rotation += addAmount;
 	}
@@ -129,7 +129,7 @@ class BenchmarkScene extends Scene
 	private function addTestObjects():Void
 	{
 		var padding:Int = 15;
-		var numObjects:Int = mFailCount > 20 ? 10 : 50;
+		var numObjects:Int = mFailCount > 20 ? 5 : 20;
 		
 		for (i in 0...numObjects)
 		{

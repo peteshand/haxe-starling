@@ -51,32 +51,32 @@ class EmbeddedAssets
 	
 	static function get_atlas_xml():Xml 
 	{
-		return Xml.parse(Assets.getText("assets/textures/1x/atlas.xml"));
+		return Xml.parse(Assets.getText("assets/textures/2x/atlas.xml"));
 	}
 	
 	static function get_atlas():BitmapData 
 	{
-		return Assets.getBitmapData("assets/textures/1x/atlas.png");
+		return Assets.getBitmapData("assets/textures/2x/atlas.png");
 	}
 	
 	static function get_background():BitmapData 
 	{
-		return Assets.getBitmapData("assets/textures/1x/background.jpg");
+		return Assets.getBitmapData("assets/textures/2x/background.jpg");
 	}
 	
 	static function get_compressed_texture():ByteArray 
 	{
-		return Assets.getBytes("assets/textures/1x/compressed_texture.atf");
+		return Assets.getBytes("assets/textures/2x/compressed_texture.atf");
 	}
 	
 	static function get_desyrel_fnt():Xml 
 	{
-		return Xml.parse(Assets.getText("assets/fonts/1x/desyrel.fnt"));
+		return Xml.parse(Assets.getText("assets/fonts/2x/desyrel.fnt"));
 	}
 	
 	static function get_desyrel():BitmapData 
 	{
-		return Assets.getBitmapData("assets/fonts/1x/desyrel.png");
+		return Assets.getBitmapData("assets/fonts/2x/desyrel.png");
 	}
 	
 	static function get_wing_flap():Sound 

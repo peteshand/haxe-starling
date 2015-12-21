@@ -6,7 +6,7 @@
 	<meta title="OpenFLStarlingSamples" package="starling.samples" version="1.0.0" company="P.J.Shand" />
 	
 	<!-- output -->
-	<app main="sample.Main" file="OpenFLStarlingSamples1" path="bin" />
+	<app main="sample.Main" file="OpenFLStarlingSamples" path="bin" />
 	
 	<window background="#000000" fps="60" />
 	<!--<window width="320" height="480" unless="mobile" />-->
@@ -19,7 +19,7 @@
 		require-shaders="true" 
 		depth-buffer="false" 
 		stencil-buffer="true" 
-		background="0x111111"
+		background="0x333333"
 	/>
 	
 	<!-- classpath, haxe libs -->
