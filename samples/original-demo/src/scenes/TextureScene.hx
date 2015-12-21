@@ -35,9 +35,10 @@ class TextureScene extends Scene
 			// display a compressed texture
 			var compressedTexture:Texture = Game.assets.getTexture("compressed_texture");
 			var image:Image = new Image(compressedTexture);
-			image.x = Constants.CenterX - image.width / 2;
+			image.x = Constants.CenterX - (image.width / 2) / 2;
 			//image.alpha = 0.5;
 			image.y = 263;
+			image.scaleX = image.scaleY = 0.5;
 			addChild(image);
 			
 			textValue = "Currently experiencing texture format issues with ATFs";
