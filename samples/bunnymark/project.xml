@@ -9,9 +9,17 @@
 	<app main="Main" file="starling-bunnymark" path="bin" />
 	
 	<window background="#FFFFFF" fps="60" />
-	<window width="800" height="480" unless="mobile" />
+	<window width="800" height="800" unless="mobile"
+		orientation="portrait" 
+		vsync="true" fps="60" 
+		hardware="true" 
+		allow-shaders="true" 
+		require-shaders="true" 
+		depth-buffer="false" 
+		stencil-buffer="true" 
+		background="0x333333"
+	/>
 	<window width="0" height="0" if="html5" />
-	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	
 	<!-- classpath, haxe libs -->
 	<source path="src" />

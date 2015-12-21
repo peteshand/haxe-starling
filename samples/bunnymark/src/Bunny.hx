@@ -9,7 +9,6 @@ import starling.textures.Texture;
  */
 class Bunny extends Image
 {
-	public var scale:Float;
 	public var speedX:Float;
 	public var speedY:Float;
 		
