@@ -81,9 +81,9 @@ class MainMenu extends Sprite
 				["Animations", AnimationScene, true],
 				["Custom hit-test", CustomHitTestScene, true],
 				["Movie Clip", MovieScene, true],
-				["Filters", FilterScene, true],
+				["Filters", FilterScene, false],
 				["Blend Modes", BlendModeScene, true],
-				["Render Texture", RenderTextureScene, true],
+				["Render Texture", RenderTextureScene, false],
 				["Benchmark", BenchmarkScene, true],
 				["Masks", MaskScene, true],
 				["Sprite 3D", Sprite3DScene, true]

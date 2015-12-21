@@ -29,29 +29,35 @@ class TextureScene extends Scene
 		image3.y = -60;
 		addChild(image3);
 		
-		
-		/*try
+		var textValue = "";
+		try
 		{
 			// display a compressed texture
 			var compressedTexture:Texture = Game.assets.getTexture("compressed_texture");
 			var image:Image = new Image(compressedTexture);
 			image.x = Constants.CenterX - image.width / 2;
-			image.y = 280;
+			//image.alpha = 0.5;
+			image.y = 263;
 			addChild(image);
+			
+			textValue = "Currently experiencing texture format issues with ATFs";
+			var textField:TextField = new TextField(220, 40, textValue, "Verdana", 14);
+			textField.x = Constants.CenterX - textField.width / 2;
+			textField.y = image.y + ((image.height + image.height) / 2);
+			addChild(textField);
 		}
 		catch (e:Error)
-		{*/
+		{
 			#if flash
-				//var textValue = "Flash Player and AIR must be at less 11.4 and 3.4 respectively (swf-version=17) to see a compressed ATF texture";
-				var textValue = "ATF textures currently not supported in the Haxe version of Starling.";
+				textValue = "Flash Player and AIR must be at less 11.4 and 3.4 respectively (swf-version=17) to see a compressed ATF texture";
 			#else
-				var textValue = "ATF textures are not support in non Flash/Air targets.";
+				textValue = "ATF textures are not support in non Flash/Air targets.";
 			#end
 			// if it fails, it's probably not supported
 			var textField:TextField = new TextField(220, 128, textValue, "Verdana", 14);
 			textField.x = Constants.CenterX - textField.width / 2;
 			textField.y = 280;
 			addChild(textField);
-		//}
+		}
 	}
 }
